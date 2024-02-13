@@ -2,14 +2,16 @@
 namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
-class User{
+class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
-    private $id;
+    private $userID;
 
     #[ORM\Column(type: 'string', name: 'email')]
     private $email;
@@ -45,18 +47,18 @@ class User{
      */
     public function getId()
     {
-        return $this->id;
+        return $this->userID;
     }
 
     /**
      * Set the value of id
      */
-    public function setId($id): self
-    {
-        $this->id = $id;
+    // public function setId($userID): self
+    // {
+    //     $this->userID = $userID;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     /**
      * Get the value of email
