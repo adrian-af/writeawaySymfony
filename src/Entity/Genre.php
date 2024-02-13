@@ -8,15 +8,12 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
 
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class Genre implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
     private $ID;
-
-    #[ORM\Column(type: 'string', name: 'email')]
-    private $email;
 
     #[ORM\Column(type: 'string', name: 'username')]
     private $username;
@@ -35,7 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     /**
-     * User constructor
+     * Restaurant constructor
      */
     public function __construct()
     {
@@ -57,33 +54,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * Set the value of email
+     * Set the value of Mail
      *
      * @return  self
      */ 
     public function setEmail($email)
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of username
-     */ 
-    public function getUsername()
-    {
-        return $this->username;
-    }
-
-    /**
-     * Set the value of username
-     *
-     * @return  self
-     */ 
-    public function setUsername($username)
-    {
-        $this->username = $username;
 
         return $this;
     }

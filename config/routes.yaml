@@ -1,3 +1,10 @@
+# config/routes.yaml
+
+# Define routes for the homepage
+home:
+    path: /
+    controller: App\Controller\LoginController::index
+
 controllers:
     resource:
         path: ../src/Controller/

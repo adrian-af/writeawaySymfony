@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    {% if error %}
+        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+
+     <form action="write.php" method='POST' class="writeStory">
+        <div class="content">
+            <p><label for="title">Title: </label></p>
+            <input type="text" id="title" name="title" class="input"></input>
+        </div>
+        <div class="content">
+            <p><label for="genre">Genre: </label></p>
+            <select id="genre" name="genre">
+            
+            </select>
+        </div>
+        <div class="content">
+            <div>
+                <input type="radio" id="private" name="public" value="0" checked>
+                <label for="private">Private</label>
+            </div>
+            <div>
+                <input type="radio" id="public" name="public" value="1">
+                <label for="private">Public</label>
+            </div>
+        </div>
+        <div class="content">
+            <p><label for="story">Story:</label></p>
+            <textarea id="story" name="story"></textarea>
+        </div>
+        <button class="button">Submit</button>
+    </form>
+{% endblock %}
