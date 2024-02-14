@@ -1,19 +1,17 @@
 <?php
 namespace App\Entity;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
-
-class User implements UserInterface, PasswordAuthenticatedUserInterface
-{
+class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
-    private $ID;
+    private $userID;
 
     #[ORM\Column(type: 'string', name: 'email')]
     private $email;
@@ -24,10 +22,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'string', name: 'password')]
     private $password;
 
-    #[ORM\Column(type: 'integer', name:'confirmationCode')]
-    private $confirmationCode;
+    #[ORM\Column(type: 'blob', name: 'photo')]
+    private $photo;
 
-    #[ORM\Column(type: 'string', name:'about')]
+    #[ORM\Column(type:'integer', name: 'confimationCode')]
+    private $confCod;
+
+    #[ORM\Column(type:'string', name: 'about')]
     private $about;
 
     #[ORM\Column(type: 'integer', name: 'role')]
@@ -40,48 +41,55 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
     }
+
     /**
-     * Get the value of ID
-     */ 
-    public function getID()
+     * Get the value of id
+     */
+    public function getId()
     {
-        return $this->ID;
+        return $this->userID;
     }
 
     /**
+     * Set the value of id
+     */
+    // public function setId($userID): self
+    // {
+    //     $this->userID = $userID;
+
+    //     return $this;
+    // }
+
+    /**
      * Get the value of email
-     */ 
-    public function getEmail()
+     */
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
     /**
      * Set the value of email
-     *
-     * @return  self
-     */ 
-    public function setEmail($email)
+     */
+    /*public function setEmail($email): self
     {
         $this->email = $email;
 
         return $this;
-    }
+    }*/
 
     /**
      * Get the value of username
-     */ 
-    public function getUsername()
+     */
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
     /**
      * Set the value of username
-     *
-     * @return  self
-     */ 
-    public function setUsername($username)
+     */
+    public function setUsername($username): self
     {
         $this->username = $username;
 
@@ -90,7 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Get the value of password
-     */ 
+     */
     public function getPassword(): ?string
     {
         return $this->password;
@@ -98,52 +106,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * Set the value of password
-     *
-     * @return  self
-     */ 
-    public function setPassword($password)
+     */
+    public function setPassword($password): self
     {
         $this->password = $password;
 
         return $this;
     }
 
-    
-
     /**
-     * Get the value of confirmationCode
-     */ 
-    public function getConfirmationCode()
+     * Get the value of photo
+     */
+    public function getPhoto()
     {
-        return $this->confirmationCode;
+        return $this->photo;
     }
 
     /**
-     * Set the value of confirmationCode
-     *
-     * @return  self
-     */ 
-    public function setConfirmationCode($confirmationCode)
+     * Set the value of photo
+     */
+    public function setPhoto($photo): self
     {
-        $this->confirmationCode = $confirmationCode;
+        $this->photo = $photo;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of confCod
+     */
+    public function getConfCod(): ?int
+    {
+        return $this->confCod;
+    }
+
+    /**
+     * Set the value of confCod
+     */
+    public function setConfCod($confCod): self
+    {
+        $this->confCod = $confCod;
 
         return $this;
     }
 
     /**
      * Get the value of about
-     */ 
-    public function getAbout()
+     */
+    public function getAbout(): ?string
     {
         return $this->about;
     }
 
     /**
      * Set the value of about
-     *
-     * @return  self
-     */ 
-    public function setAbout($about)
+     */
+    public function setAbout($about): self
     {
         $this->about = $about;
 
@@ -169,7 +187,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-   
+
     /**
      * Returns the identifier for this user (e.g. username or email address).
      */
