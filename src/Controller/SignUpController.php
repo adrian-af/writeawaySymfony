@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Doctrine\ORM\EntityManagerInterface;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 class SignUpController extends AbstractController
 {
@@ -64,15 +66,24 @@ class SignUpController extends AbstractController
                 // Encode the plain password
                 $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($encodedPassword);
-                $user->setConfirmationCode(rand(10, 10000000));
+                $confirmationCode = rand(10, 10000000); 
+                $user->setConfCod($confirmationCode);
                 $user->setRole(0);
 
                 // Save the user to the database
                 $entityManager->persist($user);
+                
+                //send email
+                $respuesta = $this->sendEmail($confirmationCode, $email);
+                if($respuesta)
+                {
+                    $text = "Error sending confirmation email: " .$respuesta;
+                    return $this->redirectToRoute('app_signup', ['error' => $text]);
+                }
                 $entityManager->flush();
-
+                
                 // Redirect to login page after successful signup
-                return $this->redirectToRoute('app_login');
+                return $this->render('checkemail.html.twig');
             }
             return $this->redirectToRoute('app_signup', ['error' => $error]);
         }
@@ -86,5 +97,37 @@ class SignUpController extends AbstractController
         $error = $request->query->get('error');
         // Render the error page template and pass the error message
         return $this->render('response.html.twig', ['error' => $error]);
+    }
+    public function sendEmail($confirmationCode, $email)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            //Server settings
+            $mail->SMTPDebug = 0;                      
+            $mail->isSMTP();                                           
+            $mail->Host       = "smtp.gmail.com";                    
+            $mail->SMTPAuth   = true;                                   
+            $mail->Username   = 'adrian.fernandez.close@gmail.com';     
+            $mail->Password   = 'mmko xwhh gjqv psbk';                  
+            $mail->SMTPSecure = "tls";         
+            $mail->Port       = 587;                                    
+
+            //Recipients
+            $mail->setFrom('welcome@writeaway.com', 'Writeaway');
+            $mail->addAddress($email);
+
+            // Content
+            $mail->isHTML(true);
+            $htmlBody = $this->renderView('confirmation.html.twig', ['code' => $confirmationCode]);
+            $mail->Subject = 'Welcome to Writeaway!';
+            $mail->Body    = $htmlBody;
+
+            $mail->send();
+            return false;
+        } catch (Exception $e) 
+        {
+            return $this->json(['error' => $mail->ErrorInfo], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
