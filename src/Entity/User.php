@@ -71,12 +71,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * Set the value of email
      */
-    /*public function setEmail($email): self
+    public function setEmail($email): self
     {
         $this->email = $email;
 
         return $this;
-    }*/
+    }
 
     /**
      * Get the value of username
