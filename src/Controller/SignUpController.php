@@ -1,89 +1,90 @@
 <?php
-// src/Controller/RegistrationController.php
 
 namespace App\Controller;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Config\SecurityConfig;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 use App\Entity\User;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Doctrine\ORM\EntityManagerInterface;
 
 class SignUpController extends AbstractController
 {
     #[Route('/signup', name: 'app_signup')]
-    public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager)
+    public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager): Response
     {
-        // Initialize variables to hold form data
-        $formData = $request->request->all();
+        // Initialize error message
+        $error = $request->query->get('error');
 
-        // Check if form is submitted
+        // Process form submission
         if ($request->isMethod('POST')) 
         {
-            // Get form data
+            $formData = $request->request->all();
+            $passLen = 3;
             $email = $formData['email'];
             $plainPassword = $formData['password'];
             $username = $formData['username'];
             $password2 = $formData['password2'];
 
-            //compare plaintext passwords
-            if($password2 != $plainPassword)
+            // Validate form data
+            if(strlen($username) < 1 || strlen($email) < 1)
             {
-                //if any condition is true, it will return to the singup twig with the error description
-                return $this->render('signin.html.twig', ['error' => 'Passwords do not match']);
+                $error = "No empty fields<br>";
             }
-            //get all the users
-            $userRepository = $entityManager->getRepository(User::class);
-
-            $existingEmail = $userRepository->findOneBy(['email' => $email]);
-
-            //if any user has been found searching by email, then the email is already in use
-            if ($existingEmail != null)
+            if(strlen($formData['password']) < $passLen)
             {
-                return $this->render('signin.html.twig', ['error' => 'Email already registered']);
+                $error .= "Password must be at least " .$passLen ." characters long<br>";
             }
-
-            $existingUsername = $userRepository->findOneBy(['username' => $username]);
-
-            //if any user has been found searching by username, then the username is already in use
-            if($existingUsername != null)
+            if($formData['password'] != $formData['password2'])
             {
-                return $this->render('signin.html.twig', ['error' => 'Username already taken']);
+                $error .= "Passwords do not match<br>";
+            }
+            $existingUsers = $entityManager->getRepository(User::class);
+
+            $usernameTaken = $existingUsers->findOneBy(['username' => $username]);
+            if($usernameTaken != null)
+            {
+                $error .= "Username already taken<br>";
+            }
+            $emailTaken = $existingUsers->findOneBy(['email' => $email]);
+            if($emailTaken != null)
+            {
+                $error .= "Email already in use<br>";
             }
 
-            // Create a new user entity and set its properties
-            $user = new User();
-            $user->setEmail($email);
+            if (!$error) 
+            {
+                // Create a new user entity and set its properties
+                $user = new User();
+                $user->setUsername($username);
+                $user->setEmail($email);
 
-            // Encode the plain password using the method from the UserPasswordEncoderInterface
-            $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                // Encode the plain password
+                $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($encodedPassword);
+                $user->setConfirmationCode(rand(10, 10000000));
+                $user->setRole(0);
 
-            $user->setPassword($encodedPassword);
-            $user->setUsername($username);
-            $confirmationCode = rand(10, 10000000);
-            $user->setConfirmationCode($confirmationCode);
-            $user->setRole(0);
+                // Save the user to the database
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            // Save the user to the database
-            //the entity manager takes the instance of the entity User that has been created and "saves" the changes
-            $entityManager->persist($user);
-            //as it uses transactions, the changes aren't actually done on the DB until the flush is executed
-            $entityManager->flush();
-
-            // Redirect to login page after signup
-            return new Response('<html><body>Check your email to verify your account</body></html>');
+                // Redirect to login page after successful signup
+                return $this->redirectToRoute('app_login');
+            }
+            return $this->redirectToRoute('app_signup', ['error' => $error]);
         }
-        else
-        {
-            return $this->render('signin.html.twig');
-        }
+
+        // Render the sign-up form
+        return $this->render('signup.html.twig', ['error' => $error]);
+    }
+    #[Route('/response', name: 'response')]
+    public function errorPage(Request $request): Response
+    {
+        $error = $request->query->get('error');
+        // Render the error page template and pass the error message
+        return $this->render('response.html.twig', ['error' => $error]);
     }
 }
