@@ -64,7 +64,7 @@ class SignUpController extends AbstractController
                 // Encode the plain password
                 $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
                 $user->setPassword($encodedPassword);
-                $user->setConfirmationCode(rand(10, 10000000));
+                $user->setConfCod(rand(10, 10000000));
                 $user->setRole(0);
 
                 // Save the user to the database
