@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>My Symfony App</title>
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+</head>
+<div id='headerleft'>
+            <div id='logo'>
+                <img class="logo" src="Imagenes/logotipo.png">
+            </div>
+            <div id='homepage'><a href="./Lobby.php">Home</a></div>
+            <div class="dropdown">
+                <div class="dropbtn">Genre</div>
+                <div class="dropdown-content">
+                {% for genre in genres %}
+                    <option value="{{ genre.id }}">{{ genre.name }}</option>
+                    <a id='$tempNum' href="{{ path('genre') }}">
+                {% endfor %}
+                </div>
+            </div>
+            <div id="homepage"><a href="./write.php">Start Writing</a></div>
+            <div id='search'>
+                <form action="profilesearch.php" method="GET">
+                    <input type="text" placeholder="Search users..." name="usersearched">
+                    <button><img src="./Imagenes/search.png" alt="Search button" class="icon"></button>
+                </form>
+            </div>
+        </div>    
+        <div id='headerright'>
+            <div  class='dropdown'>
+                <img src="" alt="User Picture" class="dropbtn" id="user">
+                <div class="dropdown-content2">
+                    <a href="{{ path('app-signup') }}">Profile</a>
+                    <a href="{{ path('app-login') }}" >Log out</a>
+                    <a href="{{ path('app-login') }}">About us</a>
+                </div>
+            </div>
+        </div>
