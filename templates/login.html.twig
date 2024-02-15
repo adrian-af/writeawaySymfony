@@ -1,8 +1,8 @@
 {# login.html.twig #}
 {% extends 'base.html.twig' %}
 {% block body %}
-    {% if error %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% if error is defined %}
+        <div>{{ error }}</div>
     {% endif %}
 
     <form action="{{ path('app_login') }}" method="post">
@@ -18,24 +18,4 @@
         <button type="submit">login</button>
     </form>
 
-    <script>
-        // Listen for form submission
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            // Prevent default form submission behavior
-            event.preventDefault();
-
-            // Perform form submission using JavaScript fetch API
-            fetch(this.action, {
-                method: this.method,
-                body: new FormData(this),
-            })
-            .then(response => {
-                // Redirect to the desired URL after successful login
-                if (response.redirected) {
-                    window.location.href = response.url;
-                }
-            })
-            .catch(error => console.error('Error:', error));
-        });
-    </script>
 {% endblock %}

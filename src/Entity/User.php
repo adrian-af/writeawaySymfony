@@ -25,7 +25,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Column(type: 'blob', name: 'photo')]
     private $photo;
 
-    #[ORM\Column(type:'integer', name: 'confimationCode')]
+    #[ORM\Column(type:'integer', name: 'confirmationCode')]
     private $confCod;
 
     #[ORM\Column(type:'string', name: 'about')]

@@ -1,7 +1,7 @@
 {# hello.html.twig #}
 {% block body %}
     hello!
-    { {% if error %}
+    { {% if error is defined%}
         <div id='error'>{{ error }}</div>
     {% else %}
         <div>No errors</div>
