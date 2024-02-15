@@ -4,6 +4,9 @@
     {% if error is defined %}
         <div>{{ error }}</div>
     {% endif %}
+    {% if last_username is not defined %}
+        {% set last_username = '' %}
+    {% endif %}
 
     <form action="{{ path('app_login') }}" method="post">
         <label for="username">Username:</label>

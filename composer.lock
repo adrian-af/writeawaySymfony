@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "969303c66e8b77978e07d95e8df17a3b",
+    "content-hash": "5786db51fed392c8c7b3e96524ea88b7",
     "packages": [
         {
             "name": "composer/semver",
@@ -2743,16 +2743,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v7.0.2",
+            "version": "v7.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "bd25ef7c937b9da12510bdc4f1c66728f19620e3"
+                "reference": "e915c6684b8e3ae90a4441f6823ebbb40edf0b92"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/bd25ef7c937b9da12510bdc4f1c66728f19620e3",
-                "reference": "bd25ef7c937b9da12510bdc4f1c66728f19620e3",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/e915c6684b8e3ae90a4441f6823ebbb40edf0b92",
+                "reference": "e915c6684b8e3ae90a4441f6823ebbb40edf0b92",
                 "shasum": ""
             },
             "require": {
@@ -2803,7 +2803,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v7.0.2"
+                "source": "https://github.com/symfony/dependency-injection/tree/v7.0.3"
             },
             "funding": [
                 {
@@ -2819,7 +2819,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-28T19:18:20+00:00"
+            "time": "2024-01-30T08:34:29+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -3869,6 +3869,71 @@
             "time": "2023-12-29T15:37:40+00:00"
         },
         {
+            "name": "symfony/google-mailer",
+            "version": "v7.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/google-mailer.git",
+                "reference": "afa051a4ae1f76609024708ad1a65b2b1c64c9ae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/google-mailer/zipball/afa051a4ae1f76609024708ad1a65b2b1c64c9ae",
+                "reference": "afa051a4ae1f76609024708ad1a65b2b1c64c9ae",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/mailer": "^6.4|^7.0"
+            },
+            "require-dev": {
+                "symfony/http-client": "^6.4|^7.0"
+            },
+            "type": "symfony-mailer-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Mailer\\Bridge\\Google\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Google Mailer Bridge",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/google-mailer/tree/v7.0.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-01-23T15:02:46+00:00"
+        },
+        {
             "name": "symfony/http-client",
             "version": "v7.0.2",
             "source": {
@@ -4311,16 +4376,16 @@
         },
         {
             "name": "symfony/mailer",
-            "version": "v7.0.2",
+            "version": "v7.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mailer.git",
-                "reference": "c51c8f411062ef8fec837c76b0dad15dd5a6ab16"
+                "reference": "2f71c0f6d62d28784783fdc5477e19dd57065d78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mailer/zipball/c51c8f411062ef8fec837c76b0dad15dd5a6ab16",
-                "reference": "c51c8f411062ef8fec837c76b0dad15dd5a6ab16",
+                "url": "https://api.github.com/repos/symfony/mailer/zipball/2f71c0f6d62d28784783fdc5477e19dd57065d78",
+                "reference": "2f71c0f6d62d28784783fdc5477e19dd57065d78",
                 "shasum": ""
             },
             "require": {
@@ -4371,7 +4436,7 @@
             "description": "Helps sending emails",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/mailer/tree/v7.0.2"
+                "source": "https://github.com/symfony/mailer/tree/v7.0.3"
             },
             "funding": [
                 {
@@ -4387,7 +4452,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-19T11:23:03+00:00"
+            "time": "2024-01-29T15:41:16+00:00"
         },
         {
             "name": "symfony/messenger",
@@ -6164,6 +6229,76 @@
                 }
             ],
             "time": "2023-11-30T11:04:23+00:00"
+        },
+        {
+            "name": "symfony/sendgrid-mailer",
+            "version": "v7.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/sendgrid-mailer.git",
+                "reference": "24717c029524840c64aaa1ddc97185ae3cab1688"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/sendgrid-mailer/zipball/24717c029524840c64aaa1ddc97185ae3cab1688",
+                "reference": "24717c029524840c64aaa1ddc97185ae3cab1688",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/mailer": "^6.4|^7.0"
+            },
+            "conflict": {
+                "symfony/http-foundation": "<6.4",
+                "symfony/mime": "<6.4"
+            },
+            "require-dev": {
+                "symfony/http-client": "^6.4|^7.0",
+                "symfony/webhook": "^6.4|^7.0"
+            },
+            "type": "symfony-mailer-bridge",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Mailer\\Bridge\\Sendgrid\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Sendgrid Mailer Bridge",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/sendgrid-mailer/tree/v7.0.3"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-01-23T15:02:46+00:00"
         },
         {
             "name": "symfony/serializer",
