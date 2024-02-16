@@ -3,7 +3,7 @@ body{
     width: auto;
     justify-content: center; /* Center horizontally */
     align-items: center;
-    background-image: url("./Imagenes/fondoParaInicios.jpg");
+    background-image: url("{{{{ asset('Images/'fondoParaInicios.jpg) }}}}");
 }
 .rectangle-1 {
     display: grid;
