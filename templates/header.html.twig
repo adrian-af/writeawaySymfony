@@ -14,7 +14,7 @@
                 <div class="dropbtn">Genre</div>
                 <div class="dropdown-content">
                 {% for genre in genres %}
-                    <a id='$tempNum' href="{{ path('genre_page') }}">{{ genre.name }}</a>
+                    <a id='$tempNum' href="{{ path('genre_page', {'id': genre.id}) }}">{{ genre.name }}</a>
                 {% endfor %}
                 </div>
             </div>
