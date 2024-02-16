@@ -1,38 +1,38 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>My Symfony App</title>
+{% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
-</head>
-<div id='headerleft'>
-            <div id='logo'>
-                <img class="logo" src="{{ asset('Images/logotipo.png') }}" alt="Logo image">
-            </div>
-            <div id='homepage'><a href="{{path( 'app_homepage') }}">Home</a></div>
-            <div class="dropdown">
-                <div class="dropbtn">Genre</div>
-                <div class="dropdown-content">
-                {% for genre in genres %}
-                    <a id='$tempNum' href="{{ path('genre_page', {'id': genre.id}) }}">{{ genre.name }}</a>
-                {% endfor %}
-                </div>
-            </div>
-            <div id="homepage"><a href="{{ path('app_writing') }}">Start Writing</a></div>
-            <div id='search'>
-                <form action="profilesearch.php" method="GET">
-                    <input type="text" placeholder="Search users..." name="usersearched">
-                    <button><img src="{{ asset('Images/search.png') }}" alt="Search button" class="icon"></button>
-                </form>
-            </div>
-        </div>    
-        <div id='headerright'>
-            <div  class='dropdown'>
-                <img src="" alt="User Picture" class="dropbtn" id="user">
-                <div class="dropdown-content2">
-                    <a href="{{ path('app-signup') }}">Profile</a>
-                    <a href="{{ path('app-login') }}" >Log out</a>
-                    <a href="{{ path('app-login') }}">About us</a>
-                </div>
+{% endblock %}
+{% block body %}
+<header>
+    <div id='headerleft'>
+        <div id='logo'>
+            <img class="logo" src="{{ asset('Images/logotipo.png') }}" alt="Logo image">
+        </div>
+        <div id='homepage'><a href={#"{{ path( 'app_homepage') }}"#}>Home</a></div>
+        <div class="dropdown">
+            <div class="dropbtn">Genre</div>
+            <div class="dropdown-content">
+            {% for genre in genres %}
+                <a id='$tempNum' href="{{ path('genre_page', {'id': genre.id}) }}">{{ genre.name }}</a>
+            {% endfor %}
             </div>
         </div>
+        <div id="homepage"><a href={#"{{ path('app_writing') }}"#}>Start Writing</a></div>
+        <div id='search'>
+            <form action="profilesearch.php" method="GET">
+                <input type="text" placeholder="Search users..." name="usersearched">
+                <button><img src="{{ asset('Images/search.png') }}" alt="Search button" class="icon"></button>
+            </form>
+        </div>
+    </div>    
+    <div id='headerright'>
+        <div  class='dropdown'>
+            <img src="" alt="User Picture" class="dropbtn" id="user">
+            <div class="dropdown-content2">
+                <a href={#"{{ path('app_signup') }}"#}>Profile</a>
+                <a href="{{ path('app_logout') }}">Log out</a>
+                <a href={#"{{ path('app-login') }}"#}>About us</a>
+            </div>
+        </div>
+    </div>
+</header>
+{% endblock %}

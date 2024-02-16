@@ -1,24 +1,54 @@
 {# login.html.twig #}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
+{% endblock %}
 {% extends 'base.html.twig' %}
 {% block body %}
-    {% if error is defined %}
-        <div>{{ error }}</div>
-    {% endif %}
-    {% if last_username is not defined %}
-        {% set last_username = '' %}
-    {% endif %}
+<body>
+    <div class="rectangle-1">
+        <div><h1>Log In</h1></div>
+        {# {% if error is defined %}
+            <div style="color: red" id="wrong">{{ error }}</div>
+        {% endif %}
+        {% if last_username is not defined %}
+            {% set last_username = '' %}
+        {% endif %} #}
 
-    <form action="{{ path('app_login') }}" method="post">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="_username" value="{{ last_username }}">
+        <form action="{{ path('app_login') }}" method="post">
+            <table>
+                <tr>
+                    <td>
+                        {% if error is defined %}
+                            <div style="color: red" id="wrong">{{ error }}</div>
+                        {% endif %}
+                        {% if last_username is not defined %}
+                            {% set last_username = '' %}
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td><label for="username" class="label">Username:</label></td>
+                    <td><input type="text" class="text-input" id="username" name="_username" value="{{ last_username }}"></td>
+                </tr>
+                <tr>
+                    <td><label for="password" class="label">Password:</label></td>
+                    <td><input type="password" class="text-input" id="password" name="_password"></td>
+                </tr>
+                <tr>
+                    {# If you want to control the URL the user is redirected to on  #}
+                    <input type="hidden" name="_target_path" value="/helloUser"> 
 
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="_password">
-
-        {# If you want to control the URL the user is redirected to on  #}
-        <input type="hidden" name="_target_path" value="/helloUser"> 
-
-        <button type="submit">login</button>
-    </form>
-
+                    <td class="notes" colspan="2"><button class="button" type="submit">login</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="rectangle-2">
+            <div class="toSignIn">Not with us yet?</div>
+            <div>
+                <a href="{{ path('app_signup') }}">
+                <button class="button">Sign up!!</button>
+            </div>
+    </div>
+</body>
 {% endblock %}

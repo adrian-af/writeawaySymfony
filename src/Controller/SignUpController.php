@@ -87,7 +87,7 @@ class SignUpController extends AbstractController
                 {
                     $mailer->send($emailObject);
                 }
-                catch(Exception $e)
+                catch(\Exception $e)
                 {
                     $mensaje = "Error sending email" .$e->getMessage();
                     return $this->redirectToRoute('app_signup', ['error' => $mensaje]);
@@ -122,7 +122,7 @@ class SignUpController extends AbstractController
         $error = $request->query->get('error');
 
         // Process form submission
-        if ($request->isMethod('POST')) 
+        if ($request->isMethod('POST'))
         {
             $formData = $request->request->all();
             $codeUser = $formData['code'];
