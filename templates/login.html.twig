@@ -17,7 +17,7 @@
         <form action="{{ path('app_login') }}" method="post">
             <table>
                 <tr>
-                    <td>
+                    <td colspan="2">
                         {% if error is defined %}
                             <div style="color: red" id="wrong">{{ error }}</div>
                         {% endif %}
