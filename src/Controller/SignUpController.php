@@ -64,6 +64,7 @@ class SignUpController extends AbstractController
                 $user = new User();
                 $user->setUsername($username);
                 $user->setEmail($email);
+                $user->setAbout("I am a user of WriteAway!");
 
                 // Encode the plain password
                 $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
