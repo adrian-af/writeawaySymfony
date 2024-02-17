@@ -9,9 +9,9 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: 'users')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Id]
-    #[ORM\Column(type: 'integer', name: 'ID')]
+    #[ORM\Column(name: 'ID')]
     #[ORM\GeneratedValue]
-    private $userID;
+    private $userId;
 
     #[ORM\Column(type: 'string', name: 'email')]
     private $email;
@@ -34,6 +34,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Column(type: 'integer', name: 'role')]
     private $role;
 
+    #[ORM\OneToMany(targetEntity:"Story", mappedBy:"User")]
+    private $stories; //array of stories
 
     /**
      * User constructor
@@ -45,9 +47,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * Get the value of id
      */
-    public function getId()
+    public function getUserId()
     {
-        return $this->userID;
+        return $this->userId;
     }
 
     /**

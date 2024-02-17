@@ -13,9 +13,19 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class OrderController extends AbstractController
 {
     #[Route(path:'/helloUser', name: 'helloUser')]
-    
-    public function  hello()
+    public function hello()
     {
         return $this->render('hello.html.twig');
+    }
+
+    #[Route(path:'/otherProfile', name: 'otherProfile')]
+    public function otherProfile()
+    {
+        return $this->render('otherProfile.html.twig');
+    }
+    #[Route(path:'/seeStory', name: 'seeStory')]
+    public function seeStory()
+    {
+        return $this->render('seeStory.html.twig');
     }
 }

@@ -37,14 +37,15 @@ class SignUpController extends AbstractController
             {
                 $error = "No empty fields<br>";
             }
-            if(strlen($formData['password']) < $passLen)
+            if(strlen($plainPassword) < $passLen)
             {
                 $error .= "Password must be at least " .$passLen ." characters long<br>";
             }
-            if($formData['password'] != $formData['password2'])
+            if($plainPassword != $password2)
             {
                 $error .= "Passwords do not match<br>";
             }
+
             $existingUsers = $entityManager->getRepository(User::class);
 
             $usernameTaken = $existingUsers->findOneBy(['username' => $username]);

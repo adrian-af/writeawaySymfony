@@ -14,19 +14,20 @@ use Doctrine\DBAL\Types\SmallIntType;
 #[ORM\Entity]
 #[ORM\Table(name: 'stories')]
 
-class Genre
+class Story
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
-    private $storiesID;
+    private $storyID;
 
-    /**User ID here */
-    /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="Stories")
-     * @ORM\JoinColumn(name="ID", referencedColumnName="ID")
-     */
-    private $userID;
+    #[ORM\Column(type: 'integer', name: 'userId')]
+    private $userid;
+
+    
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "stories")]
+    #[ORM\JoinColumn(name:"userId", referencedColumnName: "ID")]
+    private $user;
 
     #[ORM\Column(type: 'string', name: 'title')]
     private $storyTitle;
@@ -36,12 +37,14 @@ class Genre
      * @ORM\ManyToOne(targetEntity="Genre", inversedBy="Stories")
      * @ORM\JoinColumn(name="ID", referencedColumnName="ID")
      */
+    #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "Story")]
+    #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
     private $genreID;
 
     #[ORM\Column(type: 'string', name: 'text')]
     private $storyText;
 
-    #[ORM\Column(type: 'smaillint', name: 'public')]
+    #[ORM\Column(name: 'public')]
     private $public;
 
     #[ORM\Column(type: 'datetime', name: 'datetime')]
@@ -56,20 +59,27 @@ class Genre
     /**
      * Get the value of ID
      */ 
-    public function getID()
+    public function getStoryID()
     {
-        return $this->storiesID;
+        return $this->storyID;
+    }
+
+    public function setStoryID($storyID)
+    {
+        $this->storyID = $storyID;
+        return $this;
     }
 
     public function getUserID()
     {
         return $this->userID;
     }
+    
 
     /**
      * Get the value of title
      */
-    public function getTitle(): ?string
+    public function getStoryTitle(): ?string
     {
         return $this->storyTitle;
     }
@@ -79,19 +89,19 @@ class Genre
         return $this->genreID;
     }
 
-    public function setTitle(string $storyTitle): self
+    public function setStoryTitle(string $storyTitle): self
     {
         $this->storyTitle = $storyTitle;
 
         return $this;
     }
 
-    public function getText()
+    public function getStoryText()
     {
         return $this->storyText;
     }
 
-    public function setText(string $storyText): self
+    public function setStoryText(string $storyText): self
     {
         $this->storyText = $storyText;
 
@@ -118,6 +128,26 @@ class Genre
     public function setDatetime(DateTime $datetime): self
     {
         $this->datetime = $datetime;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of user
+     */ 
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set the value of user
+     *
+     * @return  self
+     */ 
+    public function setUser($user)
+    {
+        $this->user = $user;
 
         return $this;
     }
