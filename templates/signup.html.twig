@@ -1,23 +1,52 @@
 {# templates/signup.html.twig #}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
+{% endblock %}
 {% extends 'base.html.twig' %}  
 {% block body %}
-    <h1>Sign Up</h1>
-    {% if error %}
-        <p>{{ error|raw }}</p>
-    {% endif %}
-    <form action="{{ path('app_signup') }}" method="post">
-        <label for="email">Email:</label><br>
-        <input type="email" id="email" name="email"><br>
-
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username"><br>
-
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br>
-
-        <label for="password">Repeat your password:</label><br>
-        <input type="password" id="password2" name="password2"><br>
-
-        <button type="submit">Sign Up</button>
-    </form>
+<body>
+    <div class="rectangle-1">
+        <div><h1>Sign Up</h1></div>
+        {# {% if error %}
+            <p>{{ error|raw }}</p>
+        {% endif %} #}
+        <form action="{{ path('app_signup') }}" method="post">
+            <table>
+                <tr>
+                    {% if error %}
+                        <td colspan="2">
+                            <p style="color: red">{{ error|raw }}</p>
+                        </td>
+                    {% endif %}
+                </tr>
+                <tr>
+                    <td><label for="email" class="label">Email:</label><br></td>
+                    <td><input type="email" class="text-input" id="email" name="email"><br></td>
+                </tr>
+                <tr>
+                    <td><label for="username" class="label">Username:</label><br></td>
+                    <td><input type="text" class="text-input" id="username" name="username"><br></td>
+                </tr>
+                <tr>
+                    <td><label for="password" class="label">Password:</label><br></td>
+                    <td><input type="password" class="text-input" id="password" name="password"><br></td>
+                </tr>
+                <tr>
+                    <td><label for="password" class="label">Repeat your password:</label><br></td>
+                    <td><input type="password" class="text-input" id="password2" name="password2"><br></td>
+                </tr>
+                <tr>
+                    <td class="notes" colspan="2"><button class="button" type="submit">Sign Up</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="rectangle-2">
+        <div class="toSignIn">Already with us?</div>
+        <div>
+            <a href="LogIn.php">
+            <button class="button">Log in!!</button>
+        </div>
+    </div>
+</body>
 {% endblock %}

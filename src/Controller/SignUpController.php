@@ -65,6 +65,7 @@ class SignUpController extends AbstractController
                 $user = new User();
                 $user->setUsername($username);
                 $user->setEmail($email);
+                $user->setAbout("I am a user of WriteAway!");
 
                 // Encode the plain password
                 $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
@@ -88,7 +89,7 @@ class SignUpController extends AbstractController
                 {
                     $mailer->send($emailObject);
                 }
-                catch(Exception $e)
+                catch(\Exception $e)
                 {
                     $mensaje = "Error sending email" .$e->getMessage();
                     return $this->redirectToRoute('app_signup', ['error' => $mensaje]);
@@ -123,7 +124,7 @@ class SignUpController extends AbstractController
         $error = $request->query->get('error');
 
         // Process form submission
-        if ($request->isMethod('POST')) 
+        if ($request->isMethod('POST'))
         {
             $formData = $request->request->all();
             $codeUser = $formData['code'];
