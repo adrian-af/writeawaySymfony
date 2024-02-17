@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 use App\Entity\Story;
+use App\Entity\Genre;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -32,7 +33,7 @@ class LoginController extends AbstractController
 
             return $this->render('hello.html.twig', [ 
                 'user' => $user, //user entity you can use to show the properties
-                'stories' => $stories //array with 10 latest stories
+                'stories' => $stories, //array with 10 latest stories
             ]);
         }
         $error = $authenticationUtils->getLastAuthenticationError();
