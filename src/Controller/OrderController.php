@@ -35,11 +35,11 @@ class OrderController extends AbstractController
         return $this->render('seeStory.html.twig', ['genres' => $genres]);
     }
 
-    #[Route(path:'/header', name:'header')]
-    public function header(EntityManagerInterface $entityManager)
-    {
-        $genres= $entityManager->getRepository(Genre::class)->findAll();
-        return $this->render('header.html.twig');
-        //return $this->render('header.html.twig', array('genres'=>$genres));
-    }
+    // #[Route(path:'/header', name:'header')]
+    // public function header(EntityManagerInterface $entityManager)
+    // {
+    //     $genres= $entityManager->getRepository(Genre::class)->findAll();
+    //     return $this->render('header.html.twig');
+    //     //return $this->render('header.html.twig', array('genres'=>$genres));
+    // }
 }
