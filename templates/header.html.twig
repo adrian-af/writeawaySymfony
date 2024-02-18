@@ -1,3 +1,4 @@
+{# header.html.twig #}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 {% endblock %}
@@ -30,7 +31,7 @@
     </div>    
     <div id='headerright'>
         <div  class='dropdown'>
-            {% if userPfp is defined %}
+            {% if userPfp is not null %}
                 <img src="{{ userPfp }}" alt="User Picture" class="dropbtn" id="user">
             {% else %}
                 <img src="{{ asset('Images/user.png') }}" alt="User Picture" class="dropbtn" id="user">
