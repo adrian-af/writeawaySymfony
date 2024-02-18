@@ -12,18 +12,27 @@ class Genre
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
-    private $genreID;
+    private $ID;
 
     #[ORM\Column(type: 'string', name: 'name')]
     private $genre;
 
-    /**
-     * Genres constructor
-     */
+    #[ORM\OneToMany(targetEntity:"Story", mappedBy:"genreId")]
+    private $stories;
+    public function getStories()
+    {
+        return $this->stories;
+    }
+    public function setStories($stories)
+    {
+        $this->stories = $stories;
+    }
     public function __construct()
     {
-        $this->genre = new ArrayCollection();
+        $this->stories = new ArrayCollection();
+
     }
+
     /**
      * Get the value of ID
      */ 
@@ -40,9 +49,9 @@ class Genre
         return $this->genre;
     }
 
-    public function setID(int $genreID): self
+    public function setName(string $genre): self
     {
-        $this->ID = $genreID;
+        $this->name = $genre;
 
         return $this;
     }

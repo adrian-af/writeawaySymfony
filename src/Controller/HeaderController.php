@@ -33,7 +33,12 @@ class HeaderController extends AbstractController
     #[Route(path: '/genres/{genreId}', name: 'show_genre')]
     public function showGenres(EntityManagerInterface $entityManager, $genreID)
     {
-        $stories = $entityManager->find(Story::class, $genreID);
-        return $this->render('stories.html.twig', array('stories'=>$stories));
+        $repository = $entityManager->getRepository(Story::class);
+        $stories = $repository->findBy(['genreId' => $genreId]);
+        $genres = $entityManager->getRepository(Genre::class)->findAll();
+        return $this->render('stories.html.twig', [
+            'stories' => $stories,
+            'genres' => $genres
+        ]);
     }
 }

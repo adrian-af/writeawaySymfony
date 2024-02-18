@@ -114,7 +114,7 @@ class SignUpController extends AbstractController
     {
         $error = $request->query->get('error');
         // Render the error page template and pass the error message
-        return $this->redirectToRoute('app_login', ['error' => $error]);
+        return $this->render('app_login', ['error' => $error]);
     }
 
     #[Route('/checkemail', name: 'checkemail')]

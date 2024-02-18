@@ -80,7 +80,7 @@ class Story
         return $this->storyTitle;
     }
 
-    public function getGenreID()
+    public function getGenreID(): ?Genre
     {
         return $this->genreID;
     }
