@@ -1,7 +1,7 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 {% endblock %}
-{% block body %}
+{% block header %}
 <header>
     <div id='headerleft'>
         <div id='logo'>
@@ -12,9 +12,8 @@
             <div class="dropbtn">Genre</div>
             <div class="dropdown-content">
             {% if genres %}
-
                 {% for genre in genres %}
-                    <a id='$tempNum' href="{{ path('genre_page', {'id': genre.id}) }}">{{ genre.name }}</a>
+                    <a href="{{ path('show_genre', {'genreID':genre.ID}) }}">{{ genre.name }}</a>
                 {% endfor %}
             {% else %}
                 no genres found
@@ -31,7 +30,11 @@
     </div>    
     <div id='headerright'>
         <div  class='dropdown'>
-            <img src="" alt="User Picture" class="dropbtn" id="user">
+            {% if userPfp is defined %}
+                <img src="{{ userPfp }}" alt="User Picture" class="dropbtn" id="user">
+            {% else %}
+                <img src="{{ asset('Images/user.png') }}" alt="User Picture" class="dropbtn" id="user">
+            {% endif %}
             <div class="dropdown-content2">
                 <a href={#"{{ path('app_signup') }}"#}>Profile</a>
                 <a href="{{ path('app_logout') }}">Log out</a>
