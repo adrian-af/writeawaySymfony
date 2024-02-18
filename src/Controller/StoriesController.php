@@ -4,15 +4,17 @@
 
 namespace App\Controller;
 use App\Entity\Genre;
+use App\Entity\Story;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 
 #[IsGranted('ROLE_USER')]
-class OrderController extends AbstractController
+class StoriesController extends AbstractController
 {
     #[Route(path:'/helloUser', name: 'helloUser')]
     public function hello()
@@ -26,20 +28,21 @@ class OrderController extends AbstractController
         return $this->render('otherProfile.html.twig');
     }
     #[Route(path:'/seeStory', name: 'seeStory')]
-    public function seeStory(EntityManagerInterface $entityManager)
+    public function seeStory(EntityManagerInterface $entityManager, Request $request)
     {
         //get all the genres so the header shows all of them
         $repositoryGenres = $entityManager->getRepository(Genre::class);
         $genres = $repositoryGenres->findAll();
-        
-        return $this->render('seeStory.html.twig', ['genres' => $genres]);
-    }
-
-    #[Route(path:'/header', name:'header')]
-    public function header(EntityManagerInterface $entityManager)
-    {
-        $genres= $entityManager->getRepository(Genre::class)->findAll();
-        return $this->render('header.html.twig');
-        //return $this->render('header.html.twig', array('genres'=>$genres));
+        $story = null;
+        //get the current story
+        if($request->isMethod('GET'))
+        {
+            $id = $request->query->get('id');
+            if($id)
+            {
+                $story = $entityManager->find(Story::class, $id);
+            }
+        }
+        return $this->render('seeStory.html.twig', ['genres' => $genres, 'story' => $story]);
     }
 }
