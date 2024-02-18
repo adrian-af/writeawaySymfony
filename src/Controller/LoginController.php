@@ -24,7 +24,7 @@ class LoginController extends AbstractController
 
             //get all the stories from the db
             $repository = $entityManager->getRepository(Story::class);
-            $stories = $repository->findAll();
+            $stories = $repository->findBy([], ['datetime' => 'DESC']);;
             $stories = array_slice($stories, 0, 10);
 
 
