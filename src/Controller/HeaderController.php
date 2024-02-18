@@ -19,22 +19,26 @@ class HeaderController extends AbstractController
 {
     #[Route(path:'/header', name: 'genre_page')]
     
-    public function  genresList(EntityManagerInterface $entityManager): Response
+    public function  genresList(EntityManagerInterface $entityManager, AuthenticationUtils $authenticationUtils): Response
     {
+        $user = $this->getUser();
         $genres = $entityManager->getRepository(Genre::class)->findAll();
-       
-        return $this->render('header.html.twig', array('genres' => $genres));
-    }
-    public function pfp(EntityManagerInterface $entityManager): Response{
-        $userPfp = $entityManager->getRepository(User::class)->find('photo');
-        return $this->render('header.html.twig', array('userPfp' => $userPfp) );
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render('header.html.twig', [
+            'genres' => $genres,
+            'userPfp' => $base64Pfp
+        ]);
     }
 
-    #[Route(path: '/genres/{genreId}', name: 'show_genre')]
+    #[Route(path: '/genres/{genreID}', name: 'show_genre')]
     public function showGenres(EntityManagerInterface $entityManager, $genreID)
     {
         $repository = $entityManager->getRepository(Story::class);
-        $stories = $repository->findBy(['genreId' => $genreId]);
+        $stories = $repository->findBy(['genreID' => $genreID]);
         $genres = $entityManager->getRepository(Genre::class)->findAll();
         return $this->render('stories.html.twig', [
             'stories' => $stories,
