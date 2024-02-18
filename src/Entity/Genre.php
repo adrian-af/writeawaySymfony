@@ -40,4 +40,11 @@ class Genre
         return $this->genre;
     }
 
+    public function setID(int $genreID): self
+    {
+        $this->ID = $genreID;
+
+        return $this;
+    }
+
 }

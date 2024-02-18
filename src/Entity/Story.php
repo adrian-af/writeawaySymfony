@@ -33,11 +33,7 @@ class Story
     private $storyTitle;
 
     /**Genre ID here */
-    /**
-     * @ORM\ManyToOne(targetEntity="Genre", inversedBy="Stories")
-     * @ORM\JoinColumn(name="ID", referencedColumnName="ID")
-     */
-    #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "Story")]
+    #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "genres")]
     #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
     private $genreID;
 
@@ -87,6 +83,12 @@ class Story
     public function getGenreID()
     {
         return $this->genreID;
+    }
+    public function setGenreID(int $genreID)
+    {
+        $this->genreId = $genreID;
+
+        return $this;
     }
 
     public function setStoryTitle(string $storyTitle): self
