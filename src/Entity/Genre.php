@@ -12,7 +12,7 @@ class Genre
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
-    private $ID;
+    private $genreID;
 
     #[ORM\Column(type: 'string', name: 'name')]
     private $genre;
