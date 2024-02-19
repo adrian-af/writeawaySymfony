@@ -114,7 +114,7 @@ class SignUpController extends AbstractController
     {
         $error = $request->query->get('error');
         // Render the error page template and pass the error message
-        return $this->render('response.html.twig', ['error' => $error]);
+        return $this->render('app_login', ['error' => $error]);
     }
 
     #[Route('/checkemail', name: 'checkemail')]
@@ -137,7 +137,7 @@ class SignUpController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return $this->render('login.html.twig', ['error' => "Your account has been verified! Now login."]);
+                return $this->redirectTo('login.html.twig', ['error' => "Your account has been verified! Now login."]);
             }
         }
         return $this->render('checkemail.html.twig');

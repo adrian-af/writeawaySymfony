@@ -1,24 +1,33 @@
 {# hello.html.twig #}
+<<<<<<< HEAD
 {% extends 'header.html.twig' %}
 
+=======
+{# {% include 'header.html.twig' %} #}
+>>>>>>> 95d7f65b7df179d9b894d4b0257f3f4ba1242d59
 {% block body %}
-    {% if user %}
-        hello {{ user.username }}!
-    {% endif %}
-    {% if error is defined%}
-        <div id='error'>{{ error }}</div>
-    {% endif %}
-    {% if stories is defined%}
-        {% if stories|length > 0 %}
-            {% for story in stories %}
-                <div id='{{ story.storyID }}' class='container'>
-                   <div class='title'><a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a> by <a href="{{ path('otherProfile', {'userId': story.user.userId})}}"> {{ story.user.username }}</a></div>
-                    <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
-                    <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
-                </div>
-            {% endfor %}
+    <div class="primero">
+        <h1 style="align: center">
+            {% if user %}
+                hello {{ user.username }}!
+            {% else %}
+                Welcome to Write Away!
+            {% endif %}
+        </h1>
+        {% if error is defined%}
+            <div id='error'>{{ error }}</div>
         {% endif %}
-   
-    {% endif %}
+        {% if stories is defined%}
+            {% if stories|length > 0 %}
+                {% for story in stories %}
+                    <div id='{{ story.storyID }}' class='container'>
+                        <div class='title'><a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a> by <a href="{{ path('otherProfile', {'userId': story.user.userId})}}"> {{ story.user.username }}</a></div>
+                        <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
+                        <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
     
+        {% endif %}
+    </div>
 {% endblock %}

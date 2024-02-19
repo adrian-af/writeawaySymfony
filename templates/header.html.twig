@@ -1,7 +1,8 @@
+{# header.html.twig #}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 {% endblock %}
-{% block body %}
+{% block header %}
 <header>
     <div id='headerleft'>
         <div id='logo'>
@@ -12,9 +13,8 @@
             <div class="dropbtn">Genre</div>
             <div class="dropdown-content">
             {% if genres %}
-
                 {% for genre in genres %}
-                    <a id='$tempNum' href="{{ path('genre_page', {'id': genre.id}) }}">{{ genre.name }}</a>
+                    <a href="{{ path('show_genre', {'genreID':genre.ID}) }}">{{ genre.name }}</a>
                 {% endfor %}
             {% else %}
                 no genres found
