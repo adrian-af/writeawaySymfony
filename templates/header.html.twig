@@ -31,7 +31,11 @@
     </div>    
     <div id='headerright'>
         <div  class='dropdown'>
-            <img src="" alt="User Picture" class="dropbtn" id="user">
+            {% if userPfp is not null %}
+                <img src="{{ userPfp }}" alt="User Picture" class="dropbtn" id="user">
+            {% else %}
+                <img src="{{ asset('Images/user.png') }}" alt="User Picture" class="dropbtn" id="user">
+            {% endif %}
             <div class="dropdown-content2">
                 <a href={#"{{ path('app_signup') }}"#}>Profile</a>
                 <a href="{{ path('app_logout') }}">Log out</a>

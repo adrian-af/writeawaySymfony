@@ -20,10 +20,6 @@ class Story
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
     private $storyID;
-
-    #[ORM\Column(type: 'integer', name: 'userId')]
-    private $userid;
-
     
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "stories")]
     #[ORM\JoinColumn(name:"userId", referencedColumnName: "ID")]
@@ -31,15 +27,10 @@ class Story
 
     #[ORM\Column(type: 'string', name: 'title')]
     private $storyTitle;
-
-    /**Genre ID here */
-    /**
-     * @ORM\ManyToOne(targetEntity="Genre", inversedBy="Stories")
-     * @ORM\JoinColumn(name="ID", referencedColumnName="ID")
-     */
+    
     #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "Story")]
     #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
-    private $genreID;
+    private $genre;
 
     #[ORM\Column(type: 'string', name: 'text')]
     private $storyText;
@@ -70,9 +61,14 @@ class Story
         return $this;
     }
 
-    public function getUserID()
+    public function getUserid()
     {
         return $this->userID;
+    }
+    public function setUserid($userid)
+    {
+        $this->userid = $userid;
+        return $this;
     }
     
 
