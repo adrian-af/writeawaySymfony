@@ -3,8 +3,8 @@
 
 {% block body %}
     {% if story %}
-        <div id='{{ story.storyID }}' class='container'>
-            <div class='title'><a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a> by <a href="{{ path('otherProfile', {'userId': story.user.userId})}}"> {{ story.user.username }}</a></div>
+        <div id='{{ story.storyID }}' class='primero'>
+            <h2>{{ story.storyTitle }} by {{ story.user.username }}</div>
             <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
             <div class='content'>{{ story.storyText|raw }}</div>
         </div>

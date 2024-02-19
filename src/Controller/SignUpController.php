@@ -98,7 +98,7 @@ class SignUpController extends AbstractController
                 //session
                 $session->set('username', $username);
                 $session->set('code', $confirmationCode);
-                $session->set('id', $user->getId());
+                $session->set('id', $user->getUserId());
 
                 // Redirect to login page after successful signup
                 return $this->redirectToRoute('checkemail');
@@ -137,7 +137,7 @@ class SignUpController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return $this->redirectTo('login.html.twig', ['error' => "Your account has been verified! Now login."]);
+                return $this->render('login.html.twig', ['error' => "Your account has been verified! Now login."]);
             }
         }
         return $this->render('checkemail.html.twig');

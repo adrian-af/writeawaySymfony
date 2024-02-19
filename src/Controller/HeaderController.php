@@ -18,30 +18,12 @@ use App\Entity\Story;
 class HeaderController extends AbstractController
 {
     #[Route(path:'/header', name: 'genre_page')]
-<<<<<<< HEAD
-    public function  genresList(EntityManagerInterface $entityManager): Response
-=======
     
     public function  genresList(EntityManagerInterface $entityManager, AuthenticationUtils $authenticationUtils): Response
->>>>>>> 95d7f65b7df179d9b894d4b0257f3f4ba1242d59
     {
         $user = $this->getUser();
         $genres = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-<<<<<<< HEAD
-        if($userPfp)
-        {
-            $base64Pfp = "data:image/jpg;charset=utf8;base64," .base64_encode(stream_get_contents($userPfp));
-        }
-        else
-        {
-            $base64Pfp = null;
-        }
-        return $this->render('header.html.twig', [
-            'genres' => $genres,
-            'userPfp' => $base64Pfp,
-            ]);
-=======
+        $userPfp = $user->getPhoto();
         $base64Pfp = null;
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
@@ -50,7 +32,6 @@ class HeaderController extends AbstractController
             'genres' => $genres,
             'userPfp' => $base64Pfp
         ]);
->>>>>>> 95d7f65b7df179d9b894d4b0257f3f4ba1242d59
     }
 
     #[Route(path: '/genres/{genreID}', name: 'show_genre')]

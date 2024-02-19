@@ -27,14 +27,8 @@ class Story
 
     #[ORM\Column(type: 'string', name: 'title')]
     private $storyTitle;
-<<<<<<< HEAD
     
     #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "Story")]
-=======
-
-    /**Genre ID here */
-    #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "genres")]
->>>>>>> 95d7f65b7df179d9b894d4b0257f3f4ba1242d59
     #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
     private $genre;
 
