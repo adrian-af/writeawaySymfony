@@ -36,9 +36,21 @@ class StoriesController extends AbstractController
     }
 
     #[Route(path:'/otherProfile', name: 'otherProfile')]
-    public function otherProfile()
+    public function otherProfile(EntityManagerInterface $entityManager)
     {
-        return $this->render('otherProfile.html.twig');
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render('otherProfile.html.twig',[
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp
+        ]);
     }
     #[Route(path:'/seeStory', name: 'seeStory')]
     public function seeStory(EntityManagerInterface $entityManager, Request $request)
@@ -56,6 +68,19 @@ class StoriesController extends AbstractController
                 $story = $entityManager->find(Story::class, $id);
             }
         }
-        return $this->render('seeStory.html.twig', ['genres' => $genres, 'story' => $story]);
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render('seeStory.html.twig', [
+            'story' => $story,
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp
+        ]);
     }
 }
