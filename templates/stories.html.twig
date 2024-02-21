@@ -4,6 +4,8 @@
     <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
 {% endblock %}
 {% block body %}
+    <div class="primero">
+        <h1>{{ genre.name }}</h1>
     {% if stories is not empty %}
         {% for story in stories %}
             <div id='{{ story.storyID }}' class='container'>
@@ -15,5 +17,9 @@
                 <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
             </div>
         {% endfor %}
+    {% else %}
+        <h1>There are no stories for this genre!</h1>
+        <a href="{#{{ path() }}#}"><button class="button">Start writing!</button></a>
     {% endif %}
+    </div>
 {% endblock %}
