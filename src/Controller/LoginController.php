@@ -24,18 +24,17 @@ class LoginController extends AbstractController
 
             //get all the stories from the db
             $repository = $entityManager->getRepository(Story::class);
-            $stories = $repository->findBy([], ['datetime' => 'DESC']);;
-            $stories = array_slice($stories, 0, 10);
-
+            $stories = $repository->findBy([], ['datetime' => 'DESC']);
 
             //find the 10 latest stories in the repository
-            //$stories = $repository->findBy([], ['datetime' => 'DESC'], 10);
+            $stories = array_slice($stories, 0, 10);
 
             return $this->render('hello.html.twig', [ 
                 'user' => $user, //user entity you can use to show the properties
                 'stories' => $stories, //array with 10 latest stories
             ]);
         }
+        
         $error = $authenticationUtils->getLastAuthenticationError();
         if($error)
         {

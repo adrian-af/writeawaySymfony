@@ -45,4 +45,12 @@ class StoriesController extends AbstractController
         }
         return $this->render('seeStory.html.twig', ['genres' => $genres, 'story' => $story]);
     }
+
+    #[Route(path:'/write', name: 'write')]
+    public function write(EntityManagerInterface $entityManager)
+    {
+        $genres = $entityManager->getRepository(Genre::class)->findAll();
+        return $this->render('write.html.twig', ['genres' => $genres]);
+    }
+
 }

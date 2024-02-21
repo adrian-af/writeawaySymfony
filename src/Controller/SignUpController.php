@@ -134,7 +134,7 @@ class SignUpController extends AbstractController
             {
                 $user = $entityManager->find(User::class, $idUser);
                 $user->setConfCod('0');
-                $entityManager->persist($user);
+                $entityManager->persist($user); //only do persist when the entity is new
                 $entityManager->flush();
 
                 return $this->render('login.html.twig', ['error' => "Your account has been verified! Now login."]);

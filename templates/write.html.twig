@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    {% if error %}
+    {% if error is defined %}
         <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
-     <form action="write.php" method='POST' class="writeStory">
+     <form action="{{ path('write') }}" method='POST' class="writeStory">
         <div class="content">
             <p><label for="title">Title: </label></p>
             <input type="text" id="title" name="title" class="input"></input>
@@ -12,7 +12,14 @@
         <div class="content">
             <p><label for="genre">Genre: </label></p>
             <select id="genre" name="genre">
-            
+            {% if genres %}
+                {% for genre in genres %}
+                    <option value='{{ genre.ID }}' name='genre'>{{ genre.name }}</option>
+                    <a href="{{ path('show_genre', {'genreID':genre.ID}) }}">{{ genre.name }}</a>
+                {% endfor %}
+            {% else %}
+                no genres found
+            {% endif %}
             </select>
         </div>
         <div class="content">
