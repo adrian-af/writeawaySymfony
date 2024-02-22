@@ -24,15 +24,19 @@ class LoginController extends AbstractController
 
             //get all the stories from the db
             $repository = $entityManager->getRepository(Story::class);
-            $stories = $repository->findBy([], ['datetime' => 'DESC']);
-
-            //find the 10 latest stories in the repository
+            $stories = $repository->findBy([], ['datetime' => 'DESC']);;
             $stories = array_slice($stories, 0, 10);
-
-            return $this->render('hello.html.twig', [ 
-                'user' => $user, //user entity you can use to show the properties
-                'stories' => $stories, //array with 10 latest stories
-            ]);
+            //find the 10 latest stories in the repository
+            //$stories = $repository->findBy([], ['datetime' => 'DESC'], 10);
+            
+            //For the header
+            $user = $this->getUser();
+            $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+            $userPfp = $user?->getPhoto();
+            $base64Pfp = null;
+            if ($userPfp !== null) {
+                $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+            }
         }
         
         $error = $authenticationUtils->getLastAuthenticationError();
