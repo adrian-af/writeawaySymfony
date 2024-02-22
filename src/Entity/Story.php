@@ -30,7 +30,7 @@ class Story
     
     #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "Story")]
     #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
-    private $genre;
+    private $genreID;
 
     #[ORM\Column(type: 'string', name: 'text')]
     private $storyText;

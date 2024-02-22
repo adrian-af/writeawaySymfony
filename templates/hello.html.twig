@@ -1,7 +1,11 @@
 {# hello.html.twig #}
-{# {% include 'header.html.twig' %} #}
-
+{#  #}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+{% endblock %}
 {% block body %}
+    {# {% for genre in genres %} #}
+    {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
     <div class="primero">
         <h1 style="align: center">
             {% if user %}

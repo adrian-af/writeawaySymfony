@@ -23,7 +23,7 @@ class HeaderController extends AbstractController
     {
         $user = $this->getUser();
         $genres = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user->getPhoto();
+        $userPfp = $user?->getPhoto();
         $base64Pfp = null;
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
@@ -39,10 +39,19 @@ class HeaderController extends AbstractController
     {
         $repository = $entityManager->getRepository(Story::class);
         $stories = $repository->findBy(['genreID' => $genreID]);
-        $genres = $entityManager->getRepository(Genre::class)->findAll();
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
         return $this->render('stories.html.twig', [
             'stories' => $stories,
-            'genres' => $genres
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp
         ]);
     }
 }

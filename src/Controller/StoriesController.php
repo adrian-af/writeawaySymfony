@@ -5,6 +5,7 @@
 namespace App\Controller;
 use App\Entity\Genre;
 use App\Entity\Story;
+use App\Entity\User;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,15 +18,39 @@ use Doctrine\ORM\EntityManagerInterface;
 class StoriesController extends AbstractController
 {
     #[Route(path:'/helloUser', name: 'helloUser')]
-    public function hello()
-    {
-        return $this->render('hello.html.twig');
+    public function hello(EntityManagerInterface $entityManager)
+    {   
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render('hello.html.twig', [
+            //For header
+            'genres' => $genresHeader,
+            'userPfp' => $base64Pfp
+        ]);
     }
 
     #[Route(path:'/otherProfile', name: 'otherProfile')]
-    public function otherProfile()
+    public function otherProfile(EntityManagerInterface $entityManager)
     {
-        return $this->render('otherProfile.html.twig');
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render('otherProfile.html.twig',[
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp
+        ]);
     }
     #[Route(path:'/seeStory', name: 'seeStory')]
     public function seeStory(EntityManagerInterface $entityManager, Request $request)
@@ -43,7 +68,20 @@ class StoriesController extends AbstractController
                 $story = $entityManager->find(Story::class, $id);
             }
         }
-        return $this->render('seeStory.html.twig', ['genres' => $genres, 'story' => $story]);
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render('seeStory.html.twig', [
+            'story' => $story,
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp
+        ]);
     }
 
     #[Route(path:'/write', name: 'write')]

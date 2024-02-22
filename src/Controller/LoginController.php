@@ -37,6 +37,14 @@ class LoginController extends AbstractController
             if ($userPfp !== null) {
                 $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
             }
+
+            return $this->render('hello.html.twig', [ 
+                'user' => $user, //user entity you can use to show the properties
+                'stories' => $stories, //array with 10 latest stories
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp
+            ]);
         }
         
         $error = $authenticationUtils->getLastAuthenticationError();
