@@ -182,9 +182,10 @@ class StoriesController extends AbstractController
         ]);
     }
 
-    #[Route(path:'/editStory', name: 'editStory')]
-    public function editStory(EntityManagerInterface $entityManager)
+    #[Route(path:'/editStory/{id}', name: 'editStory')]
+    public function editStory(EntityManagerInterface $entityManager, $id)
     {
+        $story = $entityManager->find(Story::class, $id);
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
@@ -193,12 +194,12 @@ class StoriesController extends AbstractController
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
-        dump($user);
-        return $this->render('editStor.html.twig',[
+        return $this->render('editStory.html.twig',[
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
-            'user' => $user
+            'user' => $user,
+            'story' => $story
         ]);
     }
 }

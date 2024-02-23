@@ -39,7 +39,8 @@
                     <div id='{{ story.storyID }}' class='container'>
                         <div class='title'>
                             <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a> - 
-                            <a href="{{ path('editStory', {'storyId': story.storyID})}}"> Edit</a>
+                            <a href="{{ path('editStory', {'id': story.storyID})}}"> Edit</a>
+                            
                             <a class='delete' onclick='confirmDelete(this.id)' id='{{ story.storyID }}'>Delete</a>
                         </div>
                         <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>

@@ -1,0 +1,59 @@
+{# templates/editStory.html.twig #}
+{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block body %}
+    {% if response is defined %}
+        <div>{{ response }}</div>
+    {% endif %}
+
+    {% if story %}
+
+     <form action="{{ path('editStory', {'id': story.storyID})}}" method='POST'>
+        <div class="content">
+            <p><label for="title">Title: </label></p>
+            <input type="text" id="title" name="title" class="input" value="{{ story.storyTitle }}"></input>
+        </div>
+        <div class="content">
+            <p><label for="genre">Genre: </label></p>
+            <select id="genre" name="genre">
+            {% if genres %}
+                {% for genre in genres %}
+                    {% if genre.ID == story.genre.ID %}
+                        <option value='{{ genre.ID }}' name='genre' selected>{{ genre.name }}</option>
+                    {% else %}
+                        <option value='{{ genre.ID }}' name='genre'>{{ genre.name }}</option>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                no genres found
+            {% endif %}
+            </select>
+        </div>
+        <div class="content">
+            {% if story.public == 1 %}
+                <div>
+                    <input type="radio" id="public" name="public" value="0">
+                    <label for="public">Private</label>
+                </div>
+                <div>
+                    <input type="radio" id="public" name="public" value="1" checked>
+                    <label for="public">Public</label>
+                </div>
+            {% else %}
+                <div>
+                    <input type="radio" id="public" name="public" value="0" checked>
+                    <label for="public">Private</label>
+                </div>
+                <div>
+                    <input type="radio" id="public" name="public" value="1">
+                    <label for="public">Public</label>
+                </div>
+            {% endif %}
+        </div>
+        <div class="content">
+            <p><label for="story">Story:</label></p>
+            <textarea id="story" name="story">{{ story.storyText }}</textarea>
+        </div>
+        <button class="button">Submit</button>
+    </form>
+    {% endif %}
+{% endblock %}
