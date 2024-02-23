@@ -39,6 +39,7 @@ class HeaderController extends AbstractController
     {
         $repository = $entityManager->getRepository(Story::class);
         $stories = $repository->findBy(['genreID' => $genreID]);
+        $genre = $entityManager->find(Genre::class, $genreID);
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
@@ -49,9 +50,22 @@ class HeaderController extends AbstractController
         }
         return $this->render('stories.html.twig', [
             'stories' => $stories,
+            'genre' => $genre,
             //For the header
             'genres' => $genresHeader,
-            'userPfp'=>$userPfp
+            'userPfp'=>$userPfp,
         ]);
+    }
+
+    #[Route(path: "/ownProfile", name: "ownProfile")]
+    public function profile(EntityManagerInterface $entityManager)
+    {
+        return $this->render("ownProfile.html.twig");
+    }
+
+    #[Route(path: "/about", name: "about")]
+    public function about(EntityManagerInterface $entityManager)
+    {
+        return $this->render("about.html.twig");
     }
 }

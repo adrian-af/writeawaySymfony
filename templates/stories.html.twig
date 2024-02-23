@@ -20,7 +20,7 @@
             {% endfor %}
         {% else %}
             <h1>There are no stories for this genre!</h1>
-            <a href="{#{{ path() }}#}"><button class="button">Start writing!</button></a>
+            <form action="{{ path('write') }}" method='POST'><button>Start writing!</button></form>
         {% endif %}
     {% endif %}
     </div>

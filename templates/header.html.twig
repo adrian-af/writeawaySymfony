@@ -1,4 +1,4 @@
-{# header.html.twig #}
+{# templates/header.html.twig #}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 {% endblock %}
@@ -44,9 +44,9 @@
                 <img src="{{ asset('Images/user.png') }}" alt="User Picture" class="dropbtn" id="user">
             {% endif %}
             <div class="dropdown-content2">
-                <a href={#"{{ path('app_signup') }}"#}>Profile</a>
+                <a href="{{ path('ownProfile') }}">Profile</a>
                 <a href="{{ path('app_logout') }}">Log out</a>
-                <a href={#"{{ path('app-login') }}"#}>About us</a>
+                <a href="{{ path('about') }}">About us</a>
             </div>
         </div>
     </div>
