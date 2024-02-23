@@ -35,10 +35,13 @@ class StoriesController extends AbstractController
         ]);
     }
 
-    #[Route(path:'/otherProfile', name: 'otherProfile')]
-    public function otherProfile(EntityManagerInterface $entityManager)
+    #[Route(path:'/otherProfile/{id}', name: 'otherProfile')]
+    public function otherProfile(EntityManagerInterface $entityManager, $id)
     {
+        //the user you clicked on
+        $userP = $entityManager->find(User::class, $id);
         //For the header
+        //the user that's logged in
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         $userPfp = $user?->getPhoto();
@@ -49,7 +52,8 @@ class StoriesController extends AbstractController
         return $this->render('otherProfile.html.twig',[
             //For the header
             'genres' => $genresHeader,
-            'userPfp'=>$userPfp
+            'userPfp'=>$userPfp,
+            'user' => $userP
         ]);
     }
     #[Route(path:'/seeStory', name: 'seeStory')]
@@ -96,12 +100,15 @@ class StoriesController extends AbstractController
         }
         if($request->request->all())
         {
+            //get the submitted data
             $formData = $request->request->all();
             $title = $formData['title'];
             $genreId = (int) $formData['genre'];
             $public = (int) $formData['public'];
             $story = $formData['story'];
+            //create the entity
             $storyEntity = new Story();
+            //assign the values to the entity's attributes
             $storyEntity->setStoryTitle($title);
             foreach($genres as $genre)
             {
@@ -114,15 +121,18 @@ class StoriesController extends AbstractController
             $storyEntity->setPublic($public);
             $storyEntity->setStoryText($story);
             $storyEntity->setUser($user);
+            //set the current datetime as the datetime attribute
             $storyEntity->setDatetime(new \DateTime());
-            dump($genreEntity);
+            
             try
             {
+                //"save" the entity to the ORM
                 $entityManager->persist($storyEntity);
+                //commit the changes to the DB
                 $entityManager->flush($storyEntity);
                 $response = "Story created successfully";
             }
-            catch(\Exception $e)
+            catch(\Exception $e) //if the flush fails
             {
                 $response = "An error occurred while trying to create your story: " .$e->getMessage();
             } 
@@ -149,11 +159,13 @@ class StoriesController extends AbstractController
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
+        //deletion of stories is done from within the user profile page
         if ($request->isMethod('GET')) 
         {
             if($request->query->get('id') != null)
             {
                 $deleteid = $request->query->get('deleteid');
+                //find the story by ID
                 $story = $entityManager->find(Story::class,  $deleteid);
                 try
                 {
@@ -183,9 +195,8 @@ class StoriesController extends AbstractController
     }
 
     #[Route(path:'/editStory/{id}', name: 'editStory')]
-    public function editStory(EntityManagerInterface $entityManager, $id)
+    public function editStory(EntityManagerInterface $entityManager, $id, Request $request)
     {
-        $story = $entityManager->find(Story::class, $id);
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
@@ -194,12 +205,96 @@ class StoriesController extends AbstractController
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
+        
+        //handle the edit if it has been submitted
+        if($request->request->all())
+        {
+            //find the story by the passed ID
+            $story = $entityManager->find(Story::class, $id);
+            $formData = $request->request->all();
+            $title = $formData['title'];
+            $genreId = (int) $formData['genre'];
+            $public = (int) $formData['public'];
+            $storyText = $formData['story'];
+            //set the new values
+            $story->setStoryTitle($title);
+            foreach($genresHeader as $genre)
+            {
+                if($genre->getID() == $genreId)
+                {
+                    $genreEntity = $genre;
+                }
+            }
+            $story->setGenre($genreEntity);
+            $story->setPublic($public);
+            $story->setStoryText($storyText);
+
+            try
+            {
+                //save to DB
+                $entityManager->flush($story);
+                $response = "Story edited successfully";
+            }
+            catch(\Exception $e) //in case the flush fails
+            {
+                $response = "An error occurred while trying to edit your story: " .$e->getMessage();
+            } 
+            $story = $entityManager->find(Story::class, $id);
+            return $this->render('write.html.twig', [
+                'genres' => $genresHeader,
+                'userPfp' => $userPfp,
+                'response' => $response,
+                'user' => $user,
+                'story' => $story
+            ]);
+        }
         return $this->render('editStory.html.twig',[
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
             'user' => $user,
             'story' => $story
+        ]);
+    }
+    #[Route(path:'/search', name: 'search')]
+    public function searc(EntityManagerInterface $entityManager,  Request $request)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        //get the term that's been searched from POST and handle it
+        if ($request->isMethod('POST')) 
+        {
+            $formData = $request->request->all();
+            $term = $formData['usersearched'];
+            $existingUsers = $entityManager->getRepository(User::class)->findAll();
+            //get only the users that match the search
+            $matchingUsers = [];
+            foreach($existingUsers as $currentuser)
+            {
+                $found = stripos($currentuser->getUsername(), $term); 
+                if($found !== false)
+                {
+                    array_push($matchingUsers, $currentuser);
+                }
+            }
+            dump($matchingUsers);
+            return $this->render('userSearch.html.twig', [
+                'genres' => $genresHeader,
+                'userPfp' => $userPfp,
+                'users' => $matchingUsers,
+            ]);
+
+        }
+        return $this->render('userSearch.html.twig',[
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp,
         ]);
     }
 }

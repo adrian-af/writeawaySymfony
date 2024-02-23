@@ -9,6 +9,9 @@ framework:
     #esi: true
     #fragments: true
 
+    profiler:
+        enabled: true
+
 when@test:
     framework:
         test: true

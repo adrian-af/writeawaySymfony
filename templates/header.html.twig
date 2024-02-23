@@ -30,7 +30,7 @@
             <form action="{{ path('write') }}" method='POST'><button>Start writing</button></form>
         </div>
         <div id='search'>
-            <form action="profilesearch.php" method="GET">
+            <form action="{{ path('search') }}" method="POST">
                 <input type="text" placeholder="Search users..." name="usersearched">
                 <button><img src="{{ asset('Images/search.png') }}" alt="Search button" class="icon"></button>
             </form>

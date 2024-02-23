@@ -1,0 +1,21 @@
+{# templates/userSearch.html.twig #}
+{% include 'header.html.twig'  with {'genres':genres, 'userPfp': userPfp} %}
+{% block body %}
+    <div class='primero'>
+        {% if users and users|length > 0%}
+            {% for user in users %}
+                <div class="userBox" id="{{ user.userId }}">
+                    <img>
+                    <div>
+                        <div class="username">
+                            <a href="{{ path('otherProfile', {'id': user.userId})}}">{{ user.username }}</a>
+                        </div>
+                        <div class="about">
+                            {{  user.about }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+{% endblock %}
