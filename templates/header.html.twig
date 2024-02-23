@@ -8,7 +8,12 @@
         <div id='logo'>
             <img class="logo" src="{{ asset('Images/logotipo.png') }}" alt="Logo image">
         </div>
-        <div id='homepage'><a href={#"{{ path( 'app_homepage') }}"#}>Home</a></div>
+        <div id="homepage">
+            <form action="{{ path('app_login') }}" method='POST'>
+                <button>Home</button>
+                <input type='hidden' name='_username' value=""/>
+            </form>
+        </div>
         <div class="dropdown">
             <div class="dropbtn">Genre</div>
             <div class="dropdown-content">
@@ -21,7 +26,9 @@
             {% endif %}
             </div>
         </div>
-        <div id="homepage"><a href={#"{{ path('app_writing') }}"#}>Start Writing</a></div>
+        <div id="write">
+            <form action="{{ path('write') }}" method='POST'><button>Start writing</button></form>
+        </div>
         <div id='search'>
             <form action="profilesearch.php" method="GET">
                 <input type="text" placeholder="Search users..." name="usersearched">
