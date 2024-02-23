@@ -19,19 +19,25 @@
         <div>
             <h2>{{ user.username }}'s stories:</h2>
             {% if user.stories is defined and user.stories|length > 0 %}
+                {% set storiesNumber = 0 %}
                 {% for story in user.stories %}
-                    <div id='{{ story.storyID }}' class='container'>
-                        <div class='title'>
-                            <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a>
+                    {% if story.public == 1 %}
+                        <div id='{{ story.storyID }}' class='container'>
+                            <div class='title'>
+                                <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a>
+                            </div>
+                            <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
+                            <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
                         </div>
-                        <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
-                        <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
-                    </div>
+                        {% set storiesNumber = storiesNumber + 1 %}
+                    {% endif %}
                 {% endfor %}
             {% else %}
-                {{ user.username }} has not posted any stories yet.    
+                {% set storiesNumber = 0 %}
             {% endif %}
-            
+            {% if storiesNumber == 0 %}    
+                {{ user.username }} has not posted any public stories yet.    
+            {% endif %}
         </div>
         <div id="alert"></div>
     </div>

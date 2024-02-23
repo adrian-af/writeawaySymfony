@@ -15,7 +15,7 @@ class Genre
     private $genreID;
 
     #[ORM\Column(type: 'string', name: 'name')]
-    private $genre;
+    private $name;
 
     #[ORM\OneToMany(targetEntity:"Story", mappedBy:"genre")]
     private $stories;
@@ -47,12 +47,12 @@ class Genre
      */ 
     public function getName()
     {
-        return $this->genre;
+        return $this->name;
     }
 
-    public function setName(string $genre): self
+    public function setName(string $name): self
     {
-        $this->name = $genre;
+        $this->name = $name;
 
         return $this;
     }
