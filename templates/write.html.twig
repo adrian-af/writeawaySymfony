@@ -1,8 +1,8 @@
 {# templates/write.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
-    {% if error is defined %}
-        <div>{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% if response is defined %}
+        <div>{{ response }}</div>
     {% endif %}
 
      <form action="{{ path('write') }}" method='POST' class="writeStory">
@@ -16,7 +16,6 @@
             {% if genres %}
                 {% for genre in genres %}
                     <option value='{{ genre.ID }}' name='genre'>{{ genre.name }}</option>
-                    <a href="{{ path('show_genre', {'genreID':genre.ID}) }}">{{ genre.name }}</a>
                 {% endfor %}
             {% else %}
                 no genres found
@@ -25,12 +24,12 @@
         </div>
         <div class="content">
             <div>
-                <input type="radio" id="private" name="public" value="0" checked>
-                <label for="private">Private</label>
+                <input type="radio" id="public" name="public" value="0" checked>
+                <label for="public">Private</label>
             </div>
             <div>
                 <input type="radio" id="public" name="public" value="1">
-                <label for="private">Public</label>
+                <label for="public">Public</label>
             </div>
         </div>
         <div class="content">

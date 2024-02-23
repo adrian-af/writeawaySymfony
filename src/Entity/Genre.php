@@ -17,8 +17,9 @@ class Genre
     #[ORM\Column(type: 'string', name: 'name')]
     private $genre;
 
-    #[ORM\OneToMany(targetEntity:"Story", mappedBy:"genreId")]
+    #[ORM\OneToMany(targetEntity:"Story", mappedBy:"genre")]
     private $stories;
+
     public function getStories()
     {
         return $this->stories;

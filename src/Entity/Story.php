@@ -30,7 +30,7 @@ class Story
     
     #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "Story")]
     #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
-    private $genreID;
+    private $genre;
 
     #[ORM\Column(type: 'string', name: 'text')]
     private $storyText;
@@ -61,17 +61,6 @@ class Story
         return $this;
     }
 
-    public function getUserid()
-    {
-        return $this->userID;
-    }
-    public function setUserid($userid)
-    {
-        $this->userid = $userid;
-        return $this;
-    }
-    
-
     /**
      * Get the value of title
      */
@@ -80,13 +69,13 @@ class Story
         return $this->storyTitle;
     }
 
-    public function getGenreID(): ?Genre
+    public function getGenre(): ?Genre
     {
-        return $this->genreID;
+        return $this->genre;
     }
-    public function setGenreID(int $genreID)
+    public function setGenre(Genre $genre)
     {
-        $this->genreId = $genreID;
+        $this->genre = $genre;
 
         return $this;
     }
@@ -115,7 +104,7 @@ class Story
         return $this->public;
     }
 
-    public function setPublic(SmallIntType $public): self
+    public function setPublic($public): self
     {
         $this->public = $public;
 

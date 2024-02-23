@@ -38,8 +38,8 @@ class HeaderController extends AbstractController
     public function showGenres(EntityManagerInterface $entityManager, $genreID)
     {
         $repository = $entityManager->getRepository(Story::class);
-        $stories = $repository->findBy(['genreID' => $genreID]);
         $genre = $entityManager->find(Genre::class, $genreID);
+        $stories = $repository->findBy(['genre' => $genre]);
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();

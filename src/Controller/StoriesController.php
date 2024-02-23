@@ -85,14 +85,52 @@ class StoriesController extends AbstractController
     }
 
     #[Route(path:'/write', name: 'write')]
-    public function write(EntityManagerInterface $entityManager)
+    public function write(EntityManagerInterface $entityManager, Request $request)
     {
-        $genres = $entityManager->getRepository(Genre::class)->findAll();
         $user = $this->getUser();
+        $genres = $entityManager->getRepository(Genre::class)->findAll();
         $userPfp = $user?->getPhoto();
         $base64Pfp = null;
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        if($request->request->all())
+        {
+            $formData = $request->request->all();
+            $title = $formData['title'];
+            $genreId = (int) $formData['genre'];
+            $public = (int) $formData['public'];
+            $story = $formData['story'];
+            $storyEntity = new Story();
+            $storyEntity->setStoryTitle($title);
+            foreach($genres as $genre)
+            {
+                if($genre->getID() == $genreId)
+                {
+                    $genreEntity = $genre;
+                }
+            }
+            $storyEntity->setGenre($genreEntity);
+            $storyEntity->setPublic($public);
+            $storyEntity->setStoryText($story);
+            $storyEntity->setUser($user);
+            $storyEntity->setDatetime(new \DateTime());
+            dump($genreEntity);
+            try
+            {
+                $entityManager->persist($storyEntity);
+                $entityManager->flush($storyEntity);
+                $response = "Story created successfully";
+            }
+            catch(\Exception $e)
+            {
+                $response = "An error occurred while trying to create your story: " .$e->getMessage();
+            } 
+            return $this->render('write.html.twig', [
+                'genres' => $genres,
+                'userPfp' => $userPfp,
+                'response' => $response
+            ]);
         }
         return $this->render('write.html.twig', [
             'genres' => $genres,
