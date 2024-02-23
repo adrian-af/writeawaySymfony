@@ -22,12 +22,11 @@ class LoginController extends AbstractController
             //get the user entity that is logged in through symfony 
             $user = $this->getUser();
 
-            //get all the stories from the db
+            //get all the public stories from the db ordered by date
             $repository = $entityManager->getRepository(Story::class);
-            $stories = $repository->findBy([], ['datetime' => 'DESC']);;
+            $stories = $repository->findBy(['public' => 1], ['datetime' => 'DESC']);
+            //select the 10 latest stories
             $stories = array_slice($stories, 0, 10);
-            //find the 10 latest stories in the repository
-            //$stories = $repository->findBy([], ['datetime' => 'DESC'], 10);
             
             //For the header
             $user = $this->getUser();

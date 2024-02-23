@@ -88,7 +88,16 @@ class StoriesController extends AbstractController
     public function write(EntityManagerInterface $entityManager)
     {
         $genres = $entityManager->getRepository(Genre::class)->findAll();
-        return $this->render('write.html.twig', ['genres' => $genres]);
+        $user = $this->getUser();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render('write.html.twig', [
+            'genres' => $genres,
+            'userPfp' => $userPfp
+        ]);
     }
 
 }
