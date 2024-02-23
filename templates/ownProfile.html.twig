@@ -1,1 +1,56 @@
 {# templates/ownProfile.html.twig #}
+{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block body %}
+    <script>
+        function confirmDelete(id)
+        {
+            let confirmation = "Are you sure you want to delete the story?";
+            if(confirm(confirmation) == true)
+            {
+                var url = "{{ path('ownProfile', {'deleteid': 'PLACEHOLDER'}) }}";
+                url = url.replace('PLACEHOLDER', id);
+                window.location.replace(url);
+            }
+        }
+    </script>
+    {% if deleted is defined%}
+        {{ deleted }}
+    {% endif %}
+    <div class="primero">
+        <div id='usersite'>
+            <div id='pfp'>
+                {% if userPfp is not null %}
+                    <img src="{{ userPfp }}" alt="User Picture" style='width: 100px' id="user">
+                {% else %}
+                    <img src="{{ asset('Images/user.png') }}" alt="User Picture" style='width: 100px' id="user">
+                {% endif %}
+            </div>
+            <div id='about'>
+                <p id='buser'>About {{ user.username }}:
+                <img src="./Imagenes/edit.png" alt="edit button" style="width: 20px" onclick="window.location='./changeBio.html'"></p>
+                <p class='text'><pre>{{ user.about }}</pre></p>
+                
+            </div>
+        </div>
+        <div>
+            <h2>{{ user.username }}'s stories:</h2>
+            {% if user.stories is defined and user.stories|length > 0 %}
+                {% for story in user.stories %}
+                    <div id='{{ story.storyID }}' class='container'>
+                        <div class='title'>
+                            <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a> - 
+                            <a href="{{ path('editStory', {'storyId': story.storyID})}}"> Edit</a>
+                            <a class='delete' onclick='confirmDelete(this.id)' id='{{ story.storyID }}'>Delete</a>
+                        </div>
+                        <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
+                        <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {{ user.username }} has not posted any stories yet.    
+            {% endif %}
+            
+        </div>
+        <div id="alert"></div>
+    </div>
+{% endblock %}

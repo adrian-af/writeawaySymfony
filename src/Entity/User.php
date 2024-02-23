@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Column(type: 'integer', name: 'role')]
     private $role;
 
-    #[ORM\OneToMany(targetEntity:"Story", mappedBy:"User")]
+    #[ORM\OneToMany(targetEntity:"Story", mappedBy:"user")]
     private $stories; //array of stories
 
     /**
@@ -213,5 +213,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
             //1 is admin, which is both user and admin
             return ["ROLE_USER", "ROLE_ADMIN"]; //you can also do just role_admin and define the role hierarchy in security.yaml
         }
+    }
+
+    /**
+     * Get the value of stories
+     */ 
+    public function getStories()
+    {
+        return $this->stories;
+    }
+
+    /**
+     * Set the value of stories
+     *
+     * @return  self
+     */ 
+    public function setStories($stories)
+    {
+        $this->stories = $stories;
+
+        return $this;
     }
 }

@@ -137,5 +137,68 @@ class StoriesController extends AbstractController
             'userPfp' => $userPfp
         ]);
     }
+    #[Route(path:'/ownProfile', name: 'ownProfile')]
+    public function ownProfile(EntityManagerInterface $entityManager, Request $request)
+    {
+        $user = $this->getUser();
+        
+        //For the header
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        if ($request->isMethod('GET')) 
+        {
+            if($request->query->get('id') != null)
+            {
+                $deleteid = $request->query->get('deleteid');
+                $story = $entityManager->find(Story::class,  $deleteid);
+                try
+                {
+                    $entityManager->remove($story);
+                    $entityManager->flush();
+                    $deleted = "Story deleted successfully";
+                }
+                catch(\Exception $e)
+                {
+                    $deleted = "There was an error deleting the story: " .$e->getMessage();
+                }
+                return $this->render('ownProfile.html.twig',[
+                    //For the header
+                    'genres' => $genresHeader,
+                    'userPfp'=>$userPfp,
+                    'user' => $user,
+                    'deleted' => $deleted
+                ]);
+            }
+        }
+        return $this->render('ownProfile.html.twig',[
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp,
+            'user' => $user,
+        ]);
+    }
 
+    #[Route(path:'/editStory', name: 'editStory')]
+    public function editStory(EntityManagerInterface $entityManager)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        dump($user);
+        return $this->render('editStor.html.twig',[
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp,
+            'user' => $user
+        ]);
+    }
 }
