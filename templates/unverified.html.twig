@@ -1,0 +1,10 @@
+{# templates/unverified.html.twig #}
+It seems like you did not verify your account when you signed up.
+<form action="{{ path('resend') }}" method='POST'>
+    <label for="resend">Click here if you need us to resend email with the verification code</label>
+    <button type="submit">Resend email</button>
+</form>
+<form action="{{ path('checkemail') }}" method='POST'>
+    <label for="check">If you already have the verification code, click here to verify your account</label>
+    <button type="submit">Verify account</button>
+</form>

@@ -4,6 +4,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mailer\MailerInterface;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
@@ -233,5 +235,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->stories = $stories;
 
         return $this;
+    }
+
+    public function sendEmail($from, $subject, $template, MailerInterface $mailer)
+    {
+        //send email
+        $emailObject = new TemplatedEmail();
+        $emailObject->from($from);
+        $emailObject->to($this->email);
+        $emailObject->subject($subject);
+        $confirmationCode = $this->confCod;
+        $emailObject->htmlTemplate($template, ['code' => $confirmationCode]);
+        $emailObject->context(['code' => $confirmationCode]);
+        
+        try
+        {
+            $mailer->send($emailObject);
+        }
+        catch(\Exception $e)
+        {
+            $mensaje = "Error sending email" .$e->getMessage();
+            return $mensaje;
+        }
+        return 0;
     }
 }

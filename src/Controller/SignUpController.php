@@ -77,31 +77,17 @@ class SignUpController extends AbstractController
                 // Save the user to the database
                 $entityManager->persist($user);
                 
-                //send email
-                $emailObject = new TemplatedEmail();
-                $emailObject->from('welcome@writeaway.com');
-                $emailObject->to($email);
-                $emailObject->subject("Welcome to Writeaway");
-                $emailObject->htmlTemplate('confirmation.html.twig', ['code' => $confirmationCode]);
-                $emailObject->context(['code' => $confirmationCode]);
-                
-                try
+                //send email (function inside User entity)
+                $error = $user->sendEmail('welcome@writeaway.com', "Welcome to Writeaway", "confirmation.html.twig", $mailer);
+                if($error != 0)
                 {
-                    $mailer->send($emailObject);
+                    return $this->redirectToRoute('app_signup', ['error' => $error]);
                 }
-                catch(\Exception $e)
+                else
                 {
-                    $mensaje = "Error sending email" .$e->getMessage();
-                    return $this->redirectToRoute('app_signup', ['error' => $mensaje]);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('checkemail');
                 }
-                $entityManager->flush();
-                //session
-                $session->set('username', $username);
-                $session->set('code', $confirmationCode);
-                $session->set('id', $user->getUserId());
-
-                // Redirect to login page after successful signup
-                return $this->redirectToRoute('checkemail');
             }
             return $this->redirectToRoute('app_signup', ['error' => $error]);
         }
