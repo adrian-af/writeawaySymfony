@@ -57,12 +57,15 @@
         {% endif %}
         <div class='commentsWall'>
             <div id='commentForm'>
-                <form action="commentCode.php" method='GET'>
-                    <input name='storyId' value='<?php echo $storyId ?>' type='hidden'>
+                <form action="{{ path('comment') }}" method='POST'>
+                    <input name='storyId' value="{{ story.storyID }}" type='hidden'>
                     <input type="text" name='text' placeholder='Write a comment...'>
                     <button type='submit'>Comment</button>
                 </form>
             </div>
+            {% if commentError is defined %}
+                {{ commentError }}
+            {% endif %}
             <div id='comments'>
             {% if comments|length > 0 %}
                     {% for comment in comments %}

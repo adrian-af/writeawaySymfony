@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Genre;
 use App\Entity\Story;
 use App\Entity\User;
+use App\Entity\Comment;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
+use DateTime;
 
 #[IsGranted('ROLE_USER')]
 class StoriesController extends AbstractController
@@ -78,9 +80,7 @@ class StoriesController extends AbstractController
             {
                 $story = $entityManager->find(Story::class, $id);
                 //get the comments
-                dump($story);
                 $comments = $story->getComments();
-                dump($comments);
                 return $this->render('seeStory.html.twig', [
                     'genres' => $genresHeader,
                     'userPfp' => $userPfp,  
@@ -266,7 +266,7 @@ class StoriesController extends AbstractController
         ]);
     }
     #[Route(path:'/search', name: 'search')]
-    public function searc(EntityManagerInterface $entityManager,  Request $request)
+    public function search(EntityManagerInterface $entityManager,  Request $request)
     {
         //For the header
         $user = $this->getUser();
@@ -306,4 +306,68 @@ class StoriesController extends AbstractController
             'userPfp'=>$userPfp,
         ]);
     }
+    #[Route(path:'/comment', name: 'comment')]
+    public function comment(EntityManagerInterface $entityManager,  Request $request)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        //take the input from the form
+        if ($request->isMethod('POST')) 
+        {
+            $formData = $request->request->all();
+            $text = $formData['text'];
+            $storyId = $formData['storyId'];
+            $story = $entityManager->find(Story::class,  $storyId);
+            $comments = $story->getComments();
+            
+            //check the content
+            if (strlen($text) < 1)
+            {
+                return $this->render('seeStory.html.twig', [
+                    'genres' => $genresHeader,
+                    'userPfp' => $userPfp,  
+                    'story' => $story,
+                    'comments' => $comments,
+                    'commentError' => "Comment was empty!"
+                ]);
+            }
+            //create the entity
+            $comment = new Comment();
+            $comment->setUser($user);
+            $comment->setCommentText($text);
+            $comment->setStory($story);
+            $comment->setDatetime(new DateTime());
+            $entityManager->persist($comment);
+            //add it to the db
+            try
+            {
+                $entityManager->flush();
+                return $this->render('seeStory.html.twig', [
+                    'genres' => $genresHeader,
+                    'userPfp' => $userPfp,  
+                    'story' => $story,
+                    'comments' => $comments,
+                ]);
+            }
+            catch(\Exception $e)
+            {
+                $message = "Error processing your comment. Please try again later:" .$e->getMessage();
+                return $this->render('seeStory.html.twig', [
+                    'genres' => $genresHeader,
+                    'userPfp' => $userPfp,  
+                    'story' => $story,
+                    'comments' => $comments,
+                    'commentError' => $message,
+                ]);
+            }
+        }
+        return $this->redirectToRoute("app_login");
+    }
+    
 }
