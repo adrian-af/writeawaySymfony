@@ -78,6 +78,7 @@ class StoriesController extends AbstractController
             {
                 $story = $entityManager->find(Story::class, $id);
                 //get the comments
+                dump($story);
                 $comments = $story->getComments();
                 dump($comments);
                 return $this->render('seeStory.html.twig', [

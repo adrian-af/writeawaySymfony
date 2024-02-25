@@ -64,17 +64,13 @@
                 </form>
             </div>
             <div id='comments'>
-            {% if comments is not empty  %}
-                {% for comment in comments %}
-                    <div class="comment">
-                        <div class="commentInfo">{{ comment.user.username }} commented on  {{ comment.datetime|date('d-M-Y H:i:s') }}
-                        <div><pre>{{ comment.commentText }}</pre></div> 
-                    </div>
-                {% endfor %}
-                <div class='comment'>
-                    <div class='commentInfo'>$commentUsername commented on $commentDatetime</div>
-                    <div><pre>$commentContent</pre></div>
-                </div>
+            {% if comments|length > 0 %}
+                    {% for comment in comments %}
+                        <div class="comment">
+                            <div class="commentInfo">{{ comment.user.username }} commented on  {{ comment.datetime|date('d-M-Y H:i:s') }}
+                            <div><pre>{{ comment.commentText }}</pre></div> 
+                        </div>
+                    {% endfor %}    
             {% else %}
                 This story doesn't have comments yet
             {% endif %}
