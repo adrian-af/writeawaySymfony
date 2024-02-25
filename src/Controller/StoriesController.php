@@ -62,16 +62,6 @@ class StoriesController extends AbstractController
         //get all the genres so the header shows all of them
         $repositoryGenres = $entityManager->getRepository(Genre::class);
         $genres = $repositoryGenres->findAll();
-        $story = null;
-        //get the current story
-        if($request->isMethod('GET'))
-        {
-            $id = $request->query->get('id');
-            if($id)
-            {
-                $story = $entityManager->find(Story::class, $id);
-            }
-        }
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
@@ -80,8 +70,26 @@ class StoriesController extends AbstractController
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
+        //get the current story
+        if($request->isMethod('GET'))
+        {
+            $id = $request->query->get('id');
+            if($id)
+            {
+                $story = $entityManager->find(Story::class, $id);
+                //get the comments
+                $comments = $story->getComments();
+                dump($comments);
+                return $this->render('seeStory.html.twig', [
+                    'genres' => $genresHeader,
+                    'userPfp' => $userPfp,  
+                    'story' => $story,
+                    'comments' => $comments
+                ]);
+            }
+        }
+
         return $this->render('seeStory.html.twig', [
-            'story' => $story,
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp

@@ -11,34 +11,29 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 
 #[ORM\Entity]
-#[ORM\Table(name: 'stories')]
+#[ORM\Table(name: 'comments')]
 
-class Genre
+class Comment
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
     private $commentID;
 
-    /**User ID here */
-    /**
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="Stories")
-     * @ORM\JoinColumn(name="ID", referencedColumnName="ID")
-     */
-    private $userID;
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "comments")]
+    #[ORM\JoinColumn(name:"userId", referencedColumnName: "ID")]
+    private $user;
 
-    /**Genre ID here */
-    /**
-     * @ORM\ManyToOne(targetEntity="Stories", inversedBy="Comments")
-     * @ORM\JoinColumn(name="ID", referencedColumnName="ID")
-     */
-    private $storyID;
+    #[ORM\ManyToOne(targetEntity: Story::class, inversedBy: "comments")]
+    #[ORM\JoinColumn(name:"storyId", referencedColumnName: "ID")]
+    private $story;
 
     #[ORM\Column(type: 'string', name: 'text')]
     private $commentText;
 
     #[ORM\Column(type: 'datetime', name: 'datetime')]
     private $datetime;
+
 
     /**
      * Genres constructor

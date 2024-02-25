@@ -28,7 +28,7 @@ class Story
     #[ORM\Column(type: 'string', name: 'title')]
     private $storyTitle;
     
-    #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "Story")]
+    #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "stories")]
     #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
     private $genre;
 
@@ -40,6 +40,10 @@ class Story
 
     #[ORM\Column(type: 'datetime', name: 'datetime')]
     private $datetime;
+
+    #[ORM\OneToMany(targetEntity:"Comment", mappedBy: "story")]
+    private $comments;
+
 
     /**
      * Genres constructor
@@ -139,6 +143,26 @@ class Story
     public function setUser($user)
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of comments
+     */ 
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Set the value of comments
+     *
+     * @return  self
+     */ 
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
 
         return $this;
     }
