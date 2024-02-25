@@ -206,11 +206,11 @@ class StoriesController extends AbstractController
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
         
+        //find the story by the passed ID
+        $story = $entityManager->find(Story::class, $id);
         //handle the edit if it has been submitted
         if($request->request->all())
         {
-            //find the story by the passed ID
-            $story = $entityManager->find(Story::class, $id);
             $formData = $request->request->all();
             $title = $formData['title'];
             $genreId = (int) $formData['genre'];

@@ -1,5 +1,8 @@
 {# templates/checkemail.html.twig #}
 {% block body %}
+    {% if error is defined %}
+        <div style="color: red">{{ error }}</div>
+    {% endif %}
     hello!<br>
     Please check your email for a verification code. Then copy the code here:<br>
     

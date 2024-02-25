@@ -116,6 +116,12 @@ class SignUpController extends AbstractController
             $codeUser = $formData['code'];
             $codeDB = $session->get('code');
             $idUser = $session->get('id');
+            if($idUser == null)
+            {
+                $user = $this->getUser();
+                $idUser = $user->getUserId();
+                $codeDB = $user->getConfCod();
+            }
             if($codeUser == $codeDB)
             {
                 $user = $entityManager->find(User::class, $idUser);
@@ -124,6 +130,10 @@ class SignUpController extends AbstractController
                 $entityManager->flush();
 
                 return $this->render('login.html.twig', ['error' => "Your account has been verified! Now login."]);
+            }
+            else
+            {
+                return $this->render('checkemail.html.twig', ["error" => "Wrong code. Please, try again"]);
             }
         }
         return $this->render('checkemail.html.twig');
