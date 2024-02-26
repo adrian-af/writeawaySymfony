@@ -171,21 +171,21 @@ class StoriesController extends AbstractController
         //deletion of stories is done from within the user profile page
         if ($request->isMethod('GET')) 
         {
-            if($request->query->get('id') != null)
+            $deleteid = $request->query->get('deleteid');
+            //find the story by ID
+            $story = $entityManager->find(Story::class,  $deleteid);
+            try
             {
-                $deleteid = $request->query->get('deleteid');
-                //find the story by ID
-                $story = $entityManager->find(Story::class,  $deleteid);
-                try
-                {
-                    $entityManager->remove($story);
-                    $entityManager->flush();
-                    $deleted = "Story deleted successfully";
-                }
-                catch(\Exception $e)
-                {
-                    $deleted = "There was an error deleting the story: " .$e->getMessage();
-                }
+                $entityManager->remove($story);
+                $entityManager->flush();
+                $deleted = "Story deleted successfully";
+            }
+            catch(\Exception $e)
+            {
+                $deleted = "There was an error deleting the story: " .$e->getMessage();
+            }
+            finally
+            {
                 return $this->render('ownProfile.html.twig',[
                     //For the header
                     'genres' => $genresHeader,
@@ -248,14 +248,17 @@ class StoriesController extends AbstractController
             {
                 $response = "An error occurred while trying to edit your story: " .$e->getMessage();
             } 
-            $story = $entityManager->find(Story::class, $id);
-            return $this->render('write.html.twig', [
-                'genres' => $genresHeader,
-                'userPfp' => $userPfp,
-                'response' => $response,
-                'user' => $user,
-                'story' => $story
-            ]);
+            finally
+            {
+                $story = $entityManager->find(Story::class, $id);
+                return $this->render('editStory.html.twig', [
+                    'genres' => $genresHeader,
+                    'userPfp' => $userPfp,
+                    'response' => $response,
+                    'user' => $user,
+                    'story' => $story
+                ]);
+            }
         }
         return $this->render('editStory.html.twig',[
             //For the header

@@ -13,7 +13,7 @@
             }
         }
     </script>
-    {% if deleted is defined%}
+    {% if deleted is defined %}
         {{ deleted }}
     {% endif %}
     <div class="primero">
@@ -43,8 +43,10 @@
                         <div class='title'>
                             <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a> - 
                             <a href="{{ path('editStory', {'id': story.storyID})}}"> Edit</a>
-                            
-                            <a class='delete' onclick='confirmDelete(this.id)' id='{{ story.storyID }}'>Delete</a>
+                            <form action="{{ path('ownProfile', {'deleteid': story.storyID })}}" method="GET">
+                                <input type="hidden" name="deleteid" value="{{ story.storyID }}"/>
+                                <button type="submit" onclick="return confirm('Are you sure you want to delete this story?')">Delete</button>
+                            </form>
                         </div>
                         <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
                         <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>

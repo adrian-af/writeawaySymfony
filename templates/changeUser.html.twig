@@ -1,9 +1,12 @@
 {# templates/changeUser.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
+    {% if changed is defined %}
+        {{ changed }}
+    {% endif %}
     {% if userChanged %}
     <div>
-        <form action="{{ path('adminAction') }}" method="POST">
+        <form action="{{ path('changeUser', {'id': userChanged.userId}) }}" method="POST">
             <label for="username">Username</label>
             <input type="text" name="username" value="{{ userChanged.username }}"></input><br>
             <label for="email">Email</label>
@@ -23,11 +26,11 @@
             <label for="role">Role</label>
             <select name="role">
                     {% if userChanged.role == 0 %}
-                        <option name="verified" value="0" selected>User</option>
-                        <option name="verified" value="1">Admin</option>
+                        <option name="role" value="0" selected>User</option>
+                        <option name="role" value="1">Admin</option>
                     {% else %}
-                        <option name="verified" value="1" selected>Admin</option>
-                        <option name="verified" value="0">User</option>
+                        <option name="role" value="1" selected>Admin</option>
+                        <option name="role" value="0">User</option>
                     {% endif %}
                 </select><br>
             <button type="submit">Change</button>

@@ -74,7 +74,7 @@ class AdminController extends AbstractController
                     'stories' => $stories,
                 ]);
             }
-            else //genres
+            else if($action == 3) //genres
             {   
                 return $this->render("adminAction.html.twig", [
                     //For the header
@@ -104,6 +104,62 @@ class AdminController extends AbstractController
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
         $userChanged = $entityManager->find(User::class, $id);
+        if($request->isMethod("POST"))
+        {
+            $formData = $request->request->all();
+            //ifs to avoid updating the whole table unnecessarily
+            $username = $formData['username'];
+            //only change if username is different form the passed username
+            if($userChanged->getUsername() != $username)
+            {
+                $userChanged->setUsername($username);
+            }
+            $email = $formData['email'];
+            if($userChanged->getEmail() != $email)
+            {
+                $userChanged->setEmail($email);
+            }
+            $verified = $formData['verified'];
+            //confCod is 0 when user is verified
+            if($verified == 0 && $userChanged->getConfCod() != 0)
+            {
+                $userChanged->setConfCod(0);
+            }
+            //confCod is a random number > 10 if the user is not verified
+            else if($verified == 1 && $userChanged->getConfCod() == 0)
+            {
+                $userChanged->setConfCod(rand(10, 10000000));
+            }
+            $about = $formData['about'];
+            if($userChanged->getAbout() != $about)
+            {
+                $userChanged->setAbout($about);
+            }
+            $role = $formData['role'];
+            if($userChanged->getRole() != $role)
+            {
+                $userChanged->setRole($role);
+            }
+            try
+            {
+                $entityManager->flush();
+                $changed = "User changed successfully";
+            }
+            catch(\Exception $e)
+            {
+                $changed = "Error changing the user: " .$e->getMessage();
+            }
+            finally
+            {
+                return $this->render("changeUser.html.twig", [
+                    //For the header
+                    'genres' => $genresHeader,
+                    'userPfp'=>$userPfp,
+                    'userChanged' => $userChanged,
+                    'changed' => $changed
+                ]);
+            }
+        }
         return $this->render("changeUser.html.twig", [
             //For the header
             'genres' => $genresHeader,
@@ -112,8 +168,8 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/deleteUser', name: 'deleteUser')]
-    public function deleteUser(EntityManagerInterface $entityManager, Request $request)
+    #[Route(path: '/deleteUser/{id}', name: 'deleteUser')]
+    public function deleteUser(EntityManagerInterface $entityManager, Request $request, $id)
     {
         //For the header
         $user = $this->getUser();
@@ -123,7 +179,63 @@ class AdminController extends AbstractController
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
-        return $this->render("adminIndex.html.twig", [
+
+        $userDelete = $entityManager->find(User::class, $id);
+
+        try
+        {
+            $entityManager->remove($userDelete);
+            $entityManager->flush();
+            $deleted = "User $id deleted successfully";
+        }
+        catch(\Exception $e)
+        {
+            $deleted = "There was an error deleting the user $id: " .$e->getMessage();
+        }
+        finally
+        {
+            $users = $entityManager->getRepository(User::class)->findAll();
+            
+            return $this->render("adminAction.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'response' => 1,
+                'deleted' => $deleted,
+                'users' => $users,
+            ]);
+        }
+    }
+
+    #[Route(path: "/moderateComments", name: "moderateComments")]
+    public function moderateComments()
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render("moderateComments.html.twig", [
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp,
+        ]);
+    }
+    #[Route(path: "/deleteStory", name: "deleteStory")]
+    public function deleteStory()
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        return $this->render("adminAction.html.twig", [
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,

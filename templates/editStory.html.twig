@@ -9,7 +9,7 @@
 
      <form action="{{ path('editStory', {'id': story.storyID})}}" method='POST'>
         <div class="content">
-            <p><label for="title">Title: </label></p>
+            <label for="title">Title: </label>
             <input type="text" id="title" name="title" class="input" value="{{ story.storyTitle }}"></input>
         </div>
         <div class="content">
