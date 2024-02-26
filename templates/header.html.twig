@@ -35,6 +35,11 @@
                 <button><img src="{{ asset('Images/search.png') }}" alt="Search button" class="icon"></button>
             </form>
         </div>
+        <div>
+            {% if is_granted('ROLE_ADMIN') %}
+                <form action="{{ path('adminIndex') }}" method='POST'><button>Admin zone</button></form>
+            {% endif %}
+        </div>
     </div>    
     <div id='headerright'>
         <div  class='dropdown'>

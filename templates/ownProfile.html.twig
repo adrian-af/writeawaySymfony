@@ -21,6 +21,7 @@
             <div id='pfp'>
                 {% if userPfp is not null %}
                     <img src="{{ userPfp }}" alt="User Picture" style='width: 100px' id="user">
+                    
                     <img src="{{ asset('Images/edit.png') }}" alt="edit button" style="width: 20px" onclick="window.location='./changeBio.html'">
                 {% else %}
                     <img src="{{ asset('Images/user.png') }}" alt="User Picture" style='width: 100px' id="user">

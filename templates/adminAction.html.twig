@@ -1,0 +1,40 @@
+{# templates/adminAction.html.twig #}
+{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block body %}
+    <div>
+        {% if response == 1 %}
+        {# users #}
+            {% if users|length > 0%}
+                <table>
+                    <tr>
+                        <th>Username</th><th>Email</th><th>Verified</th><th>About</th><th>Role</th><th>Change</th><th>Delete</th>
+                    </tr>
+                {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>
+                            {% if user.confCod == 0 %}
+                                Verified
+                            {% else %}
+                                Not verified
+                            {% endif %}
+                        </td>
+                        <td>{{ user.about }}</td>
+                        <td>
+                            {% if user.role == 0 %}
+                                User
+                            {% else %}
+                                Admin
+                            {% endif %}
+                        </td>
+                        <td><a href="{{ path('changeUser', {'id': user.userId}) }}">Change</a></td>
+                        <td><a href="{{ path('deleteUser', {'id': user.userId}) }}">Delete</a></td>
+                       
+                    </tr>
+                {% endfor %}
+                </table>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,37 @@
+{# templates/changeUser.html.twig #}
+{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block body %}
+    {% if userChanged %}
+    <div>
+        <form action="{{ path('adminAction') }}" method="POST">
+            <label for="username">Username</label>
+            <input type="text" name="username" value="{{ userChanged.username }}"></input><br>
+            <label for="email">Email</label>
+            <input type="email" name="email" value="{{ userChanged.email }}"></input><br>
+            <label for="verified">Verified</label>
+                <select name="verified">
+                    {% if userChanged.confCod == 0 %}
+                        <option name="verified" value="0" selected>Keep verified</option>
+                        <option name="verified" value="1">Un-verify</option>
+                    {% else %}
+                        <option name="verified" value="1" selected>Keep unverified</option>
+                        <option name="verified" value="0">Verify</option>
+                    {% endif %}
+                </select><br>
+            <label for="about">About</label>
+            <input type="text" name="about" value="{{ userChanged.about }}"></input><br>
+            <label for="role">Role</label>
+            <select name="role">
+                    {% if userChanged.role == 0 %}
+                        <option name="verified" value="0" selected>User</option>
+                        <option name="verified" value="1">Admin</option>
+                    {% else %}
+                        <option name="verified" value="1" selected>Admin</option>
+                        <option name="verified" value="0">User</option>
+                    {% endif %}
+                </select><br>
+            <button type="submit">Change</button>
+        </form>
+    </div>
+    {% endif %}
+{% endblock %}
