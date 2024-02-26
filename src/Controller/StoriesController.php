@@ -169,11 +169,11 @@ class StoriesController extends AbstractController
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
         //deletion of stories is done from within the user profile page
-        if ($request->isMethod('GET')) 
+        if ($request->isMethod('POST')) 
         {
             $deleteid = $request->query->get('deleteid');
             //find the story by ID
-            $story = $entityManager->find(Story::class,  $deleteid);
+            $story = $entityManager->find(Story::class, $deleteid);
             try
             {
                 $entityManager->remove($story);
@@ -373,4 +373,63 @@ class StoriesController extends AbstractController
         return $this->redirectToRoute("app_login");
     }
     
+    #[Route(path:"/editAbout", name: "editAbout")]
+    public function editAbout(EntityManagerInterface $entityManager,  Request $request)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        
+        if($request->isMethod("POST"))
+        {
+            $formData = $request->request->all();
+            $about = $formData['about'];
+            //only change if necessary
+            if($user->getAbout() != $about)
+            {
+                $user->setAbout($about);
+                try
+                {
+                    $entityManager->flush();
+                    $changed = "About changed successfully";
+                }
+                catch(\Exception $e)
+                {
+                    $changed = "An error occurred when trying to update your about: " .$e->getMessage();
+                }
+                finally
+                {
+                    return $this->render('editAbout.html.twig',[
+                        //For the header
+                        'genres' => $genresHeader,
+                        'userPfp'=> $userPfp,
+                        'changed' => $changed,
+                        'user' => $user
+                    ]);
+                }
+            }
+            else
+            {
+                $changed = "No changes made";
+            }
+            return $this->render('editAbout.html.twig',[
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=> $userPfp,
+                'changed' => $changed,
+                'user' => $user
+            ]);
+        }
+        return $this->render('editAbout.html.twig',[
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=> $userPfp,
+            'user' => $user
+        ]);
+    }
 }

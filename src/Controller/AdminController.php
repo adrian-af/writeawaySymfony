@@ -184,6 +184,13 @@ class AdminController extends AbstractController
 
         try
         {
+            //user created to host stories from deleted users
+            $del = $entityManager->find(User::class, 161);
+
+            foreach($userDelete->getStories() as $story)
+            {
+                $story->setUser($del);
+            }
             $entityManager->remove($userDelete);
             $entityManager->flush();
             $deleted = "User $id deleted successfully";
@@ -208,7 +215,7 @@ class AdminController extends AbstractController
     }
 
     #[Route(path: "/moderateComments", name: "moderateComments")]
-    public function moderateComments()
+    public function moderateComments(EntityManagerInterface $entityManager,  Request $request)
     {
         //For the header
         $user = $this->getUser();
@@ -225,7 +232,7 @@ class AdminController extends AbstractController
         ]);
     }
     #[Route(path: "/deleteStory", name: "deleteStory")]
-    public function deleteStory()
+    public function deleteStory(EntityManagerInterface $entityManager,  Request $request)
     {
         //For the header
         $user = $this->getUser();

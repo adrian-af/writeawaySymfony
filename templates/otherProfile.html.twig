@@ -1,19 +1,22 @@
 {# templates/otherProfile.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
-    <div class="primero">
-        <div id='usersite'>
-            <div id='pfp'>
-                {% if userPfp is not null %}
-                    <img src="{{ userPfp }}" alt="User Picture" style='width: 100px' id="user">
-                {% else %}
-                    <img src="{{ asset('Images/user.png') }}" alt="User Picture" style='width: 100px' id="user">
-                {% endif %}
-            </div>
-            <div id='about'>
+    {% if user is defined and user is not null %}
+        {% if user.userId == 161 %}
+            User not found
+        {% else %}
+        <div class="primero">
+            <div id='usersite'>
+                <div id='pfp'>
+                    {% if userPfp is not null %}
+                        <img src="{{ userPfp }}" alt="User Picture" style='width: 100px' id="user">
+                    {% else %}
+                        <img src="{{ asset('Images/user.png') }}" alt="User Picture" style='width: 100px' id="user">
+                    {% endif %}
+                </div>
+                <div id='about'>
                 <p id='buser'>About {{ user.username }}:
                 <p class='text'><pre>{{ user.about }}</pre></p>
-                
             </div>
         </div>
         <div>
@@ -38,6 +41,10 @@
             {% if storiesNumber == 0 %}    
                 {{ user.username }} has not posted any public stories yet.    
             {% endif %}
+        {% endif %}
+    {% else %}
+        User not found
+    {% endif %}
         </div>
         <div id="alert"></div>
     </div>

@@ -50,7 +50,13 @@
         {% if story %}
         <div id='{{ story.storyID }}' class='container'>
             <h2>{{ story.storyTitle }} </h2>
-            <div>by <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a></div>
+            <div>by 
+            {% if story.user.userId == 161 %}
+                DELETED
+            {% else %}
+                <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
+            {% endif %}
+            </div>
             <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
             <p><pre>{{ story.storyText|raw }}</pre></p>
         </div>

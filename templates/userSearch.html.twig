@@ -4,17 +4,19 @@
     <div class='primero'>
         {% if users and users|length > 0%}
             {% for user in users %}
-                <div class="userBox" id="{{ user.userId }}">
-                    <img>
-                    <div>
-                        <div class="username">
-                            <a href="{{ path('otherProfile', {'id': user.userId})}}">{{ user.username }}</a>
-                        </div>
-                        <div class="about">
-                            {{  user.about }}
+                {% if user.userId != 161 %}
+                    <div class="userBox" id="{{ user.userId }}">
+                        <img>
+                        <div>
+                            <div class="username">
+                                <a href="{{ path('otherProfile', {'id': user.userId})}}">{{ user.username }}</a>
+                            </div>
+                            <div class="about">
+                                {{  user.about }}
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
             {% endfor %}
         {% endif %}
     </div>

@@ -1,0 +1,14 @@
+{# templates/write.html.twig #}
+{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block body %}
+    {% if changed is defined %}
+        <div>{{ changed }}</div>
+    {% endif %}
+        <form action="{{ path('editAbout') }}" method='POST' class="writeStory">
+            <div>
+                <label for="about">About:</label>
+                <textarea id="about" name="about">{{ user.about }}</textarea>
+            </div>
+            <button class="button">Submit</button>
+        </form>
+{% endblock %}
