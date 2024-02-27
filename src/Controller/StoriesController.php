@@ -25,15 +25,16 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         return $this->render('hello.html.twig', [
             //For header
             'genres' => $genresHeader,
-            'userPfp' => $base64Pfp
+            'userPfp' => $userPfp,
+            'user' => $user
         ]);
     }
 
@@ -43,13 +44,12 @@ class StoriesController extends AbstractController
         //the user you clicked on
         $userP = $entityManager->find(User::class, $id);
         //For the header
-        //the user that's logged in
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         return $this->render('otherProfile.html.twig',[
             //For the header
@@ -64,13 +64,13 @@ class StoriesController extends AbstractController
         //get all the genres so the header shows all of them
         $repositoryGenres = $entityManager->getRepository(Genre::class);
         $genres = $repositoryGenres->findAll();
-        //For the header
+         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         //get the current story
         if($request->isMethod('GET'))
@@ -100,12 +100,13 @@ class StoriesController extends AbstractController
     #[Route(path:'/write', name: 'write')]
     public function write(EntityManagerInterface $entityManager, Request $request)
     {
+        //For the header
         $user = $this->getUser();
-        $genres = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         if($request->request->all())
         {
@@ -163,14 +164,13 @@ class StoriesController extends AbstractController
     #[Route(path:'/ownProfile', name: 'ownProfile')]
     public function ownProfile(EntityManagerInterface $entityManager, Request $request)
     {
-        $user = $this->getUser();
-        
         //For the header
+        $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         //deletion of stories is done from within the user profile page
         if ($request->isMethod('POST')) 
@@ -217,12 +217,11 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
-        }
         
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
         //find the story by the passed ID
         $story = $entityManager->find(Story::class, $id);
         //handle the edit if it has been submitted
@@ -282,10 +281,10 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         //get the term that's been searched from POST and handle it
         if ($request->isMethod('POST')) 
@@ -323,10 +322,10 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         //take the input from the form
         if ($request->isMethod('POST')) 
@@ -387,10 +386,10 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         
         if($request->isMethod("POST"))

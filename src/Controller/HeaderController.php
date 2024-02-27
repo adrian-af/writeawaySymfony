@@ -21,14 +21,14 @@ class HeaderController extends AbstractController
     
     public function  genresList(EntityManagerInterface $entityManager, AuthenticationUtils $authenticationUtils): Response
     {
+        //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
-        dump($base64Pfp);
         return $this->render('header.html.twig', [
             'genres' => $genresHeader,
             'userPfp' => $base64Pfp
@@ -45,10 +45,10 @@ class HeaderController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         return $this->render('stories.html.twig', [
             'stories' => $stories,

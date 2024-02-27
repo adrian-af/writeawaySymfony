@@ -25,10 +25,10 @@ class AdminController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
 
         return $this->render('adminIndex.html.twig',[
@@ -43,10 +43,10 @@ class AdminController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
 
         if ($request->isMethod('POST')) 
@@ -99,10 +99,10 @@ class AdminController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         $userChanged = $entityManager->find(User::class, $id);
         if($request->isMethod("POST"))
@@ -175,10 +175,10 @@ class AdminController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
 
         $userDelete = $entityManager->find(User::class, $id);
@@ -202,6 +202,13 @@ class AdminController extends AbstractController
             }
             foreach($userDelete->getStories() as $story)
             {
+                if(count($story->getComments()) > 0 )
+                {
+                    foreach($story->getComments() as $comment)
+                    {
+                        $entityManager->remove($comment);
+                    }
+                }
                 $story->setUser($del);
             }
             $entityManager->remove($userDelete);
@@ -233,10 +240,10 @@ class AdminController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         $story = $entityManager->find(Story::class, $idStory);
         if($request->isMethod("POST"))
@@ -275,10 +282,10 @@ class AdminController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         //find the entity
         $story = $entityManager->find(Story::class, $id);
@@ -316,10 +323,10 @@ class AdminController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
 
         $genre = $entityManager->find(Genre::class, $id);
@@ -373,10 +380,10 @@ class AdminController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
 
         if($request->request->all())

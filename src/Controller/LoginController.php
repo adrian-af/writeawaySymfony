@@ -39,13 +39,13 @@ class LoginController extends AbstractController
                 //select the 10 latest stories
                 $stories = array_slice($stories, 0, 10);
                 
-                //For the header
+                 //For the header
                 $user = $this->getUser();
                 $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-                $userPfp = $user?->getPhoto();
-                $base64Pfp = null;
-                if ($userPfp !== null) {
-                    $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+                
+                $base64Pfp = $user->getImageBase64();
+                if ($base64Pfp !== null) {
+                    $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
                 }
                 
                 return $this->render('hello.html.twig', [ 

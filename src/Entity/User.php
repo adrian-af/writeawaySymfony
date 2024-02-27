@@ -42,6 +42,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(targetEntity: "Comment", mappedBy: "user")]
     private $comments;
 
+    private string $imageBase64;
+
     /**
      * User constructor
      */
@@ -124,9 +126,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     /**
      * Get the value of photo
      */
-    public function getPhoto()
+    public function getImageBase64()
     {
-        return $this->photo;
+        if (null === $this->photo) {
+            return null;
+        }
+    
+        if (!isset($this->imageBase64)) {
+            $data = stream_get_contents($this->photo);
+            fclose($this->photo);
+            $this->imageBase64 = base64_encode($data);
+        }
+    
+        return $this->imageBase64;
     }
 
     /**
