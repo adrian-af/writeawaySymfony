@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Genre;
 use App\Entity\User;
 use App\Entity\Story;
-use App\Entity\Comments;
+use App\Entity\Comment;
 
 #[IsGranted('ROLE_ADMIN')]
 class AdminController extends AbstractController
@@ -227,8 +227,8 @@ class AdminController extends AbstractController
         }
     }
 
-    #[Route(path: "/moderateComments", name: "moderateComments")]
-    public function moderateComments(EntityManagerInterface $entityManager)
+    #[Route(path: "/moderateComments/{idStory}", name: "moderateComments")]
+    public function moderateComments(EntityManagerInterface $entityManager, $idStory, Request $request)
     {
         //For the header
         $user = $this->getUser();
@@ -238,11 +238,36 @@ class AdminController extends AbstractController
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
         }
+        $story = $entityManager->find(Story::class, $idStory);
+        if($request->isMethod("POST"))
+        {
+            $commentId = $request->request->get('commentId');
+            $comment = $entityManager->find(Comment::class, $commentId);
+            $deleted = "No try";
+            try
+            {
+                $entityManager->remove($comment);
+                $entityManager->flush();
+                $deleted = "Comment deleted successfully";
+            }
+            catch(\Exception $e)
+            {
+                $deleted = "Error trying to delete comment: " .$e->getMessage();
+                return $this->render("moderateComments.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'deleted' => $deleted,
+                'story' => $story
+            ]);}
+        }
         return $this->render("moderateComments.html.twig", [
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
+            'story' => $story
         ]);
+
     }
     #[Route(path: "/deleteStory/{id}", name: "deleteStory")]
     public function deleteStory(EntityManagerInterface $entityManager, $id)
