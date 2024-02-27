@@ -27,6 +27,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -48,6 +49,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -69,6 +71,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -105,6 +108,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -169,6 +173,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -219,6 +224,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -283,6 +289,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -324,6 +331,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -388,6 +396,7 @@ class StoriesController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -437,6 +446,40 @@ class StoriesController extends AbstractController
             'genres' => $genresHeader,
             'userPfp'=> $userPfp,
             'user' => $user
+        ]);
+    }
+
+    #[Route(path:"/changePhoto", name: "changePhoto")]
+    public function changePhoto(Request $request, EntityManagerInterface $entityManager)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
+        if ($request->files->get('photo')) 
+        {
+            //get the uploaded photo
+            $uploadedFile = $request->files->get('photo');
+            //read the file contents
+            $fileContents = file_get_contents($uploadedFile->getPathname());
+            //set it in the entity
+            $user->setPhoto($fileContents);
+            $entityManager->flush();
+            return $this->render("ownProfile.html.twig", [
+                    'genres' => $genresHeader,
+                    'userPfp' => $userPfp,
+                    'deleted' => "Photo changed successfully!",
+                    'user' => $user
+                ]);   
+        }
+        return $this->render("changePhoto.html.twig", [
+            'genres' => $genresHeader,
+            'userPfp' => $userPfp,
         ]);
     }
 }

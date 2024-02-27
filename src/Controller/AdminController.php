@@ -27,6 +27,7 @@ class AdminController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -45,6 +46,7 @@ class AdminController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -101,6 +103,7 @@ class AdminController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -177,6 +180,7 @@ class AdminController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -242,6 +246,7 @@ class AdminController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -284,6 +289,7 @@ class AdminController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -325,6 +331,7 @@ class AdminController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
@@ -382,6 +389,7 @@ class AdminController extends AbstractController
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
