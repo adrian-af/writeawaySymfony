@@ -37,7 +37,7 @@ class Genre
     /**
      * Get the value of ID
      */ 
-    public function getID()
+    public function getGenreID()
     {
         return $this->genreID;
     }

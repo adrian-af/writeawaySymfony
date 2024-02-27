@@ -121,7 +121,7 @@ class StoriesController extends AbstractController
             $storyEntity->setStoryTitle($title);
             foreach($genres as $genre)
             {
-                if($genre->getID() == $genreId)
+                if($genre->getGenreID() == $genreId)
                 {
                     $genreEntity = $genre;
                 }
@@ -145,11 +145,15 @@ class StoriesController extends AbstractController
             {
                 $response = "An error occurred while trying to create your story: " .$e->getMessage();
             } 
-            return $this->render('write.html.twig', [
-                'genres' => $genres,
-                'userPfp' => $userPfp,
-                'response' => $response
-            ]);
+            finally
+            {
+
+                return $this->render('write.html.twig', [
+                    'genres' => $genres,
+                    'userPfp' => $userPfp,
+                    'response' => $response
+                ]);
+            }
         }
         return $this->render('write.html.twig', [
             'genres' => $genres,
@@ -176,6 +180,10 @@ class StoriesController extends AbstractController
             $story = $entityManager->find(Story::class, $deleteid);
             try
             {
+                foreach($story->getComments() as $comment)
+                {
+                    $entityManager->remove($comment);
+                }
                 $entityManager->remove($story);
                 $entityManager->flush();
                 $deleted = "Story deleted successfully";
@@ -229,7 +237,7 @@ class StoriesController extends AbstractController
             $story->setStoryTitle($title);
             foreach($genresHeader as $genre)
             {
-                if($genre->getID() == $genreId)
+                if($genre->getGenreID() == $genreId)
                 {
                     $genreEntity = $genre;
                 }

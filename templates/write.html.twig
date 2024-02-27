@@ -15,7 +15,7 @@
             <select id="genre" name="genre">
             {% if genres %}
                 {% for genre in genres %}
-                    <option value='{{ genre.ID }}' name='genre'>{{ genre.name }}</option>
+                    <option value='{{ genre.genreID }}' name='genre'>{{ genre.name }}</option>
                 {% endfor %}
             {% else %}
                 no genres found

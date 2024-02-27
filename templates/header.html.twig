@@ -19,7 +19,7 @@
             <div class="dropdown-content">
             {% if genres %}
                 {% for genre in genres %}
-                    <a href="{{ path('show_genre', {'genreID':genre.ID}) }}">{{ genre.name }}</a>
+                    <a href="{{ path('show_genre', {'genreID':genre.genreID}) }}">{{ genre.name }}</a>
                 {% endfor %}
             {% else %}
                 no genres found

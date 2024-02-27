@@ -76,6 +76,7 @@ class AdminController extends AbstractController
             }
             else if($action == 3) //genres
             {   
+                $stories = $entityManager->getRepository(Story::class)->findAll();
                 return $this->render("adminAction.html.twig", [
                     //For the header
                     'genres' => $genresHeader,
@@ -169,7 +170,7 @@ class AdminController extends AbstractController
     }
 
     #[Route(path: '/deleteUser/{id}', name: 'deleteUser')]
-    public function deleteUser(EntityManagerInterface $entityManager, Request $request, $id)
+    public function deleteUser(EntityManagerInterface $entityManager, $id)
     {
         //For the header
         $user = $this->getUser();
@@ -187,6 +188,18 @@ class AdminController extends AbstractController
             //user created to host stories from deleted users
             $del = $entityManager->find(User::class, 161);
 
+            if($userDelete == $del || $userDelete->getUserId() == 161)
+            {
+                $users = $entityManager->getRepository(User::class)->findAll();
+                return $this->render("adminAction.html.twig", [
+                    //For the header
+                    'genres' => $genresHeader,
+                    'userPfp'=>$userPfp,
+                    'response' => 1,
+                    'deleted' => "Can't delete that user as it is necessary for the app functionality",
+                    'users' => $users
+                ]);
+            }
             foreach($userDelete->getStories() as $story)
             {
                 $story->setUser($del);
@@ -215,7 +228,7 @@ class AdminController extends AbstractController
     }
 
     #[Route(path: "/moderateComments", name: "moderateComments")]
-    public function moderateComments(EntityManagerInterface $entityManager,  Request $request)
+    public function moderateComments(EntityManagerInterface $entityManager)
     {
         //For the header
         $user = $this->getUser();
@@ -231,8 +244,8 @@ class AdminController extends AbstractController
             'userPfp'=>$userPfp,
         ]);
     }
-    #[Route(path: "/deleteStory", name: "deleteStory")]
-    public function deleteStory(EntityManagerInterface $entityManager,  Request $request)
+    #[Route(path: "/deleteStory/{id}", name: "deleteStory")]
+    public function deleteStory(EntityManagerInterface $entityManager, $id)
     {
         //For the header
         $user = $this->getUser();
@@ -241,6 +254,138 @@ class AdminController extends AbstractController
         $base64Pfp = null;
         if ($userPfp !== null) {
             $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+        //find the entity
+        $story = $entityManager->find(Story::class, $id);
+        try
+        {
+            //delete all related comments
+            foreach($story->getComments() as $comment)
+            {
+                $entityManager->remove($comment);
+            }
+            $entityManager->remove($story);
+            $entityManager->flush();
+            $deleted = "Story with ID $id deleted successfully";
+        }
+        catch(\Exception $e)
+        {
+            $deleted = "There was an error deleting the story $id: " .$e->getMessage();
+        }
+        finally
+        {
+            $stories = $entityManager->getRepository(Story::class)->findAll();
+            return $this->render("adminAction.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'response' => 2,
+                'deleted' => $deleted,
+                'stories' => $stories,
+            ]);
+        }
+    }
+    #[Route(path: "/deleteGenre/{id}", name: "deleteGenre")]
+    public function deleteGenre(EntityManagerInterface $entityManager, $id)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+
+        $genre = $entityManager->find(Genre::class, $id);
+        $deleted ="not initialized";
+        try
+        {
+            $genreOther = $entityManager->getRepository(Genre::class)->findOneBy(['name' => "other"]);
+            //change all related stories
+            if($genre == $genreOther)
+            {
+                return $this->render("adminAction.html.twig", [
+                    //For the header
+                    'genres' => $genresHeader,
+                    'userPfp'=>$userPfp,
+                    'response' => 3,
+                    'deleted' => "Can't delete that user as it is necessary for the app functionality",
+                ]);
+            }
+            foreach($genre->getStories() as $story)
+            {
+                $story->setGenre($genreOther);
+            }
+            $entityManager->remove($genre);
+            $entityManager->flush();
+            $deleted = "Genre with ID $id deleted successfully";
+            $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+            $users = $entityManager->getRepository(User::class)->findAll();
+            return $this->render("adminAction.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'response' => 3,
+                'deleted' => $deleted,
+            ]);
+        }
+        catch(\Exception $e)
+        {
+            $deleted = "There was an error deleting the genre $id: " .$e->getMessage();
+            return $this->render("adminAction.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'response' => 3,
+                'deleted' => $deleted,
+            ]);
+        }
+    }
+    #[Route(path: "/createGenre", name: "createGenre")]
+    public function createGenre(EntityManagerInterface $entityManager, Request $request)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $userPfp = $user?->getPhoto();
+        $base64Pfp = null;
+        if ($userPfp !== null) {
+            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        }
+
+        if($request->request->all())
+        {
+            //get the submitted data
+            $name = $request->request->get("genreName");
+            
+            //create the entity
+            $genreEntity = new Genre();
+            //assign the values to the entity's attributes
+            $genreEntity->setName($name);
+            
+            try
+            {
+                //"save" the entity to the ORM
+                $entityManager->persist($genreEntity);
+                //commit the changes to the DB
+                $entityManager->flush($genreEntity);
+                $response = "Genre created successfully";
+            }
+            catch(\Exception $e) //if the flush fails
+            {
+                $response = "An error occurred while trying to create the genre: " .$e->getMessage();
+            } 
+            finally
+            {
+
+                return $this->render('write.html.twig', [
+                    'genres' => $genresHeader,
+                    'userPfp' => $userPfp,     
+                    'response' => 3,
+                    'deleted' => $response,
+                ]);
+            }
         }
         return $this->render("adminAction.html.twig", [
             //For the header
