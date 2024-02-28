@@ -44,7 +44,7 @@ class LoginController extends AbstractController
                  //For the header
                 $user = $this->getUser();
                 $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-                
+                $userPfp=null;
                 $base64Pfp = $user->getImageBase64();
                 if ($base64Pfp !== null) {
                     $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
