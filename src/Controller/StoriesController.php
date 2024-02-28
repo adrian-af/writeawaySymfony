@@ -53,11 +53,18 @@ class StoriesController extends AbstractController
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
+        $otherPhoto = $userP->getImageBase64();
+        $otherUserPhoto = null;
+        if($otherPhoto != null)
+        {
+            $otherUserPhoto = 'data:image/jpg;charset=utf8;base64,' . $otherPhoto;
+        }
         return $this->render('otherProfile.html.twig',[
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
-            'user' => $userP
+            'user' => $userP,
+            'otherUserPhoto' => $otherUserPhoto
         ]);
     }
     #[Route(path:'/seeStory', name: 'seeStory')]
@@ -452,6 +459,38 @@ class StoriesController extends AbstractController
     #[Route(path:"/changePhoto", name: "changePhoto")]
     public function changePhoto(Request $request, EntityManagerInterface $entityManager)
     {
+        $user = $this->getUser();
+        if ($request->files->get('photo')) 
+        {
+            //get the uploaded photo
+            $uploadedFile = $request->files->get('photo');
+            //read the file contents
+            /* $fileContents = file_get_contents($uploadedFile->getPathname());
+            //set it in the entity
+            $user->setPhoto($fileContents); */
+            // Open the file in binary mode to obtain a stream resource
+            $fileStream = fopen($uploadedFile->getPathname(), 'rb');
+            
+            // Set the file stream directly to the $photo property in your entity
+            $user->setPhoto($fileStream);
+            
+            $entityManager->flush();
+
+            $user = $this->getUser();
+            $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+            $base64Pfp = $user->getImageBase64();
+            $userPfp = null;
+            if ($base64Pfp !== null) {
+                $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+            }
+
+            return $this->redirectToRoute("ownProfile", [
+                'genres' => $genresHeader,
+                'userPfp' => $userPfp,
+                'deleted' => "Photo changed successfully!",
+                'user' => $user
+            ]);   
+        }
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
@@ -460,27 +499,6 @@ class StoriesController extends AbstractController
         $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
-        }
-        if ($request->files->get('photo')) 
-        {
-            //get the uploaded photo
-            $uploadedFile = $request->files->get('photo');
-            //read the file contents
-            $fileContents = file_get_contents($uploadedFile->getPathname());
-            //set it in the entity
-            $user->setPhoto($fileContents);
-            $entityManager->flush();
-            $base64Pfp = $user->getImageBase64();
-            $userPfp = null;
-            if ($base64Pfp !== null) {
-                $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
-            }
-            return $this->render("ownProfile.html.twig", [
-                    'genres' => $genresHeader,
-                    'userPfp' => $userPfp,
-                    'deleted' => "Photo changed successfully!",
-                    'user' => $user
-                ]);   
         }
 
         return $this->render("changePhoto.html.twig", [

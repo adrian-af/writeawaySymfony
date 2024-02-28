@@ -8,10 +8,10 @@
         <div class="primero">
             <div id='usersite'>
                 <div id='pfp'>
-                    {% if userPfp is not null %}
-                        <img src="{{ userPfp }}" alt="User Picture" style='width: 100px' id="user">
+                    {% if otherUserPhoto is not null %}
+                        <img src="{{ otherUserPhoto }}" alt="User Picture" style='width: 100px; height: auto;' id="user">
                     {% else %}
-                        <img src="{{ asset('Images/user.png') }}" alt="User Picture" style='width: 100px' id="user">
+                        <img src="{{ asset('Images/user.png') }}" alt="User Picture" style='width: 100px; height: auto;' id="user">
                     {% endif %}
                 </div>
                 <div id='about'>
