@@ -206,27 +206,29 @@ class AdminController extends AbstractController
             }
             foreach($userDelete->getStories() as $story)
             {
-                if(count($story->getComments()) > 0 )
-                {
-                    foreach($story->getComments() as $comment)
-                    {
-                        $entityManager->remove($comment);
-                    }
-                }
                 $story->setUser($del);
             }
+            foreach($userDelete->getComments() as $comment)
+            {
+                $comment->setUser($del);
+            }
+
             $entityManager->remove($userDelete);
             $entityManager->flush();
             $deleted = "User $id deleted successfully";
+            $users = $entityManager->getRepository(User::class)->findAll();
+            return $this->render("adminAction.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'response' => 1,
+                'deleted' => $deleted,
+                'users' => $users,
+            ]);
         }
         catch(\Exception $e)
         {
             $deleted = "There was an error deleting the user $id: " .$e->getMessage();
-        }
-        finally
-        {
-            $users = $entityManager->getRepository(User::class)->findAll();
-            
             return $this->render("adminAction.html.twig", [
                 //For the header
                 'genres' => $genresHeader,

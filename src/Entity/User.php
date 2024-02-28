@@ -274,4 +274,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         }
         return 0;
     }
+
+    /**
+     * Get the value of comments
+     */ 
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
+    /**
+     * Set the value of comments
+     *
+     * @return  self
+     */ 
+    public function setComments($comments)
+    {
+        $this->comments = $comments;
+
+        return $this;
+    }
 }

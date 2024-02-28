@@ -105,7 +105,7 @@ class StoriesController extends AbstractController
     {
         //For the header
         $user = $this->getUser();
-        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        $genres = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
@@ -470,6 +470,11 @@ class StoriesController extends AbstractController
             //set it in the entity
             $user->setPhoto($fileContents);
             $entityManager->flush();
+            $base64Pfp = $user->getImageBase64();
+            $userPfp = null;
+            if ($base64Pfp !== null) {
+                $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+            }
             return $this->render("ownProfile.html.twig", [
                     'genres' => $genresHeader,
                     'userPfp' => $userPfp,
@@ -477,6 +482,7 @@ class StoriesController extends AbstractController
                     'user' => $user
                 ]);   
         }
+
         return $this->render("changePhoto.html.twig", [
             'genres' => $genresHeader,
             'userPfp' => $userPfp,
