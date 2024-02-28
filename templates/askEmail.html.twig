@@ -1,0 +1,19 @@
+{# templates/askEmail.html.twig #}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+{% endblock %}
+{% block body %}
+    {# {% for genre in genres %} #}
+    {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+    <form action="{{ path('forgot_password_mail') }}" method="post">
+        <fieldset>
+            <legend>Password recovery:</legend>
+            {% if error is defined %}
+                <div style="color: red" id="wrong">{{ error }}</div>
+            {% endif %}
+            <label for="email">Enter your email address:</label>
+            <input type="email" name="mail" id="email">
+            <button type="Submit">Check</button>
+        </fieldset>
+    </form>
+{% endblock %}

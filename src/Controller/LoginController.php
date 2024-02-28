@@ -8,11 +8,13 @@ use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class LoginController extends AbstractController
 {
@@ -44,7 +46,6 @@ class LoginController extends AbstractController
                 $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
                 
                 $base64Pfp = $user->getImageBase64();
-                $userPfp = null;
                 if ($base64Pfp !== null) {
                     $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
                 }
@@ -79,6 +80,7 @@ class LoginController extends AbstractController
     {
         return;
     }
+    
     #[Route('/resend' ,name: "resend")]
     public function resend(MailerInterface $mailer)
     {
@@ -95,4 +97,109 @@ class LoginController extends AbstractController
             return $this->redirectToRoute('checkemail');
         }
     }
+
+    //Password recovery
+    
+    #[Route('/checkmail', name: 'forgot_password_mail')]
+    public function forgot(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer,){
+        //Initialize error message
+        $error = $request->query->get('error');
+
+        //Process of submission
+        if($request->isMethod('POST')){
+            $formData = $request->request->all();
+            $mail = $formData['mail'];
+
+            $existingUser = $entityManager-> getRepository(User::class);
+            $existingMail = $existingUser->findOneBy(['email'=>$mail]);
+            if($existingMail == null){
+                $error .= "Email not registered";
+            }
+
+            if(!$error){
+                return $this->redirectToRoute('change_password',['mail'=>$mail]);
+            }
+
+            return $this->redirectToRoute('forgot_password_mail', ['error'=>$error]);
+        }
+
+        //For the header
+        
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        
+        $base64Pfp = null;
+
+        return $this->render('askEmail.html.twig', [
+            'error'=>$error,
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$base64Pfp
+        ]);
+    }
+    
+    #[Route('/passwordChange/{mail}', name:'change_password')]
+    public function changePassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, $mail){
+        //Initialize error message
+        $error = $request->query->get('error');
+
+        if($request->isMethod("POST")){
+            $formData = $request->request->all();
+            $passLen = 3;
+            $plainPassword = $formData['password'];
+            $password2 = $formData['password2'];
+
+            //validation
+            if(strlen($plainPassword) < $passLen){
+                $error = "Password must be at least".$passLen ." characters long<br>";
+            }
+            if($plainPassword != $password2){
+                $error  .= "Passwords do not match!";
+            }
+
+            if(!$error){
+                $user = $entityManager->getRepository(User::class)->findOneBy([
+                    'email'=>$mail
+                ]);
+                $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($encodedPassword);
+
+                $entityManager->persist( $user );
+                try{
+                    $entityManager->flush();
+                }catch(\Exception $e){
+                    $error = "El error es". $e->getMessage();
+                }
+
+                return $this->redirectToRoute('app_login', ['error'=>$error]);
+            }
+
+            //For the header
+        
+            $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+            
+            $base64Pfp = null;
+
+            return $this->redirectToRoute('change_password',[
+                'error'=>$error,
+                'mail'=>$mail,
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$base64Pfp
+            ]);
+        }
+         //For the header
+        
+         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+            
+         $base64Pfp = null;
+
+        return $this->render('changePassword.html.twig',[
+            'error'=>$error,
+            'mail'=>$mail,
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$base64Pfp
+        ]);
+    }
+    
 }

@@ -31,7 +31,9 @@
                 </tr>
                 <tr>
 
-                    <td class="notes" colspan="2"><button class="button" type="submit">login</button></td>
+                    <td class="notes" colspan="2"><button class="button" type="submit">login</button> 
+                    <a href="{{ path('forgot_password_mail') }}">I forgor pass</a>
+                    </td>
                 </tr>
             </table>
         </form>
@@ -40,7 +42,7 @@
             <div class="toSignIn">Not with us yet?</div>
             <div>
                 <a href="{{ path('app_signup') }}">
-                <button class="button">Sign up!!</button>
+                <button class="button">Sign up!!</button></a>
             </div>
     </div>
 </body>
