@@ -74,8 +74,12 @@ class SignUpController extends AbstractController
                 $user->setConfCod($confirmationCode);
                 $user->setRole(0);
 
-                // Save the user to the database
+                // Save the user 
                 $entityManager->persist($user);
+                //session
+                $session->set('username', $username);
+                $session->set('code', $confirmationCode);
+                $session->set('userId', $user->getUserId());
                 
                 //send email (function inside User entity)
                 $error = $user->sendEmail('welcome@writeaway.com', "Welcome to Writeaway", "confirmation.html.twig", $mailer);
@@ -86,6 +90,10 @@ class SignUpController extends AbstractController
                 else
                 {
                     $entityManager->flush();
+                    //session
+                    $session->set('username', $username);
+                    $session->set('code', $confirmationCode);
+                    $session->set('userId', $user->getUserId());
                     return $this->redirectToRoute('checkemail');
                 }
             }
@@ -115,7 +123,8 @@ class SignUpController extends AbstractController
             $formData = $request->request->all();
             $codeUser = $formData['code'];
             $codeDB = $session->get('code');
-            $idUser = $session->get('id');
+            $idUser = $session->get('userId');
+
             if($idUser == null)
             {
                 $user = $this->getUser();
@@ -136,6 +145,11 @@ class SignUpController extends AbstractController
                 return $this->render('checkemail.html.twig', ["error" => "Wrong code. Please, try again"]);
             }
         }
+        return $this->render('checkemail.html.twig');
+    }
+    #[Route(path:"/checkEmailUnverified", name: "checkemailUnverified")]
+    public function checkEmailUnverified()
+    {
         return $this->render('checkemail.html.twig');
     }
 }
