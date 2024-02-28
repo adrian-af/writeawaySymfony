@@ -70,6 +70,19 @@ class HeaderController extends AbstractController
     #[Route(path: "/about", name: "about")]
     public function about(EntityManagerInterface $entityManager)
     {
-        return $this->render("about.html.twig");
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
+        return $this->render("about.html.twig", [
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=>$userPfp,
+        ]);
     }
 }

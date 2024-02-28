@@ -1,1 +1,30 @@
 {# templates/about.html.twig #}
+{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block body %}
+<div class="primero">
+        <h1>Welcome to</h1>
+        <img class="logotipos" src="{{ asset('Images/logotipos.png') }}" alt="Logotype" height="200px">
+        
+        <div>
+            <img src="{{ asset('Images/libros.png') }}" style="width:10%;" alt="Books image">
+            <img src="{{ asset('Images/libros.png') }}" style="width:10%;" alt="Books image">
+            <img src="{{ asset('Images/libros.png') }}" style="width:10%;" alt="Books image">
+    </div>
+        <div>
+            <h3 class="subtitle">What is this web?</h3>
+            <p>
+                Welcome to Write Away, a creative space for young writers!
+                This user-friendly website is designed for enyone who wnats to
+                to unleash their imagination, share stories, and explore the
+                diverse world of storytelling.</p>
+            <h3 class="subtitle">Who are we?</h3>
+            <p>
+                We are Adrián and Cielo, two hardworking students of Web Apllication Development
+                in I.E.S CLara del Rey in Spain that had combined their habilities learned to create
+                this web poryect.
+            </p>
+            <h3 class="subtitle">Whant to contact us?</h3>
+            <p>Contact email fakemail@mailme.com</p>
+        </div>
+    </div>
+{% endblock %}
