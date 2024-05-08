@@ -43,7 +43,7 @@
     </div>    
     <div id='headerright'>
         <div  class='dropdown'>
-            {% if userPfp is not null %}
+            {% if userPfp is not null and userPfp is defined %}
                 <img src="{{ userPfp }}" alt="User Picture" class="dropbtn" id="user">
             {% else %}
                 <img src="{{ asset('Images/user.png') }}" alt="User Picture" class="dropbtn" id="user">
