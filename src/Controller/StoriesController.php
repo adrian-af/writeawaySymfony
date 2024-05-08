@@ -237,6 +237,10 @@ class StoriesController extends AbstractController
         }
         //find the story by the passed ID
         $story = $entityManager->find(Story::class, $id);
+        if($story->getUser() != $user)
+        {
+            return $this->redirectToRoute('app_login');
+        }
         //handle the edit if it has been submitted
         if($request->request->all())
         {
