@@ -54,45 +54,53 @@ class AdminController extends AbstractController
         if ($request->isMethod('POST')) 
         {
             $action = $request->request->get("action");
-            if($action == 1) //users
-            {
-                $users = $entityManager->getRepository(User::class)->findAll();
-                return $this->render("adminAction.html.twig", [
-                    //For the header
-                    'genres' => $genresHeader,
-                    'userPfp'=>$userPfp,
-                    'response' => 1,
-                    'users' => $users,
-                ]);
-            }
-            else if($action == 2) //stories
-            {
-                $stories = $entityManager->getRepository(Story::class)->findAll();
-                return $this->render("adminAction.html.twig", [
-                    //For the header
-                    'genres' => $genresHeader,
-                    'userPfp'=>$userPfp,
-                    'response' => 2,
-                    'stories' => $stories,
-                ]);
-            }
-            else if($action == 3) //genres
-            {   
-                $stories = $entityManager->getRepository(Story::class)->findAll();
-                return $this->render("adminAction.html.twig", [
-                    //For the header
-                    'genres' => $genresHeader,
-                    'userPfp'=>$userPfp,
-                    'response' => 3,
-                    'stories' => $stories,
-                ]);
-            }
         }
-        return $this->render("adminIndex.html.twig", [
-            //For the header
-            'genres' => $genresHeader,
-            'userPfp'=>$userPfp,
-        ]);
+        else if( $action = $request->query->get("response") != null)
+        {
+           $action = $request->query->get("response");
+        }
+        else
+        {
+            return $this->render("adminIndex.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+            ]);
+        }
+        if($action == 1) //users
+        {
+            $users = $entityManager->getRepository(User::class)->findAll();
+            return $this->render("adminAction.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'response' => 1,
+                'users' => $users,
+            ]);
+        }
+        else if($action == 2) //stories
+        {
+            $stories = $entityManager->getRepository(Story::class)->findAll();
+            return $this->render("adminAction.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'response' => 2,
+                'stories' => $stories,
+            ]);
+        }
+        else if($action == 3) //genres
+        {   
+            $stories = $entityManager->getRepository(Story::class)->findAll();
+            return $this->render("adminAction.html.twig", [
+                //For the header
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'response' => 3,
+                'stories' => $stories,
+            ]);
+        }
+        
     }
 
     #[Route(path: '/changeUser/{id}', name: 'changeUser')]
