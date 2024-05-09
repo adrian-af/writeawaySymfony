@@ -1,4 +1,5 @@
 {# templates/changePhoto.html.twig #}
+{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
     {% if error is defined %}
         {{ error }}
