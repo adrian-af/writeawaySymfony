@@ -1,6 +1,7 @@
 {# templates/changeUser.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
+    <div id="breadcrumbs"><a href="{{ path('adminIndex') }}">Admin zone</a> > <a href="{{ path('adminAction', {'response': 1})}}"> Manage users </a> > Change user
     {% if changed is defined %}
         {{ changed }}
     {% endif %}

@@ -8,6 +8,16 @@
     {% if deleted is defined %}
         {{ deleted }} <br>
     {% endif %}
+    <div id="breadcrumbs"><a href="{{ path('adminIndex') }}">Admin zone</a> > 
+        {% if response == 1 %} 
+            Manage users
+        {% elseif response == 2 %}
+            Manage stories
+        {% elseif response == 3 %}
+            Manage genres
+        {% endif %}
+    </div>
+
         {% if response == 1 %}
         {# users #}
             {% if users|length > 0 %}

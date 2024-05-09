@@ -1,6 +1,7 @@
 {# templates/adminIndex.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
+    <div id="breadcrumbs">Admin zone</div>
     <div>
         <form action="{{ path('adminAction') }}" method="POST">
             <button value="1" name="action">Manage users</button>

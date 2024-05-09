@@ -3,6 +3,7 @@
 {% if deleted is defined %}
     {{ deleted }}
 {% endif %}
+    <div id="breadcrumbs"><a href="{{ path('adminIndex') }}">Admin zone</a> > <a href="{{ path('adminAction', {'response': 1})}}"> Manage stories </a> > Moderate comments
 {% if story is defined %}
     {% if story.comments|length > 0 %}
         <table>
