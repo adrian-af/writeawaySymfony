@@ -56,7 +56,7 @@
                 <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
             {% endif %}
             </div>
-            <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
+            <div class='dateTime'> {{ story.datetime|date('d-M-Y H:i:s') }} </div>
             <p><pre>{{ story.storyText|raw }}</pre></p>
         </div>
         {% endif %}

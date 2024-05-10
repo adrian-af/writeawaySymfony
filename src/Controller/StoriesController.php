@@ -184,36 +184,64 @@ class StoriesController extends AbstractController
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
-        //deletion of stories is done from within the user profile page
-        if ($request->isMethod('POST')) 
+        //deletion of stories and comments is done from within the user profile page
+        if ($request->isMethod('POST'))
         {
-            $deleteid = $request->query->get('deleteid');
-            //find the story by ID
-            $story = $entityManager->find(Story::class, $deleteid);
-            try
+            if($request->query->get('deleteid') != null)
             {
-                foreach($story->getComments() as $comment)
+                $deleteid = $request->query->get('deleteid');
+                //find the story by ID
+                $story = $entityManager->find(Story::class, $deleteid);
+                try
+                {
+                    foreach($story->getComments() as $comment)
+                    {
+                        $entityManager->remove($comment);
+                    }
+                    $entityManager->remove($story);
+                    $entityManager->flush();
+                    $deleted = "Story deleted successfully";
+                }
+                catch(\Exception $e)
+                {
+                    $deleted = "There was an error deleting the story: " .$e->getMessage();
+                }
+                finally
+                {
+                    return $this->render('ownProfile.html.twig',[
+                        //For the header
+                        'genres' => $genresHeader,
+                        'userPfp'=>$userPfp,
+                        'user' => $user,
+                        'deleted' => $deleted
+                    ]);
+                }
+            }
+            else if($request->query->get('deletecomment') != null)
+            {
+                $deletecomment = $request->query->get('deletecomment');
+                $comment = $entityManager->find(Comment::class, $deletecomment);
+                try
                 {
                     $entityManager->remove($comment);
+                    $entityManager->flush();
+                    $deleted = "Comment deleted successfully";
                 }
-                $entityManager->remove($story);
-                $entityManager->flush();
-                $deleted = "Story deleted successfully";
+                catch(\Exception $e)
+                {
+                    $deleted = "There was an error deleting the comment: " .$e->getMessage();
+                }
+                finally
+                {
+                    return $this->render('ownProfile.html.twig',[
+                        'genres' => $genresHeader,
+                        'userPfp' => $userPfp,
+                        'user' => $user,
+                        'deleted' => $deleted
+                    ]);
+                }
             }
-            catch(\Exception $e)
-            {
-                $deleted = "There was an error deleting the story: " .$e->getMessage();
-            }
-            finally
-            {
-                return $this->render('ownProfile.html.twig',[
-                    //For the header
-                    'genres' => $genresHeader,
-                    'userPfp'=>$userPfp,
-                    'user' => $user,
-                    'deleted' => $deleted
-                ]);
-            }
+            
         }
         return $this->render('ownProfile.html.twig',[
             //For the header
