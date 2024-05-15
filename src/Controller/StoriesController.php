@@ -95,7 +95,8 @@ class StoriesController extends AbstractController
                     'genres' => $genresHeader,
                     'userPfp' => $userPfp,  
                     'story' => $story,
-                    'comments' => $comments
+                    'comments' => $comments,
+                    'user' => $user
                 ]);
             }
         }
@@ -103,8 +104,29 @@ class StoriesController extends AbstractController
         return $this->render('seeStory.html.twig', [
             //For the header
             'genres' => $genresHeader,
-            'userPfp'=>$userPfp
+            'userPfp'=>$userPfp,
+            'user' => $user
         ]);
+    }
+
+    #[Route(path: '/fav/{action}', name: 'fav')]
+    public function fav(EntityManagerInterface $entityManager, $action)
+    {
+        if($action == 'fav') //add this story as a favourite
+        {
+            
+        }
+
+        //For the header
+        $user = $this->getUser();
+        $genres = $entityManager->getRepository(Genre::class)->findAll();
+        
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
+
     }
 
     #[Route(path:'/write', name: 'write')]

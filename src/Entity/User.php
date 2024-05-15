@@ -44,6 +44,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     private string $imageBase64;
 
+    #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: "usersThatFaved")]
+    #[ORM\JoinTable(
+        name: "users_fav_stories",
+        joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "ID")],
+        inverseJoinColumns: [new ORM\JoinColumn(name: "story_id", referencedColumnName: "ID")]
+    )]
+    public $favStories; //stories faved by this user
+
     /**
      * User constructor
      */

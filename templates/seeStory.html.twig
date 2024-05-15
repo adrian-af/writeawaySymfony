@@ -48,7 +48,23 @@
 <body>
         {% if story %}
         <div id='{{ story.storyID }}' class='container'>
-            <h2>{{ story.storyTitle }} </h2>
+
+            {% set hasFaved = false %}
+            {% for storyInArray in user.favStories %}
+                {% if storyInArray.storyID == story.storyID %}
+                    {% set hasFaved = true %}
+                {% endif %}
+            {% endfor %}
+
+            <h2>
+                {% if hasFaved == true %}
+                    <a href="{{ path('fav', {'action': 'unfav', 'story': story.storyID}) }}"><img class="logo" src="{{ asset('Images/heartfilled.png') }}" alt="heart" style="height: 1em; width: auto;"></a>
+                {% else %}
+                    <a href="{{ path('fav'), {'action': 'fav', 'story': story.storyID} }}"><img class="logo" src="{{ asset('Images/heart.png') }}" alt="heart" style="height: 1em; width: auto;">
+                {% endif %}
+
+                {{ story.storyTitle }} 
+            </h2>
             <div>by 
             {% if story.user.userId == 161 %}
                 DELETED

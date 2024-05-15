@@ -44,6 +44,9 @@ class Story
     #[ORM\OneToMany(targetEntity:"Comment", mappedBy: "story")]
     private $comments;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: "favStories")]
+    private $usersThatFaved; //array of Users that have faved this story
+
 
     /**
      * Genres constructor
@@ -163,6 +166,26 @@ class Story
     public function setComments($comments)
     {
         $this->comments = $comments;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of favUsers
+     */ 
+    public function getUsersThatFaved()
+    {
+        return $this->usersThatFaved;
+    }
+
+    /**
+     * Set the value of favUsers
+     *
+     * @return  self
+     */ 
+    public function setUsersThatFaved($usersThatFaved)
+    {
+        $this->usersThatFaved = $usersThatFaved;
 
         return $this;
     }
