@@ -512,7 +512,7 @@ class StoriesController extends AbstractController
                 $user->setPhoto($fileStream);
                 
                 $entityManager->flush();
-                $change = "Photo changed successfully!";
+                $changed = "Photo changed successfully!";
             }
             catch(\Exception $e)
             {
