@@ -5,7 +5,6 @@ use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\DBAL\Types\SmallIntType;
 
 /**
  * @ORM\Entity
@@ -20,9 +19,15 @@ class Story
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
     private $storyID;
-    
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "stories")]
-    #[ORM\JoinColumn(name:"userId", referencedColumnName: "ID")]
+
+    /**
+     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="stories")
+     * @ORM\JoinTable(
+     *      name="rel_story_user",
+     *      joinColumns={@ORM\JoinColumn(name="story_id", referencedColumnName="ID")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="ID")}
+     * )
+     */
     private $user;
 
     #[ORM\Column(type: 'string', name: 'title')]
@@ -50,6 +55,8 @@ class Story
      */
     public function __construct()
     {
+        $this->user = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
     /**
      * Get the value of ID
@@ -166,4 +173,6 @@ class Story
 
         return $this;
     }
+
+
 }
