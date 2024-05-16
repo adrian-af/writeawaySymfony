@@ -95,7 +95,8 @@ class StoriesController extends AbstractController
                     'genres' => $genresHeader,
                     'userPfp' => $userPfp,  
                     'story' => $story,
-                    'comments' => $comments
+                    'comments' => $comments,
+                    'user' => $user
                 ]);
             }
         }
@@ -103,8 +104,56 @@ class StoriesController extends AbstractController
         return $this->render('seeStory.html.twig', [
             //For the header
             'genres' => $genresHeader,
-            'userPfp'=>$userPfp
+            'userPfp'=>$userPfp,
+            'user' => $user
         ]);
+    }
+
+    #[Route(path: '/fav', name: 'fav')]
+    public function fav(EntityManagerInterface $entityManager, Request $request)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
+
+        if($request->request->all())
+        {
+            //get the submitted data
+            $formData = $request->request->all();
+            $storyId = $formData['storyID'];
+            $action = $formData['action'];
+
+            $userEntity = $this->getUser();
+            $storyEntity = $entityManager->find(Story::class, $storyId);
+        
+            if($action == 'fav') //add this story as a favourite
+            {
+                $userEntity->addFavedStory($storyEntity);
+                $storyEntity->addUserThatFaved($userEntity);
+            }
+            else if($action == 'unfav') //remove this story as a favourite
+            {
+                $userEntity->getFavStories()->removeElement($storyEntity);
+                $storyEntity->getUsersThatFaved()->removeElement($userEntity);
+            }
+            $entityManager->persist($userEntity);
+            $entityManager->persist($storyEntity);
+            $entityManager->flush();
+            $comments = $storyEntity->getComments();
+            return $this->render('seeStory.html.twig', [
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'user' => $user,
+                'story' => $storyEntity,
+                'comments' => $comments
+            ]);
+        }
     }
 
     #[Route(path:'/write', name: 'write')]

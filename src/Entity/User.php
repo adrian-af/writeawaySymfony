@@ -44,6 +44,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     private string $imageBase64;
 
+    #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: "usersThatFaved")]
+    #[ORM\JoinTable(
+        name: "users_fav_stories",
+        joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "ID")],
+        inverseJoinColumns: [new ORM\JoinColumn(name: "story_id", referencedColumnName: "ID")]
+    )]
+    public $favStories; //stories faved by this user
+
     /**
      * User constructor
      */
@@ -293,5 +301,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->comments = $comments;
 
         return $this;
+    }
+
+    
+    /**
+     * Get the value of favStories
+     */ 
+    public function getFavStories()
+    {
+        return $this->favStories;
+    }
+
+    /**
+     * Set the value of favStories
+     *
+     * @return  self
+     */ 
+    public function setFavStories($favStories)
+    {
+        $this->favStories = $favStories;
+
+        return $this;
+    }
+
+    public function addFavedStory($story)
+    {
+        $this->favStories[] = $story;
+        return $this->favStories;
     }
 }
