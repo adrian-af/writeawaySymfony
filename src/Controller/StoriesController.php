@@ -569,7 +569,7 @@ class StoriesController extends AbstractController
             }
             finally
             {
-                return $this->render("ownProfile.html.twig", [
+                return $this->redirectToRoute("ownProfile", [
                     'genres' => $genresHeader,
                     'userPfp' => $userPfp,
                     'deleted' => $changed,
