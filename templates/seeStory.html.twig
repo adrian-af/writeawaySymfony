@@ -81,6 +81,14 @@
                 <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
             {% endif %}
             </div>
+            <div>
+                Story has 
+                {% if story.usersThatFaved.count == 1  %}
+                    1 like
+                {% else %}
+                    {{ story.usersThatFaved.count }} likes
+                {% endif %}
+            </div>
             <div class='dateTime'> {{ story.datetime|date('d-M-Y H:i:s') }} </div>
             <p><pre>{{ story.storyText|raw }}</pre></p>
         </div>
