@@ -189,4 +189,10 @@ class Story
 
         return $this;
     }
+
+    public function addUserThatFaved($user)
+    {
+        $this->usersThatFaved[] = $user;
+        return $this->usersThatFaved;
+    }
 }

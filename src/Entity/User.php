@@ -302,4 +302,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
         return $this;
     }
+
+    
+    /**
+     * Get the value of favStories
+     */ 
+    public function getFavStories()
+    {
+        return $this->favStories;
+    }
+
+    /**
+     * Set the value of favStories
+     *
+     * @return  self
+     */ 
+    public function setFavStories($favStories)
+    {
+        $this->favStories = $favStories;
+
+        return $this;
+    }
+
+    public function addFavedStory($story)
+    {
+        $this->favStories[] = $story;
+        return $this->favStories;
+    }
 }

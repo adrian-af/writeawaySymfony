@@ -109,17 +109,12 @@ class StoriesController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/fav/{action}', name: 'fav')]
-    public function fav(EntityManagerInterface $entityManager, $action)
+    #[Route(path: '/fav', name: 'fav')]
+    public function fav(EntityManagerInterface $entityManager, Request $request)
     {
-        if($action == 'fav') //add this story as a favourite
-        {
-            
-        }
-
         //For the header
         $user = $this->getUser();
-        $genres = $entityManager->getRepository(Genre::class)->findAll();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
         
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
@@ -127,6 +122,38 @@ class StoriesController extends AbstractController
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
 
+        if($request->request->all())
+        {
+            //get the submitted data
+            $formData = $request->request->all();
+            $storyId = $formData['storyID'];
+            $action = $formData['action'];
+
+            $userEntity = $this->getUser();
+            $storyEntity = $entityManager->find(Story::class, $storyId);
+        
+            if($action == 'fav') //add this story as a favourite
+            {
+                $userEntity->addFavedStory($storyEntity);
+                $storyEntity->addUserThatFaved($userEntity);
+            }
+            else if($action == 'unfav') //remove this story as a favourite
+            {
+                $userEntity->getFavStories()->removeElement($storyEntity);
+                $storyEntity->getUsersThatFaved()->removeElement($userEntity);
+            }
+            $entityManager->persist($userEntity);
+            $entityManager->persist($storyEntity);
+            $entityManager->flush();
+            $comments = $storyEntity->getComments();
+            return $this->render('seeStory.html.twig', [
+                'genres' => $genresHeader,
+                'userPfp'=>$userPfp,
+                'user' => $user,
+                'story' => $storyEntity,
+                'comments' => $comments
+            ]);
+        }
     }
 
     #[Route(path:'/write', name: 'write')]
