@@ -80,7 +80,23 @@
             {% else %}
                 You have not posted any comments yet.
             {% endif %}
-            
+        </div>
+        <div>
+            <h2>Stories you've liked:</h2>
+            {% if user.favStories|length > 0 %}
+                {% for story in user.favStories %}
+                    <div id="{{story.storyID}}" class="container">
+                        <div class="title">
+                            <a href="{{ path('seeStory', {'id': story.storyID}) }}">{{ story.storyTitle }}</a> by  <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
+                        </div>
+                        <div class="content">{{ story.storyText|slice(0, 50)| raw }}...</div>
+                        <div class="dateTime">{{ story.datetime|date('d-M-Y H:i:s') }}</div>
+                    </div>
+                {% endfor %}
+
+
+                
+            {% endif %}
         </div>
         <div id="alert"></div>
     </div>
