@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Column(type: 'integer', name: 'role')]
     private $role;
 
-    #[ORM\OneToMany(targetEntity: "Story", mappedBy:"user")]
+    #[ORM\ManyToMany(targetEntity: "Story", mappedBy:"user")]
     private $stories; //array of stories
 
     #[ORM\OneToMany(targetEntity: "Comment", mappedBy: "user")]
