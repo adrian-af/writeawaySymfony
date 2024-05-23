@@ -31,7 +31,11 @@
         </div>
         <div id='search'>
             <form action="{{ path('search') }}" method="POST">
-                <input type="text" placeholder="Search users..." name="usersearched">
+                <input type="text" placeholder="Search..." name="usersearched">
+                <select name="searchType">
+                    <option name="searchType" value="story">Story</option>
+                    <option name="searchType" value="user">User</option>
+                </select>
                 <button><img src="{{ asset('Images/search.png') }}" alt="Search button" class="icon"></button>
             </form>
         </div>

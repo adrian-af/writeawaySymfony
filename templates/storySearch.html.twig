@@ -1,0 +1,22 @@
+{# templates/storySearch.html.twig #}
+{% include 'header.html.twig'  with {'genres':genres, 'userPfp': userPfp} %}
+{% block body %}
+    <div class='primero'>
+        {% if stories and stories|length > 0%}
+            {{ stories|length }} found: <br>
+            {% for story in stories %}
+                {# {% set pattern = '/' ~ term ~ '/i' %}
+                {% set replacement = '<strong>' ~ term ~ '</strong>' %}
+                {% set highlighted_title = story.storyTitle|replace({(pattern): replacement}, 'regex') %}
+                
+                - {{ highlighted_title|raw }} by {{ story.user.userId}}<br> #}
+
+
+                {% set parts = story.storyTitle|split(term) %}
+                {{ parts|join('<strong>' ~ term ~ '</strong>')|raw }}<br>
+            {% endfor %}
+        {% else %}
+            <h1>No stories found with that term</h1>
+        {% endif %}
+    </div>
+{% endblock %}
