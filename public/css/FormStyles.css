@@ -3,7 +3,7 @@ body{
     width: auto;
     justify-content: center; /* Center horizontally */
     align-items: center;
-    background-image: url("{{{{ asset('Images/'fondoParaInicios.jpg) }}}}");
+   
     background-color: #669999;
 }
 .rectangle-1 {
@@ -135,8 +135,8 @@ img{
 }
 .container
 {
-    width: 120vw;
+    width: 100vw;
     height: 100vh;
-    background-color: #669999;
+    background-color: rgba(102, 153, 153, 1);
     overflow-y: hidden;
 }

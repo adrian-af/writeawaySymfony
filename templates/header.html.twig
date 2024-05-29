@@ -1,9 +1,80 @@
 {# templates/header.html.twig #}
 {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 {% endblock %}
 {% block header %}
 <header>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid mx-auto">
+    <a class="navbar-brand" href="{{ path('app_login') }} ">
+      <i class="fab fa-github fa-2x mx-3 ps-1"><img class="logo" src="{{ asset('Images/logotipo.png') }}" alt="Logo image" style="max-height: 2em;"></i>
+    </a>
+    <div class="h-100 d-flex align-items-center w-100">
+        <form action="{{ path('search') }}" method="POST" class="form-search d-flex align-items-center h-100">
+            <input type="text" placeholder="Search..." name="usersearched" class="form-control">
+            <select name="searchType" class="form-select">
+                <option name="searchType" value="story">Story</option>
+                <option name="searchType" value="user">User</option>
+            </select>
+            <button class="btn btn-primary btn-search"><img src="{{ asset('Images/search.png') }}" alt="Search button" class="icon search"></button>
+        </form>
+
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Pull request</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Issues</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Marketplace</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Explore</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav d-flex flex-row ms-auto me-3">
+        <li class="nav-item me-3 me-lg-0 dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-mdb-toggle="dropdown"
+            aria-expanded="false">
+            <i class="fas fa-plus"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item me-3 me-lg-0 dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-mdb-toggle="dropdown"
+            aria-expanded="false">
+            <img src="https://mdbootstrap.com/img/Photos/Avatars/img (31).jpg" class="rounded-circle" height="22"
+              alt="" loading="lazy" />
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown1">
+            <li><a class="dropdown-item" href="#">Action</a></li>
+            <li><a class="dropdown-item" href="#">Another action</a></li>
+            <li>
+              <hr class="dropdown-divider" />
+            </li>
+            <li>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div>
     <div id='headerleft'>
         <div id='logo'>
             <img class="logo" src="{{ asset('Images/logotipo.png') }}" alt="Logo image">
@@ -59,5 +130,5 @@
             </div>
         </div>
     </div>
-</header>
+</div>
 {% endblock %}
