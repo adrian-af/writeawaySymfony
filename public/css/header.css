@@ -152,3 +152,10 @@ header {
 {
     margin: 0;
 }
+
+/*foto del usuario*/
+#user
+{
+    height: 2.5em;
+    width: 2.5em;
+}

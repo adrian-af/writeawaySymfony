@@ -6,6 +6,7 @@
         {% block stylesheets %}
             <link rel="icon" href="{{ asset('css/FormStyles.css') }}">
             <link rel="icon" href="{{ asset('css/CommonStyles.css') }}">
+            
         {% endblock %}
 
         {% block javascripts %}
@@ -17,6 +18,10 @@
             {% block header %}
                 {% include('header.html.twig') %}
             {% endblock %}
-        {% endblock %}
+        {% endblock %}    
+        
+        <script src="{{ asset('js/popper.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        
     </body>
 </html>

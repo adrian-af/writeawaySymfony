@@ -441,6 +441,7 @@ class StoriesController extends AbstractController
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
+            'error'=>"not post"
         ]);
     }
     #[Route(path:'/comment', name: 'comment')]
