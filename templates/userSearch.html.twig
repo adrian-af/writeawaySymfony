@@ -1,6 +1,9 @@
 {# templates/userSearch.html.twig #}
 {% include 'header.html.twig'  with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
+{% if error is defined %}
+    {{ error }}
+{% endif %}
     <div class='primero'>
         {% if users and users|length > 0%}
             {% for user in users %}
@@ -19,7 +22,7 @@
                 {% endif %}
             {% endfor %}
         {% else %}
-            <h1>No se encontraron usuarios</h1>
+            <h1>No users found with that term</h1>
         {% endif %}
     </div>
 {% endblock %}

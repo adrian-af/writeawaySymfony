@@ -1,59 +1,100 @@
 {# templates/header.html.twig #}
 {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('css/header.css') }}">
 {% endblock %}
+{% extends 'base.html.twig' %}
 {% block header %}
+ 
 <header>
-    <div id='headerleft'>
-        <div id='logo'>
-            <img class="logo" src="{{ asset('Images/logotipo.png') }}" alt="Logo image">
-        </div>
-        <div id="homepage">
-            <form action="{{ path('app_login') }}" method='POST'>
-                <button>Home</button>
-                <input type='hidden' name='_username' value=""/>
-            </form>
-        </div>
-        <div class="dropdown">
-            <div class="dropbtn">Genre</div>
-            <div class="dropdown-content">
+
+<style>
+  #user
+  {
+    background-image: url("{{ userPfp }}");
+    background-size: cover;
+    background-position: center;
+  }
+  #userDefault
+  {
+    background-image: url("{{ asset('Images/user.png') }}");
+    background-size: cover;
+  }
+</style>
+
+<nav class="navbar navbar-expand-lg navbar-light opacity-5">
+  <div class="container-fluid">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <li class="nav-item">
+        <a class="navbar-brand" href="{{ path('app_login') }} ">
+          <i class="fab fa-github fa-2x mx-3 ps-1"><img class="logo" src="{{ asset('Images/logo1.png') }}" alt="Logo image" style="max-height: 2.2em;"></i>
+        </a>
+      </li>
+      <li class="nav-item">
+        <form action="{{ path('search') }}" method="POST" class="form-search d-flex align-items-center h-100">
+            <input type="text" placeholder="Search..." name="usersearched" class="form-control">
+            <select name="searchType" class="form-select">
+                <option name="searchType" value="story">Story</option>
+                <option name="searchType" value="user">User</option>
+            </select>
+            <button type="submit" class="btn btn-primary btn-search"><img src="{{ asset('Images/search.png') }}" alt="Search button" class="icon search"></button>
+        </form>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{{ path('write') }}">Start writing</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a data-mdb-dropdown-init class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">Genre</a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <li>
             {% if genres %}
-                {% for genre in genres %}
-                    <a href="{{ path('show_genre', {'genreID':genre.genreID}) }}">{{ genre.name }}</a>
-                {% endfor %}
-            {% else %}
+              {% for genre in genres %}
+                <a href="{{ path('show_genre', {'genreID':genre.genreID}) }}" class="dropdown-item">{{ genre.name }}</a>
+              {% endfor %}
+              {% else %}
                 no genres found
-            {% endif %}
-            </div>
-        </div>
-        <div id="write">
-            <form action="{{ path('write') }}" method='POST'><button>Start writing</button></form>
-        </div>
-        <div id='search'>
-            <form action="{{ path('search') }}" method="POST">
-                <input type="text" placeholder="Search users..." name="usersearched">
-                <button><img src="{{ asset('Images/search.png') }}" alt="Search button" class="icon"></button>
-            </form>
-        </div>
-        <div>
-            {% if is_granted('ROLE_ADMIN') %}
-                <form action="{{ path('adminIndex') }}" method='POST'><button>Admin zone</button></form>
-            {% endif %}
-        </div>
-    </div>    
-    <div id='headerright'>
-        <div  class='dropdown'>
-            {% if userPfp is not null and userPfp is defined %}
-                <img src="{{ userPfp }}" alt="User Picture" class="dropbtn" id="user">
-            {% else %}
-                <img src="{{ asset('Images/user.png') }}" alt="User Picture" class="dropbtn" id="user">
-            {% endif %}
-            <div class="dropdown-content2">
-                <a href="{{ path('ownProfile') }}">Profile</a>
-                <a href="{{ path('app_logout') }}">Log out</a>
-                <a href="{{ path('about', {'genres': genres, 'userPfp': userPfp}) }}">About us</a>
-            </div>
-        </div>
-    </div>
-</header>
+              {% endif %}
+          </li>
+        </ul>
+      </li>
+      {% if is_granted('ROLE_ADMIN') %}
+        <li class="nav-item">
+          <a class="nav-link" href="{{ path('adminIndex') }}">Admin zone</a>
+        </li>
+      {% endif %}
+    </ul>
+
+    <ul class="navbar-nav mb-2 mb-lg-0 ms-auto">
+      <li class="nav-item dropdown">
+        <a data-mdb-dropdown-init class="nav-link dropdown-toggle hidden-arrow"  id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
+          {% if userPfp is not null and userPfp is defined %}
+            <div class="dropbtn rounded-circle" id="user" ></div>
+          {% else %}
+            <div class="dropbtn rounded-circle" id="userDefault" ></div>
+          {% endif %}
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <li>
+            <a class="dropdown-item" href="{{ path('ownProfile') }}" class="dropdown-item">Profile</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="{{ path('app_logout') }}" class="dropdown-item">Log out</a>
+          </li>
+          <li>
+            <a href="{{ path('about', {'genres': genres, 'userPfp': userPfp}) }}" class="dropdown-item">About us</a>
+          </li>
+        </ul>
+      </li>    
+    </ul>
+  </div>
+</nav>
+  
+<script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
+<script>
+  $(document).ready(function() {
+    $('.dropdown-toggle').click(function() {
+      $(this).next('.dropdown-menu').toggle();
+    });
+  });
+</script>
 {% endblock %}

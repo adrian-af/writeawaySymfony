@@ -1,0 +1,15 @@
+.card
+{
+    margin: 1em 2em;
+}
+h1
+{
+    text-align: center;
+}
+
+.card-header a
+{
+    color: #003366;
+    font-weight: 600;
+    text-decoration: none;
+}

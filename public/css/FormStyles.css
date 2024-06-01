@@ -3,7 +3,8 @@ body{
     width: auto;
     justify-content: center; /* Center horizontally */
     align-items: center;
-    background-image: url("{{{{ asset('Images/'fondoParaInicios.jpg) }}}}");
+   
+    background-color: #669999;
 }
 .rectangle-1 {
     display: grid;
@@ -35,7 +36,10 @@ form{
 	align-items: center;
 	justify-content: center;}
 td{padding: 5px;}
-h1{margin: 0px;}
+h1{
+    text-shadow: 2px 1px 2px rgba(102, 153, 153, 0.5); 
+    font-size: 48;
+}
 .notes{
     text-align: center;
 }
@@ -88,7 +92,6 @@ h1{margin: 0px;}
 	width: 120px;
 	height: 32px;
 	padding: 0px 10px 0px 10px;
-	background: linear-gradient(to bottom, #66424c, #c72546 );
 	color: #232323;
 	border:1px solid #232323;
 	border-radius: 3px 3px 3px 3px;
@@ -122,4 +125,18 @@ img{
     font-weight: 400;
     font-size: 14px;
     text-align: left;
+}
+.container-fluid
+{
+    background-color: #FF9966;
+    border-radius: 1em;
+    width: 50%;
+    margin: auto;
+}
+.container
+{
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(102, 153, 153, 1);
+    overflow-y: hidden;
 }
