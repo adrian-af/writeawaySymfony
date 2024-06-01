@@ -1,9 +1,23 @@
 {# templates/hello.html.twig #}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/header.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Stories.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
 {% endblock %}
+<head>
+    <style>
+        header
+        {
+            width: 98vw;
+        }
+        body
+        {
+            background-color: #669999 !important;
+        }
+    </style>
+</head>
 {% block body %}
-    {# {% for genre in genres %} #}
+   
     {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
     <div class="primero">
         <h1 style="align: center">
@@ -13,22 +27,30 @@
                 Welcome to Write Away!
             {% endif %}
         </h1>
+    </div>
+    <div>
         {% if error is defined%}
             <div id='error'>{{ error }}</div>
         {% endif %}
         {% if stories is defined%}
             {% if stories|length > 0 %}
                 {% for story in stories %}
-                    <div id='{{ story.storyID }}' class='container'>
-                        <div class='title'><a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a> by 
-                        {% if story.user.userId == 161 %}
-                            DELETED
-                        {% else %}
-                            <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
-                        {% endif %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a></h3>
                         </div>
-                        <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
-                        <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Author(s): 
+                            {% if story.user.userId == 161 %}
+                                DELETED
+                            {% else %}
+                                <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
+                            {% endif %}</h5>
+                            <p class="card-text">
+                                <div class='content'>{{ story.storyText|slice(0, 100)|raw }}...</div>
+                                <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
+                            </p>
+                        </div>
                     </div>
                 {% endfor %}
             {% endif %}
