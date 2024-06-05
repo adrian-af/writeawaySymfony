@@ -55,3 +55,13 @@
     height: 2.5em;
     width: 2.5em;
 }
+
+.navbar .dropdown-menu {
+    left: auto;
+    right: 0;
+    margin: 0;
+}
+
+.navbar .dropdown-toggle{
+    text-align: right;
+}

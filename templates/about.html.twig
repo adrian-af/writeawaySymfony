@@ -1,30 +1,53 @@
 {# templates/about.html.twig #}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+{% endblock %}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+<style>
+    #booksdiv
+    {
+        width: 100%;
+        background-image: url("{{ asset('Images/libros.png') }}");
+        background-repeat: repeat-x;
+        height: 80px;
+        background-size: auto 100%;
+    }
+    h1
+    {
+        color: #669999;
+        font-weight: bold;
+    }
+</style>
 {% block body %}
-<div class="primero">
-        <h1>Welcome to</h1>
-        <img class="logotipos" src="{{ asset('Images/logotipos.png') }}" alt="Logotype" height="200px">
-        
-        <div>
-            <img src="{{ asset('Images/libros.png') }}" style="width:10%;" alt="Books image">
-            <img src="{{ asset('Images/libros.png') }}" style="width:10%;" alt="Books image">
-            <img src="{{ asset('Images/libros.png') }}" style="width:10%;" alt="Books image">
-    </div>
-        <div>
-            <h3 class="subtitle">What is this web?</h3>
-            <p>
-                Welcome to Write Away, a creative space for young writers!
-                This user-friendly website is designed for enyone who wnats to
-                to unleash their imagination, share stories, and explore the
-                diverse world of storytelling.</p>
-            <h3 class="subtitle">Who are we?</h3>
-            <p>
-                We are Adrián and Cielo, two hardworking students of Web Apllication Development
-                in I.E.S CLara del Rey in Spain that had combined their habilities learned to create
-                this web poryect.
-            </p>
-            <h3 class="subtitle">Whant to contact us?</h3>
-            <p>Contact email fakemail@mailme.com</p>
+<div class="primero card container">
+    <div class="row">
+        <div class="col-md-4">
+            <h1>Welcome!
+            <div height="200px">
+                <img class="logotipos" src="{{ asset('Images/logo3.png') }}" alt="Logotype">
+            </div>
+            </h1>
+           
+        </div>
+        <div class="col-md-8 d-flex align-items-center">
+            <div class="p-4">
+                <h3 class="subtitle">What is this web?</h3>
+                <p>
+                    Welcome to Write Away, a creative space for young writers!
+                    This user-friendly website is designed for anyone who wants to
+                    to unleash their imagination, share stories, and explore the
+                    diverse world of storytelling.</p>
+                <h3 class="subtitle">Who are we?</h3>
+                <p>
+                    We are Tomás, Adrián, and Cielo, hardworking students of Web Apllication Development
+                    in I.E.S CLara del Rey in Spain that have combined our habilities learned to create
+                    this web project.
+                </p>
+                <h3 class="subtitle">Want to contact us?</h3>
+                <p>Contact email info@writeaway.org</p>
+            </div>
         </div>
     </div>
+     <div id="booksdiv" width="100%" ></div>
+</div>  
 {% endblock %}
