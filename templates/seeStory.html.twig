@@ -22,13 +22,13 @@
                             <form action="{{ path('fav') }}" method="POST">
                                 <input type="hidden" name="storyID" value="{{ story.storyID }}">
                                 <input type="hidden" name="action" value="unfav">
-                                <button type="submit" class="btn btn-primary favButton"><img class="logo" src="{{ asset('Images/heartfilled.png') }}" alt="heart" style="height: 2em; width: auto;"></button>
+                                <button type="submit" class="btn btn-primary favButton"><img class="logo" src="{{ asset('Images/heartfilled.png') }}" alt="heart" style="height: 1.8em; width: auto;"></button>
                             </form>
                         {% else %}
                             <form action="{{ path('fav') }}" method="POST">
                                 <input type="hidden" name="storyID" value="{{ story.storyID }}">
                                 <input type="hidden" name="action" value="fav">
-                                <button type="submit" class="btn btn-primary favButton"><img class="logo" src="{{ asset('Images/heart.png') }}" alt="heart" style="height: 2em; width: auto;"></button>
+                                <button type="submit" class="btn btn-primary favButton"><img class="logo" src="{{ asset('Images/heart.png') }}" alt="heart" style="height: 1.8em; width: auto;"></button>
                             </form>
                         {% endif %}
                         {{ story.storyTitle }} 
