@@ -11,5 +11,57 @@ h1
 {
     color: #003366;
     font-weight: 600;
-    text-decoration: none;
+    text-decoration: none;   
+}
+
+.favButton
+{
+    background-color: transparent;
+    border: none;
+    border-radius: 90px;
+}
+
+pre
+{
+    font-family: 'Lexend', Arial, sans-serif;
+    white-space: pre-wrap;
+}
+
+.pfp
+{
+    height: 3em;
+    border-radius: 2em;
+    aspect-ratio: 1 / 1; /* Make it a square */
+    object-fit: cover; 
+    margin: 1em;
+}
+
+.commentInfo
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.card-title{
+    font-size: large;
+}
+
+.card-header
+{
+    margin-top: 1.2em;
+    padding: 0;
+}
+.by
+{
+    margin-left: 2em;
+}
+
+.card-header
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }

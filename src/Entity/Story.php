@@ -20,7 +20,7 @@ class Story
     #[ORM\Column(type: 'integer', name: 'ID')]
     #[ORM\GeneratedValue]
     private $storyID;
-    
+
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "stories")]
     #[ORM\JoinColumn(name:"userId", referencedColumnName: "ID")]
     private $user;

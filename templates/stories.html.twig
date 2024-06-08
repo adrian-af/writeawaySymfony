@@ -3,25 +3,51 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
 {% endblock %}
+<style>
+    .primero
+    {
+        background-color: rgba(255, 255, 255, 0);
+        border: none;
+    }
+    
+</style>
 {% block body %}
-    <div class="primero">
+    <div class="primero card m-3">
+
+    <div>
     {% if genre is defined %}
-        <h1>{{ genre.name }}</h1>
-        {% if stories is not empty %}
-            {% for story in stories %}
-                <div id='{{ story.storyID }}' class='container'>
-                    <div class='title'>
-                        <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a>
-                        by <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
-                    </div>
-                    <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
-                    <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            <h1>There are no stories for this genre!</h1>
-            <form action="{{ path('write') }}" method='POST'><button>Start writing!</button></form>
+        <h1>{{ genre.name|capitalize }} stories</h1>
+        {% if error is defined%}
+            <div id='error'>{{ error }}</div>
         {% endif %}
+        {% if stories is defined%}
+            {% if stories|length > 0 %}
+                {% for story in stories %}
+                    <div class="card m-3">
+                        <div class="card-header">
+                            <h3><a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a></h3>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Author(s): 
+                            {% if story.user.userId == 161 %}
+                                DELETED
+                            {% else %}
+                                <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
+                            {% endif %}</h5>
+                            <p class="card-text">
+                                <div class='content'>{{ story.storyText|slice(0, 100)|raw }}...</div>
+                                <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
+                            </p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="card">
+                        <h4 class="m-2">There are no stories for this genre yet!</h4>
+                        <form action="{{ path('write') }}" method='POST' class="m-2"><button class="btn btn-primary">Start writing!</button></form>
+                    </div>
+                {% endif %}
+            {% endif %}
     {% endif %}
     </div>
 {% endblock %}

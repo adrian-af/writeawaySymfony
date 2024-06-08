@@ -1,5 +1,9 @@
 {# templates/ownProfile.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Stories.css') }}">
+{% endblock %}
 {% block body %}
     <script>
         function confirmDelete(id)
@@ -36,6 +40,7 @@
         </div>
         <div>
             <h2>Your stories:</h2>
+             
             {% if user.stories is defined and user.stories|length > 0 %}
                 {% for story in user.stories %}
                     <div id='{{ story.storyID }}' class='container'>
@@ -99,5 +104,7 @@
             {% endif %}
         </div>
         <div id="alert"></div>
+     
+
     </div>
 {% endblock %}

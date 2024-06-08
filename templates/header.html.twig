@@ -49,7 +49,7 @@
           <li>
             {% if genres %}
               {% for genre in genres %}
-                <a href="{{ path('show_genre', {'genreID':genre.genreID}) }}" class="dropdown-item">{{ genre.name }}</a>
+                <a href="{{ path('show_genre', {'genreID':genre.genreID}) }}" class="dropdown-item">{{ genre.name|capitalize }}</a>
               {% endfor %}
               {% else %}
                 no genres found
