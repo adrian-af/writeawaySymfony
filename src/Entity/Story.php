@@ -20,14 +20,8 @@ class Story
     #[ORM\GeneratedValue]
     private $storyID;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="stories")
-     * @ORM\JoinTable(
-     *      name="rel_story_user",
-     *      joinColumns={@ORM\JoinColumn(name="story_id", referencedColumnName="ID")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="ID")}
-     * )
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "stories")]
+    #[ORM\JoinColumn(name:"userId", referencedColumnName: "ID")]
     private $user;
 
     #[ORM\Column(type: 'string', name: 'title')]

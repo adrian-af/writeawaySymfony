@@ -2,103 +2,68 @@
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
-{% endblock %}
-{% block styles %}
-    <style>
-        p{
-            overflow-wrap: break-word;
-        }
-        p pre{
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        pre{
-            padding: 5%;
-            text-align: justify;
-            white-space: pre-line;
-            background: lightgray;
-            border:1px solid black;
-        }
-        /*Coments*/
-        .commentsWall{
-            background: #a39b74;
-            border: 10px inset #ede4bd;
-            padding: 2%;
-        }
-        #commentForm{
-            margin: 10px 0 10px 0;
-        }
-        .comment{
-            border-bottom: 3px dashed #66424c;
-            padding-top: 2%;
-            margin-bottom: 5px;
-        }
-        .comment > * > pre{
-            background: none;
-            border:none;
-        }
-        .commentInfo{
-            text-align: left;
-            padding-left: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/Stories.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
 {% endblock %}
 {% block body %}
 <body>
-        {% if story %}
-        <div id='{{ story.storyID }}' class='container'>
-
+    {% if story %}
+        <div id='{{ story.storyID }}' class='container card'>
             {% set hasFaved = false %}
             {% for storyInArray in user.favStories %}
                 {% if storyInArray.storyID == story.storyID %}
                     {% set hasFaved = true %}
                 {% endif %}
             {% endfor %}
-
-            <h2>
-                {% if hasFaved == true %}
-                    <form action="{{ path('fav') }}" method="POST">
-                        <input type="hidden" name="storyID" value="{{ story.storyID }}">
-                        <input type="hidden" name="action" value="unfav">
-                        <button><img class="logo" src="{{ asset('Images/heartfilled.png') }}" alt="heart" style="height: 1em; width: auto;"></button>
-                    </form>
-                {% else %}
-                    <form action="{{ path('fav') }}" method="POST">
-                        <input type="hidden" name="storyID" value="{{ story.storyID }}">
-                        <input type="hidden" name="action" value="fav">
-                        <button><img class="logo" src="{{ asset('Images/heart.png') }}" alt="heart" style="height: 1em; width: auto;"></button>
-                    </form>
-                    
-                {% endif %}
-
-                {{ story.storyTitle }} 
-            </h2>
-            <div>by 
-            {% if story.user.userId == 161 %}
-                DELETED
-            {% else %}
-                <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
-            {% endif %}
+            <div class="container card-header">
+                <div>
+                    <h2 class="d-flex">
+                        {% if hasFaved == true %}
+                            <form action="{{ path('fav') }}" method="POST">
+                                <input type="hidden" name="storyID" value="{{ story.storyID }}">
+                                <input type="hidden" name="action" value="unfav">
+                                <button type="submit" class="btn btn-primary favButton"><img class="logo" src="{{ asset('Images/heartfilled.png') }}" alt="heart" style="height: 1.8em; width: auto;"></button>
+                            </form>
+                        {% else %}
+                            <form action="{{ path('fav') }}" method="POST">
+                                <input type="hidden" name="storyID" value="{{ story.storyID }}">
+                                <input type="hidden" name="action" value="fav">
+                                <button type="submit" class="btn btn-primary favButton"><img class="logo" src="{{ asset('Images/heart.png') }}" alt="heart" style="height: 1.8em; width: auto;"></button>
+                            </form>
+                        {% endif %}
+                        {{ story.storyTitle }} 
+                    </h2>
+                    <div class="by">
+                        by 
+                        {% if story.user.userId == 161 %}
+                            DELETED
+                        {% else %}
+                            <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            
+                <div class = "card-text">
+                    <div>This story has 
+                    {% if story.usersThatFaved.count == 1  %}
+                        1 like
+                    {% else %}
+                        {{ story.usersThatFaved.count }} likes
+                    {% endif %}
+                    </div>
+                    <div class='dateTime'> {{ story.datetime|date('d-M-Y H:i:s') }}</div>
+                </div>
             </div>
-            <div>
-                Story has 
-                {% if story.usersThatFaved.count == 1  %}
-                    1 like
-                {% else %}
-                    {{ story.usersThatFaved.count }} likes
-                {% endif %}
-            </div>
-            <div class='dateTime'> {{ story.datetime|date('d-M-Y H:i:s') }} </div>
-            <p><pre>{{ story.storyText|raw }}</pre></p>
+            <p><pre class="card-body">{{ story.storyText|raw }}</pre></p>
         </div>
-        {% endif %}
-        <div class='commentsWall'>
-            <div id='commentForm'>
+    
+        <div class='container card'>
+            <div class="card-title m-3">Comments</div> 
+            <div id='commentForm' class="card-text m-3">
                 <form action="{{ path('comment') }}" method='POST'>
                     <input name='storyId' value="{{ story.storyID }}" type='hidden'>
                     <input type="text" name='text' placeholder='Write a comment...'>
-                    <button type='submit'>Comment</button>
+                    <button type='submit' class="btn btn-primary">Comment</button>
                 </form>
             </div>
             {% if commentError is defined %}
@@ -106,16 +71,23 @@
             {% endif %}
             <div id='comments'>
             {% if comments|length > 0 %}
-                    {% for comment in comments %}
-                        <div class="comment">
-                            <div class="commentInfo">{{ comment.user.username }} commented on  {{ comment.datetime|date('d-M-Y H:i:s') }}
-                            <div><pre>{{ comment.commentText }}</pre></div> 
+                {% for comment in comments %}
+                    <div class="comment card">
+                        <div class="card-body d-flex">
+                            <img src="data:image/jpg;charset=utf8;base64,{{ comment.user.imageBase64}}" class="pfp">
+                            <div class="commentInfo">
+                                <h6><a href="{{ path('otherProfile', {'id': comment.user.userId })}}">{{ comment.user.username }}</a></h6>
+                                <p class="text-muted small mb-0">commented on  {{ comment.datetime|date('d-M-Y H:i:s') }}</p>
+                            </div>
                         </div>
-                    {% endfor %}    
+                        <div class="m-3 pb-2"><pre>{{ comment.commentText }}</pre></div> 
+                    </div>
+                {% endfor %}    
             {% else %}
                 This story doesn't have comments yet
             {% endif %}
             </div>
         </div>
+    {% endif %}
 </body>
 {% endblock %}

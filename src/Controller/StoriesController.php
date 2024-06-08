@@ -11,6 +11,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
@@ -146,13 +147,7 @@ class StoriesController extends AbstractController
             $entityManager->persist($storyEntity);
             $entityManager->flush();
             $comments = $storyEntity->getComments();
-            return $this->render('seeStory.html.twig', [
-                'genres' => $genresHeader,
-                'userPfp'=>$userPfp,
-                'user' => $user,
-                'story' => $storyEntity,
-                'comments' => $comments
-            ]);
+            return $this->redirectToRoute('seeStory', ['id' => $storyId]);
         }
     }
 
@@ -473,7 +468,8 @@ class StoriesController extends AbstractController
                     'userPfp' => $userPfp,  
                     'story' => $story,
                     'comments' => $comments,
-                    'commentError' => "Comment was empty!"
+                    'commentError' => "Comment was empty!",
+                    'user' => $user
                 ]);
             }
             //create the entity
@@ -492,6 +488,7 @@ class StoriesController extends AbstractController
                     'userPfp' => $userPfp,  
                     'story' => $story,
                     'comments' => $comments,
+                    'user' => $user
                 ]);
             }
             catch(\Exception $e)
@@ -503,6 +500,7 @@ class StoriesController extends AbstractController
                     'story' => $story,
                     'comments' => $comments,
                     'commentError' => $message,
+                    'user' => $user
                 ]);
             }
         }
