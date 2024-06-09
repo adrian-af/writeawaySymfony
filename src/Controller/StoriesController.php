@@ -146,19 +146,14 @@ class StoriesController extends AbstractController
             $entityManager->persist($storyEntity);
             $entityManager->flush();
             $comments = $storyEntity->getComments();
-            return $this->render('seeStory.html.twig', [
-                'genres' => $genresHeader,
-                'userPfp'=>$userPfp,
-                'user' => $user,
-                'story' => $storyEntity,
-                'comments' => $comments
-            ]);
+            return $this->redirectToRoute('seeStory', ['id' => $storyId]);
         }
     }
 
     #[Route(path:'/write', name: 'write')]
     public function write(EntityManagerInterface $entityManager, Request $request)
     {
+        $response ="";
         // Para el encabezado
         $user = $this->getUser();
         $genres = $entityManager->getRepository(Genre::class)->findAll();
@@ -204,6 +199,7 @@ class StoriesController extends AbstractController
                 if ($collaborator) {
                     $storyEntity->addCollabUsers($collaborator);
                     $collaborator->addCollabStories($storyEntity);
+                    $entityManager->persist($collaborator);
                 }
             }
 
@@ -211,7 +207,6 @@ class StoriesController extends AbstractController
             {
                 // "Guardar" la entidad en el ORM
                 $entityManager->persist($storyEntity);
-                $entityManager->persist($collaborator);
                 // Confirmar los cambios en la base de datos
                 $entityManager->flush();
                 $response = "Story created successfully";
@@ -222,18 +217,15 @@ class StoriesController extends AbstractController
             }
             finally
             {
-                return $this->render('write.html.twig', [
-                    'genres' => $genres,
-                    'users' => $users, // Pasar los usuarios a la plantilla
-                    'userPfp' => $userPfp,
-                    'response' => $response
-                ]);
+                return $this->redirectToRoute('write', ['response' => $response]);
+
             }
         }
         return $this->render('write.html.twig', [
             'genres' => $genres,
             'users' => $users, // Pasar los usuarios a la plantilla
-            'userPfp' => $userPfp
+            'userPfp' => $userPfp,
+            'response' => $response
         ]);
     }
     #[Route(path:'/ownProfile', name: 'ownProfile')]

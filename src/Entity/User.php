@@ -54,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: "collabUsers")]
     #[ORM\JoinTable(
-        name: "rel_story_users",
+        name: "rel_story_user",
         joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "ID")],
         inverseJoinColumns: [new ORM\JoinColumn(name: "story_id", referencedColumnName: "ID")]
     )]
