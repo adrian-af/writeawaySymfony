@@ -48,13 +48,46 @@
 <body>
         {% if story %}
         <div id='{{ story.storyID }}' class='container'>
-            <h2>{{ story.storyTitle }} </h2>
+
+            {% set hasFaved = false %}
+            {% for storyInArray in user.favStories %}
+                {% if storyInArray.storyID == story.storyID %}
+                    {% set hasFaved = true %}
+                {% endif %}
+            {% endfor %}
+
+            <h2>
+                {% if hasFaved == true %}
+                    <form action="{{ path('fav') }}" method="POST">
+                        <input type="hidden" name="storyID" value="{{ story.storyID }}">
+                        <input type="hidden" name="action" value="unfav">
+                        <button><img class="logo" src="{{ asset('Images/heartfilled.png') }}" alt="heart" style="height: 1em; width: auto;"></button>
+                    </form>
+                {% else %}
+                    <form action="{{ path('fav') }}" method="POST">
+                        <input type="hidden" name="storyID" value="{{ story.storyID }}">
+                        <input type="hidden" name="action" value="fav">
+                        <button><img class="logo" src="{{ asset('Images/heart.png') }}" alt="heart" style="height: 1em; width: auto;"></button>
+                    </form>
+                    
+                {% endif %}
+
+                {{ story.storyTitle }} 
+            </h2>
             <div>by 
             {% if story.user.userId == 161 %}
                 DELETED
             {% else %}
                 <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
             {% endif %}
+            </div>
+            <div>
+                Story has 
+                {% if story.usersThatFaved.count == 1  %}
+                    1 like
+                {% else %}
+                    {{ story.usersThatFaved.count }} likes
+                {% endif %}
             </div>
             <div class='dateTime'> {{ story.datetime|date('d-M-Y H:i:s') }} </div>
             <p><pre>{{ story.storyText|raw }}</pre></p>

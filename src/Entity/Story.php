@@ -2,9 +2,7 @@
 namespace App\Entity;
 
 use DateTime;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -20,19 +18,13 @@ class Story
     #[ORM\GeneratedValue]
     private $storyID;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, inversedBy="stories")
-     * @ORM\JoinTable(
-     *      name="rel_story_user",
-     *      joinColumns={@ORM\JoinColumn(name="story_id", referencedColumnName="ID")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="ID")}
-     * )
-     */
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: "stories")]
+    #[ORM\JoinColumn(name:"userId", referencedColumnName: "ID")]
     private $user;
 
     #[ORM\Column(type: 'string', name: 'title')]
     private $storyTitle;
-    
+
     #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "stories")]
     #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
     private $genre;
@@ -49,18 +41,22 @@ class Story
     #[ORM\OneToMany(targetEntity:"Comment", mappedBy: "story")]
     private $comments;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: "favStories")]
+    private $usersThatFaved; //array of Users that have faved this story
+
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: "collabStories")]
+    private $collabUsers; //array of Users that have faved this story
+
 
     /**
      * Genres constructor
      */
     public function __construct()
     {
-        $this->user = new ArrayCollection();
-        $this->comments = new ArrayCollection();
     }
     /**
      * Get the value of ID
-     */ 
+     */
     public function getStoryID()
     {
         return $this->storyID;
@@ -136,7 +132,7 @@ class Story
 
     /**
      * Get the value of user
-     */ 
+     */
     public function getUser()
     {
         return $this->user;
@@ -146,7 +142,7 @@ class Story
      * Set the value of user
      *
      * @return  self
-     */ 
+     */
     public function setUser($user)
     {
         $this->user = $user;
@@ -156,7 +152,7 @@ class Story
 
     /**
      * Get the value of comments
-     */ 
+     */
     public function getComments()
     {
         return $this->comments;
@@ -166,7 +162,7 @@ class Story
      * Set the value of comments
      *
      * @return  self
-     */ 
+     */
     public function setComments($comments)
     {
         $this->comments = $comments;
@@ -174,5 +170,47 @@ class Story
         return $this;
     }
 
+    /**
+     * Get the value of favUsers
+     */
+    public function getUsersThatFaved()
+    {
+        return $this->usersThatFaved;
+    }
 
+    /**
+     * Set the value of favUsers
+     *
+     * @return  self
+     */
+    public function setUsersThatFaved($usersThatFaved)
+    {
+        $this->usersThatFaved = $usersThatFaved;
+
+        return $this;
+    }
+
+    public function addUserThatFaved($user)
+    {
+        $this->usersThatFaved[] = $user;
+        return $this->usersThatFaved;
+    }
+
+    public function getCollabUsers()
+    {
+        return $this->collabUsers;
+    }
+
+    public function setCollabUsers($collabUsers)
+    {
+        $this->collabUsers = $collabUsers;
+
+        return $this;
+    }
+
+    public function addCollabUsers($user)
+    {
+        $this->collabUsers[] = $user;
+        return $this->collabUsers;
+    }
 }

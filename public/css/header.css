@@ -1,3 +1,4 @@
+/*
 body
 {
     margin: 0;
@@ -94,9 +95,67 @@ header {
     text-decoration: none;
     display: block;
     height: 15px;
-}
+} 
 .dropdown-content a:hover {background-color: rgba(216, 209, 177, 0.729);}
 .dropdown-content2 a:hover {background-color: rgba(216, 209, 177, 0.729);}
 .dropdown:hover .dropdown-content {display: block;}
 .dropdown:hover .dropdown-content2 {display: block;}
-.dropdown:hover .dropbtn, .dropdown:hover {background-color: #b3c262;}
+.dropdown:hover .dropbtn, .dropdown:hover {background-color: #b3c262;} 
+*/
+
+/* container del header */
+.container-fluid
+{
+    height: 100%;
+    background-color: #FF9966;
+}
+
+.navbar
+{
+    padding: 0;
+}
+
+/* dropdown de buscar user o story */
+.form-select
+{
+    width: min-content;
+    height: 2.2em;
+}
+
+/* texto de la búsqueda */
+.form-control
+{
+    width: 10em;
+    height: 2.2em;
+    margin: 0 .2em;
+}
+
+.btn-search
+{
+    height: 2.2em;
+    width: 2.2em;
+    padding: 0;
+    margin: 0.2em;
+}
+
+.icon
+{
+    height: 1.3em;
+}
+
+.search
+{
+    filter: invert(100%);
+}
+
+.form-search
+{
+    margin: 0;
+}
+
+/*foto del usuario*/
+#user
+{
+    height: 2.5em;
+    width: 2.5em;
+}
