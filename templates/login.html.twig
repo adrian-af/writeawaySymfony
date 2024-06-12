@@ -2,19 +2,32 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
 {% endblock %}
 {% extends 'base.html.twig' %}
 {% block body %}
 <body>
-    <div class="container d-flex align-items-center justify-content-center">
+    <div class="container d-flex align-items-center justify-content-around">
+    <div class="text-center">
+        <h1><img class="logo" src="{{ asset('Images/logo2.png') }}" alt="Logo image"></h1>
+        <div class="texto">The best writing platform for your original stories!</div>
+    </div>
     <div class="container-fluid m-2">
-        <div class="text-center"><h1>Log In</h1></div>
-        
+        <div class="text-center">
+            <h2>Log In</h2>
+            </div>
+        {% if success is defined %}
+            <div style="color: green" id="right">{{ success }}</div>
+        {% endif %}
         <form action="{{ path('app_login') }}" method="post">
             <!-- Username input -->
             <div data-mdb-input-init class="form-outline mb-4">
                 <label class="form-label" for="username">Username</label>
-                <input type="text" id="username" class="form-control" name="_username" value="{{ last_username }}"/>
+                {% if last_username is defined %}
+                    <input type="text" id="username" class="form-control" name="_username" value="{{ last_username }}"/>
+                {% else %}
+                    <input type="text" id="username" class="form-control" name="_username"/>
+                {% endif %}
             </div>
 
             <!-- Password input -->
@@ -44,7 +57,7 @@
             </div>
 
             <!-- Submit button -->
-            <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4" class="button">Sign in</button>
+            <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4" class="button">Log in</button>
 
             <!-- Register buttons -->
             <div class="text-center">

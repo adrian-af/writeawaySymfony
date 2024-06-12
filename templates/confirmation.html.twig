@@ -1,5 +1,9 @@
 {# templates/confirmation.html.twig #}
 {% block body %}
-    hello!<br>
+    <img class="logo" src="{{ asset('Images/logo1.png') }}" alt="Logo image">
+    Welcome to Writeaway!<br>
+    You will be prompted to introduce a code to verify your account.
     Your confirmation code is {{ code }}
+
+    <div style="font-style: italic;">If you did not create an account at Writeaway, just ignore this email.</div>
 {% endblock %}

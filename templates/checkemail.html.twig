@@ -1,13 +1,46 @@
 {# templates/checkemail.html.twig #}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+{% endblock %}
 {% block body %}
-    {% if error is defined %}
-        <div style="color: red">{{ error }}</div>
-    {% endif %}
-    hello!<br>
-    Please check your email for a verification code. Then copy the code here:<br>
-    
-    <form action="{{ path('checkemail') }}" method="post">
-        <input type="text" id="code" name="code"><br>
-        <button type="submit">Verify account</button>
-    </form>
+<body>
+    <div class="container d-flex align-items-center justify-content-around">
+        <div class="text-center">
+            <h1><img class="logo" src="{{ asset('Images/logo2.png') }}" alt="Logo image"></h1>
+            <div class="texto">The best writing platform for your original stories!</div>
+        </div>
+        <div class="container-fluid m-2">
+            <div class="text-center">
+                <h2>Verify your email</h2>
+            </div>
+        
+            <form  action="{{ path('checkemail') }}" method="post">
+                <div>Please check your email for a verification code. Then copy the code here</div>
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <input type="text" id="code" class="form-control" name="code" placeholder="Code..."/>    
+                </div>
+
+                <div>
+                    <div class="col">
+                        <a href="{{ path('resend') }}">Resend email</a>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col d-flex justify-content-center">
+                    <!-- Checkbox -->                        
+                        {% if error is defined %}
+                                <div style="color: red" id="wrong">{{ error }}</div>
+                        {% endif %}
+                        {% if last_username is not defined %}
+                            {% set last_username = '' %}
+                        {% endif %}
+                    </div>
+                </div>
+                <button  type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-block mb-4" class="button">Verify account</button>
+            </form>
+        </div>
+    </div>
+</body>
 {% endblock %}

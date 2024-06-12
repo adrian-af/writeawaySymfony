@@ -140,3 +140,11 @@ img{
     background-color: rgba(102, 153, 153, 1);
     overflow-y: hidden;
 }
+
+.logo{
+    height: 400px;
+}
+
+.texto{
+    font-family: 'Lexend', Arial, sans-serif;
+}
