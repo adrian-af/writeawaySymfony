@@ -18,47 +18,61 @@
         height: 300px;
         margin-bottom: 2em;
     }
+    #contentCollaborators{
+        height: 5em;
+        overflow-y: scroll;
+    }
+    .sectionTitle{
+        font-weight: bold;
+    }
 </style>
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
     <h1>Start writing</h1>
     <div class="card" id="main">
-    {% if response is defined %}
-        <div>{{ response }}</div>
-    {% endif %}
-     <form action="{{ path('write') }}" method='POST' class="writeStory">
-        <div class="content">
-            <p><label for="title">Title: </label>
-            <input type="text" id="title" name="title" class="input form-control" placeholder="Title of your story..."></input>
-        </div>
-        <div class="content col">
-            <p><label for="genre">Genre: </label>
-            <select id="genre" name="genre" class="form-select">
-            {% if genres %}
-                {% for genre in genres %}
-                    <option value='{{ genre.genreID }}' name='genre'>{{  genre.name|capitalize }}</option>
+        {% if response %}
+            <div>{{ response }}</div>
+        {% endif %}
+        <form action="{{ path('write') }}" method='POST' class="writeStory">
+            <div class="content">
+                <p><label for="title" class="sectionTitle">Title: </label>
+                <input type="text" id="title" name="title" class="input form-control" placeholder="Title of your story..."></input>
+            </div>
+            <div class="content col">
+                <p><label for="genre" class="sectionTitle">Genre: </label>
+                <select id="genre" name="genre" class="form-select">
+                    {% if genres %}
+                        {% for genre in genres %}
+                            <option value='{{ genre.genreID }}' name='genre'>{{  genre.name|capitalize }}</option>
+                        {% endfor %}
+                    {% else %}
+                        no genres found
+                    {% endif %}
+                </select>
+            </div>
+            <div class="content">
+                <label for="public" class="sectionTitle">Visibility: </label>
+                <div>
+                    <input type="radio" id="public" name="public" value="0" checked>
+                    <label for="public">Private</label>
+                </div>
+                <div>
+                    <input type="radio" id="public" name="public" value="1">
+                    <label for="public">Public</label>
+                </div>
+            </div>
+            <div class="content">
+                <p><label for="story" class="sectionTitle">Story:</label></p>
+                <textarea id="story" name="story" class="form-control" placeholder="Write your story here..."></textarea>
+            </div>
+                <p class="sectionTitle">Collaborators:</p>
+            <div class="content" id="contentCollaborators">
+                {% for user in users %}
+                    <input type="checkbox" id="collaborator_{{ user.userId }}">
+                    <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
                 {% endfor %}
-            {% else %}
-                no genres found
-            {% endif %}
-            </select>
-        </div>
-        <div class="content">
-            <label for="public">Visibility: </label>
-            <div>
-                <input type="radio" id="public" name="public" value="0" checked>
-                <label for="public">Private</label>
             </div>
-            <div>
-                <input type="radio" id="public" name="public" value="1">
-                <label for="public">Public</label>
-            </div>
-        </div>
-        <div class="content">
-            <p><label for="story">Story:</label></p>
-            <textarea id="story" name="story" class="form-control" placeholder="Write your story here..."></textarea>
-        </div>
-        <button class="button btn btn-primary">Submit</button>
-    </form>
+            <button class="button btn btn-primary">Submit</button>
+        </form>
     </div>
 {% endblock %}

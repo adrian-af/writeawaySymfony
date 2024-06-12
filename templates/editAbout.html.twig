@@ -1,14 +1,28 @@
-{# templates/write.html.twig #}
+{# templates/editAbout.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+<style>
+    .container
+    {
+        padding: 1em 4em 4em 4em;
+    }
+    #about
+    {
+        width: 400px;
+        height: 100px;
+    }
+</style>
 {% block body %}
     {% if changed is defined %}
         <div>{{ changed }}</div>
     {% endif %}
-        <form action="{{ path('editAbout') }}" method='POST' class="writeStory">
-            <div>
-                <label for="about">About:</label>
-                <textarea id="about" name="about">{{ user.about }}</textarea>
+    <div class="container card">
+        <h2>Write your new about you section</h2>
+        <form action="{{ path('editAbout') }}" method='POST'>
+            <div class="form-group m-1">
+                <label for="about" class="m-1">About:</label>
+                <textarea id="about" name="about" class="form-control m-2">{{ user.about }}</textarea>
+                <button class="btn btn-primary">Change</button>
             </div>
-            <button class="button">Submit</button>
         </form>
+    </div>
 {% endblock %}

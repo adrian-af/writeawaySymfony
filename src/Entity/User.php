@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Column(type: 'integer', name: 'role')]
     private $role;
 
-    #[ORM\ManyToMany(targetEntity: "Story", mappedBy:"user")]
+    #[ORM\OneToMany(targetEntity: "Story", mappedBy:"user")]
     private $stories; //array of stories
 
     #[ORM\OneToMany(targetEntity: "Comment", mappedBy: "user")]
@@ -52,6 +52,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     )]
     public $favStories; //stories faved by this user
 
+    #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: "collabUsers")]
+    #[ORM\JoinTable(
+        name: "rel_story_user",
+        joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "ID")],
+        inverseJoinColumns: [new ORM\JoinColumn(name: "story_id", referencedColumnName: "ID")]
+    )]
+    public $collabStories; //stories in which this user collabs
+    
     /**
      * User constructor
      */
@@ -328,5 +336,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     {
         $this->favStories[] = $story;
         return $this->favStories;
+    }
+
+    public function getCollabStories()
+    {
+        return $this->collabStories;
+    }
+
+    /**
+     * @param mixed $collabStories
+     */
+    public function setCollabStories($collabStories)
+    {
+        $this->collabStories = $collabStories;
+
+        return $this;
+    }
+
+    public function addCollabStories($story)
+    {
+        $this->collabStories[] = $story;
+        return $this->collabStories;
     }
 }

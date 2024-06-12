@@ -1,12 +1,19 @@
 {# templates/changePhoto.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
+<style>
+    #photo{
+        width: 30em;
+    }
+</style>
     {% if error is defined %}
         {{ error }}
     {% endif %}
-    Upload your new profile photo
-    <form action="{{ path('changePhoto')}}" method='POST' enctype="multipart/form-data">
-        <input type="file" id='photo' name='photo' accept='image/png, image/jpeg, image/gif'><br>
-        <button type="submit">Change</button>
-    </form>
+    <div class="container card">
+        <h2>Upload your new profile photo</h2>
+        <form action="{{ path('changePhoto')}}" method='POST' enctype="multipart/form-data">
+            <input type="file" id='photo' name='photo' accept='image/png, image/jpeg, image/gif' class="form-control"><br>
+            <button type="submit" class="btn btn-primary">Change</button>
+        </form>
+    </div>
 {% endblock %}

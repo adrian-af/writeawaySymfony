@@ -46,6 +46,9 @@ class Story
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: "favStories")]
     private $usersThatFaved; //array of Users that have faved this story
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: "collabStories")]
+    private $collabUsers; //array of Users that are collaborators of this story
+
 
     /**
      * Genres constructor
@@ -194,5 +197,23 @@ class Story
     {
         $this->usersThatFaved[] = $user;
         return $this->usersThatFaved;
+    }
+
+    public function getCollabUsers()
+    {
+        return $this->collabUsers;
+    }
+
+    public function setCollabUsers($collabUsers)
+    {
+        $this->collabUsers = $collabUsers;
+
+        return $this;
+    }
+
+    public function addCollabUsers($user)
+    {
+        $this->collabUsers[] = $user;
+        return $this->collabUsers;
     }
 }

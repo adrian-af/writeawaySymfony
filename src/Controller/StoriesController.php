@@ -154,9 +154,11 @@ class StoriesController extends AbstractController
     #[Route(path:'/write', name: 'write')]
     public function write(EntityManagerInterface $entityManager, Request $request)
     {
+        $response = "";
         //For the header
         $user = $this->getUser();
         $genres = $entityManager->getRepository(Genre::class)->findAll();
+        $users = $entityManager->getRepository(User::class)->findAll(); //Obtener todos los usuarios para los colaboradores
         
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
@@ -170,7 +172,8 @@ class StoriesController extends AbstractController
             $title = $formData['title'];
             $genreId = (int) $formData['genre'];
             $public = (int) $formData['public'];
-            $story = $formData['story'];
+            $storyText = $formData['story'];
+            $collaboratorIds = $formData['collaborators'] ?? []; //IDs de los colaboradores
             //create the entity
             $storyEntity = new Story();
             //assign the values to the entity's attributes
@@ -184,10 +187,18 @@ class StoriesController extends AbstractController
             }
             $storyEntity->setGenre($genreEntity);
             $storyEntity->setPublic($public);
-            $storyEntity->setStoryText($story);
+            $storyEntity->setStoryText($storyText);
             $storyEntity->setUser($user);
             //set the current datetime as the datetime attribute
             $storyEntity->setDatetime(new \DateTime());
+            foreach($collaboratorIds as $collaboratorId) {
+                $collaborator = $entityManager->getRepository(User::class)->find($collaboratorId);
+                if($collaborator){
+                    $storyEntity->addCollabUsers($collaborator);
+                    $collaborator->addCollabStories($storyEntity);
+                    $entityManager->persist($collaborator);
+                }
+            }
             
             try
             {
@@ -203,17 +214,14 @@ class StoriesController extends AbstractController
             } 
             finally
             {
-
-                return $this->render('write.html.twig', [
-                    'genres' => $genres,
-                    'userPfp' => $userPfp,
-                    'response' => $response
-                ]);
+                return $this->redirectToRoute('write', ['response' => $response]);
             }
         }
         return $this->render('write.html.twig', [
             'genres' => $genres,
-            'userPfp' => $userPfp
+            'users' => $users,
+            'userPfp' => $userPfp,
+            'response' => $response
         ]);
     }
     #[Route(path:'/ownProfile', name: 'ownProfile')]
@@ -252,7 +260,7 @@ class StoriesController extends AbstractController
                 }
                 finally
                 {
-                    return $this->render('ownProfile.html.twig',[
+                    return $this->redirectToRoute('ownProfile',[
                         //For the header
                         'genres' => $genresHeader,
                         'userPfp'=>$userPfp,
@@ -277,11 +285,8 @@ class StoriesController extends AbstractController
                 }
                 finally
                 {
-                    return $this->render('ownProfile.html.twig',[
-                        'genres' => $genresHeader,
-                        'userPfp' => $userPfp,
-                        'user' => $user,
-                        'deleted' => $deleted
+                    return $this->redirectToRoute('ownProfile',[
+                        'user' => $user
                     ]);
                 }
             }
@@ -463,13 +468,14 @@ class StoriesController extends AbstractController
             //check the content
             if (strlen($text) < 1)
             {
-                return $this->render('seeStory.html.twig', [
+                return $this->redirectToRoute('seeStory', [
                     'genres' => $genresHeader,
                     'userPfp' => $userPfp,  
                     'story' => $story,
                     'comments' => $comments,
                     'commentError' => "Comment was empty!",
-                    'user' => $user
+                    'user' => $user,
+                    'id' => $storyId
                 ]);
             }
             //create the entity
@@ -483,24 +489,26 @@ class StoriesController extends AbstractController
             try
             {
                 $entityManager->flush();
-                return $this->render('seeStory.html.twig', [
+                return $this->redirectToRoute('seeStory', [
                     'genres' => $genresHeader,
                     'userPfp' => $userPfp,  
                     'story' => $story,
                     'comments' => $comments,
-                    'user' => $user
+                    'user' => $user,
+                    'id' => $storyId
                 ]);
             }
             catch(\Exception $e)
             {
                 $message = "Error processing your comment. Please try again later:" .$e->getMessage();
-                return $this->render('seeStory.html.twig', [
+                return $this->redirectToRoute('seeStory', [
                     'genres' => $genresHeader,
                     'userPfp' => $userPfp,  
                     'story' => $story,
                     'comments' => $comments,
                     'commentError' => $message,
-                    'user' => $user
+                    'user' => $user,
+                    'id' => $storyId
                 ]);
             }
         }

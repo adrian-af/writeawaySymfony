@@ -1,10 +1,35 @@
 {# templates/unverified.html.twig #}
-It seems like you did not verify your account when you signed up.
-<form action="{{ path('resend') }}" method='POST'>
-    <label for="resend">Click here if you need us to resend email with the verification code</label>
-    <button type="submit">Resend email</button>
-</form>
-<form action="{{ path('checkemailUnverified') }}" method='POST'>
-    <label for="check">If you already have the verification code, click here to verify your account</label>
-    <button type="submit">Verify account</button>
-</form>
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+{% endblock %}
+{% block body %}
+<body>
+    <div class="container d-flex align-items-center justify-content-around">
+        <div class="text-center">
+            <h1><img class="logo" src="{{ asset('Images/logo2.png') }}" alt="Logo image"></h1>
+            <div class="texto">The best writing platform for your original stories!</div>
+        </div>
+        <div class="container-fluid m-2" id="verifyDiv">
+            <div class="text-center">
+                <h2>Verify your email</h2>
+                <div>It seems like you did not verify your email when you created your account.</div>
+            </div>
+        
+            <form action="{{ path('resend') }}" method="post">
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label for="resend">Click here if you need us to resend the email with the verification code</label>
+                    <button type="submit" class="btn btn-primary">Resend email</button> 
+                </div>
+            </form>
+            <form action="{{ path('checkemailUnverified') }}" method='POST'>
+            <div data-mdb-input-init class="form-outline mb-4">
+                <label for="check">If you already have the verification code, click here to verify your account</label>
+                <button type="submit" class="btn btn-primary">Verify account</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</body>
+{% endblock %}
