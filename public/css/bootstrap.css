@@ -2976,7 +2976,7 @@ fieldset:disabled .btn {
   --bs-btn-bg: #669999;
   --bs-btn-border-color: #669999;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #b39980;
+  --bs-btn-hover-bg: #8c998c;
   --bs-btn-hover-border-color: #b39980;
   --bs-btn-focus-shadow-rgb: 49, 132, 253;
   --bs-btn-active-color: #fff;
@@ -4883,7 +4883,7 @@ fieldset:disabled .btn {
   --bs-list-group-disabled-color: var(--bs-secondary-color);
   --bs-list-group-disabled-bg: var(--bs-body-bg);
   --bs-list-group-active-color: #fff;
-  --bs-list-group-active-bg: #0d6efd;
+  --bs-list-group-active-bg: #669999;
   --bs-list-group-active-border-color: #0d6efd;
   display: flex;
   flex-direction: column;

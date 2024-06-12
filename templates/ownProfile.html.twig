@@ -1,103 +1,173 @@
 {# templates/ownProfile.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Stories.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+{% endblock %}
 {% block body %}
+    
+   
+    {% if deleted is defined %}
+        {{ deleted }}
+    {% endif %}
+
+<div class="card">
+    <div class="row">
+        <div class="col-4">
+            <div class="list-group" id="list-tab" role="tablist">
+            <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">About you</a>
+            <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Your stories</a>
+            <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Your comments</a>
+            <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Stories you liked</a>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="tab-content" id="nav-tabContent">
+            <!-- about you -->
+            <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                <div id='usersite'>
+                    <h2>Your profile</h2>
+                    <div id='pfp'>
+                        <div class="username">Username: {{ user.username }}</div>
+                        {% if userPfp is not null %}
+                            <img src="{{ userPfp }}" alt="User Picture" id="userPfp">
+                            <a href="{{ path('changePhoto') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" class="editButton"></a>
+                        {% else %}
+                            <img src="{{ asset('Images/user.png') }}" alt="User Picture" id="userPfp">
+                            <a href="{{ path('changePhoto') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" class="editButton"></a>
+                        {% endif %}
+                    </div>
+                    <div id='about'>
+                        <p id='buser'>About you:
+                        <a href="{{ path('editAbout') }}"> <img src="{{ asset('Images/edit.png') }}" alt="edit button" class="editButton"></a>
+                        <p class='text'><pre>{{ user.about }}</pre>
+                    </div>
+                </div>
+            </div>
+            <!-- your stories -->
+            <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                <div>
+                    <h2>Your stories</h2>
+                    
+                    {% if user.stories is defined and user.stories|length > 0 %}
+                        {% for story in user.stories %}
+                            <div id='{{ story.storyID }}' class='container'>
+                                <div class='title'>
+                                    <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a> 
+                                </div>
+                                <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
+                                <div class='dateTime'> {{ story.datetime|date('d-M-Y H:i:s') }} </div>
+                                <div style="display: flex;">
+                                <a href="{{ path('editStory', {'id': story.storyID})}}" class="btn btn-secondary"> Edit</a>
+                                <form action="{{ path('ownProfile', {'deleteid': story.storyID })}}" method="POST">
+                                    <input type="hidden" name="deleteid" value="{{ story.storyID }}"/>
+                                    <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this story? This action will delete all the comments related to the story')">Delete</button>
+                                </form>
+                                </div>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    {% else %}
+                        You have not posted any stories yet.    
+                    {% endif %}
+                </div>
+            
+            </div>
+
+            <!-- your comments -->
+            <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+                <div>
+                    <h2>Your comments</h2>
+                    {% if user.comments is defined and user.comments|length > 0 %}
+                        {% for comment in user.comments %}
+                            <div id="{{comment.commentID}}" class="container">
+                                <div class="title">
+                                    Comment in <a href="{{ path('seeStory', {'id': comment.story.storyID}) }}">{{ comment.story.storyTitle }}</a>
+                                </div>
+                                {% if comment.commentText|length > 100 %}
+                                    <div class="content">{{ comment.commentText|slice(0,100)|raw }}...</div>
+                                {% else %}
+                                    <div class="content">{{ comment.commentText|raw }}</div>
+                                {% endif %}
+                                <div class="dateTime">{{ comment.datetime|date('d-M-Y H:i:s') }}</div>
+                                    <form action="{{ path('ownProfile', {'deletecomment': comment.commentID })}}" method="POST">
+                                        <input type="hidden" name="deleteid" value="{{ comment.commentID }}"/>
+                                        <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty">You have not posted any comments yet.</div>
+                    {% endif %}
+                </div>
+                <!-- your liked stories -->
+                <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                    <div>
+                        <h2>Stories you liked</h2>
+                        {% if user.favStories|length > 0 %}
+                            {% for story in user.favStories %}
+                                <div class="card m-3 card-profile">
+                                    <div class="card-header">
+                                        <h3><a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a></h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Author(s): 
+                                        {% if story.user.userId == 161 %}
+                                            DELETED
+                                        {% else %}
+                                            <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
+                                        {% endif %}</h5>
+                                        <p class="card-text">
+                                            <div class='content'>{{ story.storyText|slice(0, 100)|raw }}...</div>
+                                            <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="card">
+                                <h4 class="m-2">No stories liked yet!</h4>
+                            </div>
+                        {% endif %}
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+{% endblock %}
+{% block javascript %}
+    <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script>
         function confirmDelete(id)
         {
             let confirmation = "Are you sure you want to delete the story?";
-            if(confirm(confirmation) == true)
+            if(confirm(confirmation))
             {
                 var url = "{{ path('ownProfile', {'deleteid': 'PLACEHOLDER'}) }}";
                 url = url.replace('PLACEHOLDER', id);
                 window.location.replace(url);
             }
         }
-    </script>
-    {% if deleted is defined %}
-        {{ deleted }}
-    {% endif %}
-    <div class="primero">
-        <div id='usersite'>
-            <div id='pfp'>
-                {% if userPfp is not null %}
-                    <img src="{{ userPfp }}" alt="User Picture" style='width: 100px; height: auto;' id="user">
-                    <a href="{{ path('changePhoto') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" style="width: 20px" ></a>
-                {% else %}
-                    <img src="{{ asset('Images/user.png') }}" alt="User Picture" style='width: 100px' id="user">
-                    <a href="{{ path('changePhoto') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" style="width: 20px"></a>
-                {% endif %}
-            </div>
-            <div id='about'>
-                <p id='buser'>About {{ user.username }}:
-                    <a href="{{ path('editAbout') }}"> <img src="{{ asset('Images/edit.png') }}" alt="edit button" style="width: 20px"></a></p>
-                <p class='text'><pre>{{ user.about }}</pre></p>
-
-            </div>
-        </div>
-        <div>
-            <h2>Your stories:</h2>
-            {% if user.stories is defined and user.stories|length > 0 %}
-                {% for story in user.stories %}
-                    <div id='{{ story.storyID }}' class='container'>
-                        <div class='title'>
-                            <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a>
-                        </div>
-                        <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
-                        <div class='dateTime'> {{ story.datetime|date('d-M-Y H:i:s') }} </div>
-                        <div style="display: flex;">
-                            <a href="{{ path('editStory', {'id': story.storyID})}}"> Edit</a>
-                            <form action="{{ path('ownProfile', {'deleteid': story.storyID })}}" method="POST">
-                                <input type="hidden" name="deleteid" value="{{ story.storyID }}"/>
-                                <button type="submit" onclick="return confirm('Are you sure you want to delete this story? This action will delete all the comments related to the story')">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                You have not posted any stories yet.
-            {% endif %}
-        </div>
-        <div>
-            <h2>Your comments:</h2>
-            {% if user.comments is defined and user.comments|length > 0 %}
-                {% for comment in user.comments %}
-                    <div id="{{comment.commentID}}" class="container">
-                        <div class="title">
-                            Comment in <a href="{{ path('seeStory', {'id': comment.story.storyID}) }}">{{ comment.story.storyTitle }}</a>
-                        </div>
-                        {% if comment.commentText|length > 100 %}
-                            <div class="content">{{ comment.commentText|slice(0,100)|raw }}...</div>
-                        {% else %}
-                            <div class="content">{{ comment.commentText|raw }}</div>
-                        {% endif %}
-                        <div class="dateTime">{{ comment.datetime|date('d-M-Y H:i:s') }}</div>
-                        <form action="{{ path('ownProfile', {'deletecomment': comment.commentID })}}" method="POST">
-                            <input type="hidden" name="deleteid" value="{{ comment.commentID }}"/>
-                            <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</button>
-                        </form>
-                    </div>
-                {% endfor %}
-            {% else %}
-                You have not posted any comments yet.
-            {% endif %}
-        </div>
-        <div>
-            <h2>Stories you've liked:</h2>
-            {% if user.favStories|length > 0 %}
-                {% for story in user.favStories %}
-                    <div id="{{story.storyID}}" class="container">
-                        <div class="title">
-                            <a href="{{ path('seeStory', {'id': story.storyID}) }}">{{ story.storyTitle }}</a> by  <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
-                        </div>
-                        <div class="content">{{ story.storyText|slice(0, 50)| raw }}...</div>
-                        <div class="dateTime">{{ story.datetime|date('d-M-Y H:i:s') }}</div>
-                    </div>
-                {% endfor %}
-
-
-
-            {% endif %}
-        </div>
-        <div id="alert"></div>
-    </div>
+        $(document).ready(function(){
+            $('.list-group-item').on('click', function(e) {
+                e.preventDefault();
+                
+                $('.list-group-item').removeClass('active');
+                $(this).addClass('active');
+                
+                var target = $(this).attr('href');
+                
+                $('.tab-pane').removeClass('show active');
+                $(target).addClass('show active');
+            });
+        });
+</script>
 {% endblock %}

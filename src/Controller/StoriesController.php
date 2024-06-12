@@ -11,6 +11,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
@@ -115,7 +116,7 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-
+        
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
@@ -131,7 +132,7 @@ class StoriesController extends AbstractController
 
             $userEntity = $this->getUser();
             $storyEntity = $entityManager->find(Story::class, $storyId);
-
+        
             if($action == 'fav') //add this story as a favourite
             {
                 $userEntity->addFavedStory($storyEntity);
@@ -480,7 +481,8 @@ class StoriesController extends AbstractController
                     'userPfp' => $userPfp,
                     'story' => $story,
                     'comments' => $comments,
-                    'commentError' => "Comment was empty!"
+                    'commentError' => "Comment was empty!",
+                    'user' => $user
                 ]);
             }
             //create the entity
@@ -499,6 +501,7 @@ class StoriesController extends AbstractController
                     'userPfp' => $userPfp,
                     'story' => $story,
                     'comments' => $comments,
+                    'user' => $user
                 ]);
             }
             catch(\Exception $e)
@@ -510,6 +513,7 @@ class StoriesController extends AbstractController
                     'story' => $story,
                     'comments' => $comments,
                     'commentError' => $message,
+                    'user' => $user
                 ]);
             }
         }

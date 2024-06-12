@@ -169,10 +169,9 @@ class Story
 
         return $this;
     }
-
     /**
      * Get the value of favUsers
-     */
+     */ 
     public function getUsersThatFaved()
     {
         return $this->usersThatFaved;
@@ -182,7 +181,7 @@ class Story
      * Set the value of favUsers
      *
      * @return  self
-     */
+     */ 
     public function setUsersThatFaved($usersThatFaved)
     {
         $this->usersThatFaved = $usersThatFaved;

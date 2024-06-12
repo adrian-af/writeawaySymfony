@@ -310,10 +310,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this;
     }
 
-
+    
     /**
      * Get the value of favStories
-     */
+     */ 
     public function getFavStories()
     {
         return $this->favStories;

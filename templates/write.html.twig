@@ -1,28 +1,50 @@
 {# templates/write.html.twig #}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
+{% endblock %}
+<style>
+    #main
+    {
+        margin: 2em;
+        padding: 2em;
+    }
+    form
+    {
+        margin: auto;
+    }
+    #story
+    {
+        width: 700px;
+        height: 300px;
+        margin-bottom: 2em;
+    }
+</style>
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
+    <h1>Start writing</h1>
+    <div class="card" id="main">
     {% if response is defined %}
         <div>{{ response }}</div>
     {% endif %}
-
-    <form action="{{ path('write') }}" method='POST' class="writeStory">
+     <form action="{{ path('write') }}" method='POST' class="writeStory">
         <div class="content">
-            <p><label for="title">Title: </label></p>
-            <input type="text" id="title" name="title" class="input"></input>
+            <p><label for="title">Title: </label>
+            <input type="text" id="title" name="title" class="input form-control" placeholder="Title of your story..."></input>
         </div>
-        <div class="content">
-            <p><label for="genre">Genre: </label></p>
-            <select id="genre" name="genre">
-                {% if genres %}
-                    {% for genre in genres %}
-                        <option value='{{ genre.genreID }}' name='genre'>{{ genre.name }}</option>
-                    {% endfor %}
-                {% else %}
-                    no genres found
-                {% endif %}
+        <div class="content col">
+            <p><label for="genre">Genre: </label>
+            <select id="genre" name="genre" class="form-select">
+            {% if genres %}
+                {% for genre in genres %}
+                    <option value='{{ genre.genreID }}' name='genre'>{{  genre.name|capitalize }}</option>
+                {% endfor %}
+            {% else %}
+                no genres found
+            {% endif %}
             </select>
         </div>
         <div class="content">
+            <label for="public">Visibility: </label>
             <div>
                 <input type="radio" id="public" name="public" value="0" checked>
                 <label for="public">Private</label>
@@ -34,7 +56,7 @@
         </div>
         <div class="content">
             <p><label for="story">Story:</label></p>
-            <textarea id="story" name="story"></textarea>
+            <textarea id="story" name="story" class="form-control" placeholder="Write your story here..."></textarea>
         </div>
         <div class="content">
             <p>Collaborators: </p>
@@ -43,6 +65,7 @@
                 <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
             {% endfor %}
         </div>
-        <button class="button">Submit</button>
+        <button class="button btn btn-primary">Submit</button>
     </form>
+</div>
 {% endblock %}
