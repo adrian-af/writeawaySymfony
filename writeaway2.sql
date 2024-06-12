@@ -80,6 +80,17 @@ INSERT INTO `genres` (`ID`, `name`) VALUES
 (14, 'non fiction'),
 (15, 'other');
 
+
+--
+-- Estructura de tabla para la tabla `rel_story_user`
+--
+
+CREATE TABLE `rel_story_user` (
+                                  `id` int(11) NOT NULL,
+                                  `story_id` int(11) NOT NULL,
+                                  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -259,6 +270,11 @@ ALTER TABLE `stories`
 ALTER TABLE `users`
   MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
 
+ALTER TABLE `rel_story_user`
+    ADD PRIMARY KEY (`id`),
+    ADD UNIQUE KEY `idx_user_id` (`user_id`),
+    ADD KEY `idx_story_id` (`story_id`) USING BTREE;
+
 --
 -- AUTO_INCREMENT de la tabla `users_fav_stories`
 --
@@ -282,6 +298,13 @@ ALTER TABLE `comments`
 ALTER TABLE `stories`
   ADD CONSTRAINT `stories_ibfk_1` FOREIGN KEY (`genreId`) REFERENCES `genres` (`ID`),
   ADD CONSTRAINT `stories_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`ID`);
+
+--
+-- Filtros para la tabla `rel_story_user`
+--
+ALTER TABLE `rel_story_user`
+    ADD CONSTRAINT ` fk_story_id ` FOREIGN KEY (`story_id`) REFERENCES `stories` (`ID`),
+    ADD CONSTRAINT `fk_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`);
 
 --
 -- Filtros para la tabla `users_fav_stories`

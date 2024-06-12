@@ -5,7 +5,7 @@
         {% if user.userId == 161 %}
             User not found
         {% else %}
-        <div class="primero">
+            <div class="primero">
             <div id='usersite'>
                 <div id='pfp'>
                     {% if otherUserPhoto is not null %}
@@ -15,11 +15,11 @@
                     {% endif %}
                 </div>
                 <div id='about'>
-                <p id='buser'>About {{ user.username }}:
-                <p class='text'><pre>{{ user.about }}</pre></p>
+                    <p id='buser'>About {{ user.username }}:
+                    <p class='text'><pre>{{ user.about }}</pre></p>
+                </div>
             </div>
-        </div>
-        <div>
+            <div>
             <h2>{{ user.username }}'s stories:</h2>
             {% if user.stories is defined and user.stories|length > 0 %}
                 {% set storiesNumber = 0 %}
@@ -38,14 +38,14 @@
             {% else %}
                 {% set storiesNumber = 0 %}
             {% endif %}
-            {% if storiesNumber == 0 %}    
-                {{ user.username }} has not posted any public stories yet.    
+            {% if storiesNumber == 0 %}
+                {{ user.username }} has not posted any public stories yet.
             {% endif %}
         {% endif %}
     {% else %}
         User not found
     {% endif %}
-        </div>
-        <div id="alert"></div>
+    </div>
+    <div id="alert"></div>
     </div>
 {% endblock %}

@@ -58,7 +58,14 @@
             <p><label for="story">Story:</label></p>
             <textarea id="story" name="story" class="form-control" placeholder="Write your story here..."></textarea>
         </div>
+        <div class="content">
+            <p>Collaborators: </p>
+            {% for user in users %}
+                <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}">
+                <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+            {% endfor %}
+        </div>
         <button class="button btn btn-primary">Submit</button>
     </form>
-    </div>
+</div>
 {% endblock %}

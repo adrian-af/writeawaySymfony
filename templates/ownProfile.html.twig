@@ -149,7 +149,7 @@
         function confirmDelete(id)
         {
             let confirmation = "Are you sure you want to delete the story?";
-            if(confirm(confirmation) == true)
+            if(confirm(confirmation))
             {
                 var url = "{{ path('ownProfile', {'deleteid': 'PLACEHOLDER'}) }}";
                 url = url.replace('PLACEHOLDER', id);

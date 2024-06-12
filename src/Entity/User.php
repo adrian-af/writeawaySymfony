@@ -36,7 +36,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\Column(type: 'integer', name: 'role')]
     private $role;
 
-    #[ORM\ManyToMany(targetEntity: "Story", mappedBy:"user")]
+    #[ORM\OneToMany(targetEntity: "Story", mappedBy:"user")]
     private $stories; //array of stories
 
     #[ORM\OneToMany(targetEntity: "Comment", mappedBy: "user")]
@@ -52,6 +52,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     )]
     public $favStories; //stories faved by this user
 
+    #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: "collabUsers")]
+    #[ORM\JoinTable(
+        name: "rel_story_user",
+        joinColumns: [new ORM\JoinColumn(name: "user_id", referencedColumnName: "ID")],
+        inverseJoinColumns: [new ORM\JoinColumn(name: "story_id", referencedColumnName: "ID")]
+    )]
+    public $collabStories; //stories in which this user collabs
     /**
      * User constructor
      */
@@ -139,13 +146,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         if (null === $this->photo) {
             return null;
         }
-    
+
         if (!isset($this->imageBase64)) {
             $data = stream_get_contents($this->photo);
             fclose($this->photo);
             $this->imageBase64 = base64_encode($data);
         }
-    
+
         return $this->imageBase64;
     }
 
@@ -197,7 +204,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     /**
      * Get the value of role
-     */ 
+     */
     public function getRole()
     {
         return $this->role;
@@ -207,7 +214,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
      * Set the value of role
      *
      * @return  self
-     */ 
+     */
     public function setRole($role)
     {
         $this->role = $role;
@@ -225,7 +232,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     public function eraseCredentials(): void
     {
         //$this->password = "";
-    } 
+    }
     public function getRoles(): array
     {
         if($this->role === 0)
@@ -242,7 +249,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     /**
      * Get the value of stories
-     */ 
+     */
     public function getStories()
     {
         return $this->stories;
@@ -252,7 +259,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
      * Set the value of stories
      *
      * @return  self
-     */ 
+     */
     public function setStories($stories)
     {
         $this->stories = $stories;
@@ -270,7 +277,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         $confirmationCode = $this->confCod;
         $emailObject->htmlTemplate($template, ['code' => $confirmationCode]);
         $emailObject->context(['code' => $confirmationCode]);
-        
+
         try
         {
             $mailer->send($emailObject);
@@ -285,7 +292,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     /**
      * Get the value of comments
-     */ 
+     */
     public function getComments()
     {
         return $this->comments;
@@ -295,7 +302,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
      * Set the value of comments
      *
      * @return  self
-     */ 
+     */
     public function setComments($comments)
     {
         $this->comments = $comments;
@@ -316,7 +323,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
      * Set the value of favStories
      *
      * @return  self
-     */ 
+     */
     public function setFavStories($favStories)
     {
         $this->favStories = $favStories;
@@ -328,5 +335,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     {
         $this->favStories[] = $story;
         return $this->favStories;
+    }
+
+
+    public function getCollabStories()
+    {
+        return $this->collabStories;
+    }
+
+    /**
+     * @param mixed $collabStories
+     */
+    public function setCollabStories($collabStories)
+    {
+        $this->collabStories = $collabStories;
+
+        return $this;
+    }
+
+    public function addCollabStories($story)
+    {
+        $this->collabStories[] = $story;
+        return $this->collabStories;
     }
 }
