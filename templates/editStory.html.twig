@@ -81,10 +81,10 @@
             <div class="content" id="contentCollaborators">
                 {% for user in users %}
                     {% if user in collaborators %}
-                        <input type="checkbox" id="collaborator_{{ user.userId }}" checked>
+                        <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}" checked>
                         <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
                     {% else %}    
-                        <input type="checkbox" id="collaborator_{{ user.userId }}">
+                        <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}">
                         <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
                     {% endif %}
                 {% endfor %}

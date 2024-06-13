@@ -68,7 +68,7 @@
                 <p class="sectionTitle">Collaborators:</p>
             <div class="content" id="contentCollaborators">
                 {% for user in users %}
-                    <input type="checkbox" id="collaborator_{{ user.userId }}">
+                    <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}">
                     <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
                 {% endfor %}
             </div>
