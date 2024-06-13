@@ -412,50 +412,14 @@ class StoriesController extends AbstractController
             $type = $formData['searchType'];
             if($type == "story")
             {
-                $existingStories = $entityManager->getRepository(Story::class)->findAll();
-                //get only the ones that match the search
-                $matchingStories = [];
-                foreach ($existingStories as $currentStory)
-                {
-                    if($currentStory->getPublic() == 1)
-                    {
-                        $found = stripos(strtolower($currentStory->getStoryTitle()), strtolower($term));
-                        if($found !== false)
-                        {
-                            array_push($matchingStories, $currentStory);
-                            continue;
-                        }
-                        $found = stripos(strtolower($currentStory->getStoryText()), strtolower($term));
-                        if($found !== false)
-                        {
-                            array_push($matchingStories, $currentStory);
-                        }
-                    }
-                }
-                return $this->render('storySearch.html.twig',[
-                    'genres' => $genresHeader,
-                    'userPfp'=> $userPfp,
-                    'stories'=> $matchingStories,
+                return $this->redirectToRoute('storySearch',[
                     'term' => $term
                 ]);
             }
             else if($type == "user")
             {
-                $existingUsers = $entityManager->getRepository(User::class)->findAll();
-                //get only the users that match the search
-                $matchingUsers = [];
-                foreach($existingUsers as $currentuser)
-                {
-                    $found = stripos(strtolower($currentuser->getUsername()), strtolower($term));
-                    if($found !== false)
-                    {
-                        array_push($matchingUsers, $currentuser);
-                    }
-                }
-                return $this->render('userSearch.html.twig', [
-                    'genres' => $genresHeader,
-                    'userPfp' => $userPfp,
-                    'users' => $matchingUsers,
+                return $this->redirectToRoute('userSearch', [
+                    'term' => $term,
                 ]);
             }
 
@@ -467,6 +431,81 @@ class StoriesController extends AbstractController
             'error'=>"not post"
         ]);
     }
+
+    #[Route(path:'/storySearch/{term}', name: 'storySearch')]
+    public function storySearch(EntityManagerInterface $entityManager, Request $request, $term)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
+
+        $existingStories = $entityManager->getRepository(Story::class)->findAll();
+        //get only the ones that match the search
+        $matchingStories = [];
+        foreach ($existingStories as $currentStory)
+        {
+            if($currentStory->getPublic() == 1)
+            {
+                $found = stripos(strtolower($currentStory->getStoryTitle()), strtolower($term));
+                if($found !== false)
+                {
+                    array_push($matchingStories, $currentStory);
+                    continue;
+                }
+                $found = stripos(strtolower($currentStory->getStoryText()), strtolower($term));
+                if($found !== false)
+                {
+                    array_push($matchingStories, $currentStory);
+                }
+            }
+        }
+        return $this->render('storySearch.html.twig', [
+            'genres' => $genresHeader,
+            'userPfp' => $userPfp, 
+            'stories' => $matchingStories,
+            'term' => $term
+        ]);
+            
+    
+    }
+
+    #[Route(path:'/userSearch/{term}', name: 'userSearch')]
+    public function userSearch(EntityManagerInterface $entityManager, Request $request, $term)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
+        $existingUsers = $entityManager->getRepository(User::class)->findAll();
+        //get only the users that match the search
+        $matchingUsers = [];
+        foreach($existingUsers as $currentuser)
+        {
+            $found = stripos(strtolower($currentuser->getUsername()), strtolower($term));
+            if($found !== false)
+            {
+                array_push($matchingUsers, $currentuser);
+            }
+        }
+        return $this->render("userSearch.html.twig", [
+            'genres' => $genresHeader,
+            'userPfp' => $userPfp, 
+            'term' => $term,
+            'users' => $matchingUsers
+        ]);
+    }
+
     #[Route(path:'/comment', name: 'comment')]
     public function comment(EntityManagerInterface $entityManager,  Request $request)
     {
