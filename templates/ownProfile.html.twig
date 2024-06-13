@@ -46,6 +46,10 @@
                             </p>
                             <p class='text'><pre>{{ user.about }}</pre></p>
                         </div>
+                        <div class="buttons d-flex justify-content-around">
+                            <a href="{{ path('changePassword') }}" class="btn btn-primary">Change password</a>
+                            <a href="{{ path('deleteAccount') }}" class="btn btn-danger">Delete account</a>
+                        </div>
                     </div>
                 </div>
 

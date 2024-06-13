@@ -16,6 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Doctrine\ORM\EntityManagerInterface;
 use DateTime;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[IsGranted('ROLE_USER')]
 class StoriesController extends AbstractController
@@ -748,17 +749,86 @@ class StoriesController extends AbstractController
         ]);
     }
 
-
-    #[Route(path:"deleteAccount", name: "deleteAccount")]
-    public function deleteAccount(EntityManagerInterface $entityManager, Request $request)
+    #[Route(path:"changePassword", name: "changePassword")]
+    public function changePassword(EntityManagerInterface $entityManager, Request $request, UserPasswordHasherInterface $passwordHasher)
     {
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        $userPfp = $user?->getPhoto();
-        $base64Pfp = null;
-        if ($userPfp !== null) {
-            $base64Pfp = 'data:image/jpg;charset=utf8;base64,' . base64_encode(stream_get_contents($userPfp));
+        
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
+
+        if($request->isMethod('POST'))
+        {
+            $password = $request->request->get('password');
+            $password2 = $request->request->get('password2');
+
+            if($password != $password2)
+            {
+                $error = "Passwords do not match.";
+                return $this->redirectToRoute('changePassword',[
+                    'error' => $error,
+                ]);
+            }
+            else if(strlen($password) < 3)
+            {
+                $error = "Password must be at least 3 characters long.";
+                return $this->redirectToRoute('changePassword',[
+                    'error' => $error,
+                ]);
+            }
+            else
+            {
+                try{
+                    $encodedPassword = $passwordHasher->hashPassword($user, $password);
+                    $user->setPassword($encodedPassword);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('changePassword',[
+                        'success' => "Password changed successfully!",
+                    ]);
+                }catch(\Exception $e)
+                {
+                    $error = "Error saving the password: " .$e->getMessage();
+                    return $this->redirectToRoute('changePassword',[
+                        'error' => $error,
+                    ]);
+                }
+            }
+        }
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
+        }
+        return $this->render('changePassword.html.twig',[
+            'genres' => $genresHeader,
+            'userPfp'=> $userPfp,
+            'error' => $error,
+            'success' => $success,
+        ]);
+    }
+
+    #[Route(path:"deleteAccount", name: "deleteAccount")]
+    public function deleteAccount(EntityManagerInterface $entityManager, Request $request)
+    {
+        
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         
         try
