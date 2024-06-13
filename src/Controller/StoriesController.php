@@ -54,11 +54,18 @@ class StoriesController extends AbstractController
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
-        $otherPhoto = $userP->getImageBase64();
-        $otherUserPhoto = null;
-        if($otherPhoto != null)
+        if($userP)
         {
-            $otherUserPhoto = 'data:image/jpg;charset=utf8;base64,' . $otherPhoto;
+            $otherPhoto = $userP->getImageBase64();
+            $otherUserPhoto = null;
+            if($otherPhoto != null)
+            {
+                $otherUserPhoto = 'data:image/jpg;charset=utf8;base64,' . $otherPhoto;
+            }
+        }
+        else
+        {
+            $otherUserPhoto = null;
         }
         return $this->render('otherProfile.html.twig',[
             //For the header
@@ -307,7 +314,8 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-
+        $users = $entityManager->getRepository(User::class)->findAll();
+        
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
@@ -319,6 +327,7 @@ class StoriesController extends AbstractController
         {
             return $this->redirectToRoute('app_login');
         }
+        $collaborators = $story->getCollabUsers();
         //handle the edit if it has been submitted
         if($request->request->all())
         {
@@ -327,6 +336,7 @@ class StoriesController extends AbstractController
             $genreId = (int) $formData['genre'];
             $public = (int) $formData['public'];
             $storyText = $formData['story'];
+            $collaboratorIds = $formData['collaborators'] ?? [];
             //set the new values
             $story->setStoryTitle($title);
             foreach($genresHeader as $genre)
@@ -339,6 +349,14 @@ class StoriesController extends AbstractController
             $story->setGenre($genreEntity);
             $story->setPublic($public);
             $story->setStoryText($storyText);
+            foreach($collaboratorIds as $collaboratorId) {
+                $collaborator = $entityManager->getRepository(User::class)->find($collaboratorId);
+                if($collaborator){
+                    $story->addCollabUsers($collaborator);
+                    $collaborator->addCollabStories($story);
+                    $entityManager->persist($collaborator);
+                }
+            }
 
             try
             {
@@ -353,21 +371,25 @@ class StoriesController extends AbstractController
             finally
             {
                 $story = $entityManager->find(Story::class, $id);
-                return $this->render('editStory.html.twig', [
-                    'genres' => $genresHeader,
-                    'userPfp' => $userPfp,
+                return $this->redirectToRoute('editStory', [
                     'response' => $response,
                     'user' => $user,
-                    'story' => $story
+                    'story' => $story,
+                    'users' => $users,
+                    'collaborators' => $collaborators,
+                    'id' => $id
                 ]);
             }
         }
+        
         return $this->render('editStory.html.twig',[
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
             'user' => $user,
-            'story' => $story
+            'story' => $story,
+            'collaborators' => $collaborators,
+            'users' => $users
         ]);
     }
     #[Route(path:'/search', name: 'search')]
@@ -471,11 +493,9 @@ class StoriesController extends AbstractController
             {
                 return $this->redirectToRoute('seeStory', [
                     'genres' => $genresHeader,
-                    'userPfp' => $userPfp,
+                    'userPfp' => $userPfp,  
                     'story' => $story,
-                    'comments' => $comments,
                     'commentError' => "Comment was empty!",
-                    'user' => $user,
                     'id' => $storyId
                 ]);
             }
@@ -491,11 +511,8 @@ class StoriesController extends AbstractController
             {
                 $entityManager->flush();
                 return $this->redirectToRoute('seeStory', [
-                    'genres' => $genresHeader,
-                    'userPfp' => $userPfp,
                     'story' => $story,
                     'comments' => $comments,
-                    'user' => $user,
                     'id' => $storyId
                 ]);
             }
@@ -503,12 +520,8 @@ class StoriesController extends AbstractController
             {
                 $message = "Error processing your comment. Please try again later:" .$e->getMessage();
                 return $this->redirectToRoute('seeStory', [
-                    'genres' => $genresHeader,
-                    'userPfp' => $userPfp,
                     'story' => $story,
-                    'comments' => $comments,
                     'commentError' => $message,
-                    'user' => $user,
                     'id' => $storyId
                 ]);
             }
@@ -621,6 +634,81 @@ class StoriesController extends AbstractController
         return $this->render("changePhoto.html.twig", [
             'genres' => $genresHeader,
             'userPfp' => $userPfp,
+        ]);
+    }
+
+    #[Route(path:"/editUsername", name: "editUsername")]
+    public function editUsername(EntityManagerInterface $entityManager,  Request $request)
+    {
+        //For the header
+        $user = $this->getUser();
+        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
+        
+        $base64Pfp = $user->getImageBase64();
+        $userPfp = null;
+        if ($base64Pfp !== null) {
+            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
+        }
+        
+        if($request->isMethod("POST"))
+        {
+            $formData = $request->request->all();
+            $newUsername = $formData['newUsername'];
+            //only change if necessary
+            if($user->getUsername() != $newUsername)
+            {
+                $usernameTaken = $entityManager->getRepository(User::class)->findOneBy(['username' => $newUsername]);
+            
+                if($usernameTaken != null)
+                {
+                    $changed = "Username already taken";
+                    return $this->redirectToRoute('editUsername', ['changed' => $changed]);
+                }
+                $user->setUsername($newUsername);
+                try
+                {
+                    $entityManager->flush();
+                    $changed = "Username changed successfully";
+                }
+                catch(\Exception $e)
+                {
+                    $changed = "An error occurred when trying to update your username: " .$e->getMessage();
+                }
+                finally
+                {
+                    return $this->redirectToRoute('editUsername',[
+                        'changed' => $changed,
+                    ]);
+                }
+            }
+            else
+            {
+                $changed = "No changes made";
+            }
+            return $this->redirectToRoute('editUsername',[
+                'changed' => $changed
+            ]);
+        }
+        if($request->isMethod('GET'))
+        {
+            $formData = $request->request->all();
+            if(isset($formData['change']))
+            {
+                $change = $formData['change'];
+                return $this->render('editUsername.html.twig',[
+                    //For the header
+                    'genres' => $genresHeader,
+                    'userPfp'=> $userPfp,
+                    'user' => $user,
+                    'change' => $change
+                ]);
+            }
+        }
+        return $this->render('editUsername.html.twig',[
+            //For the header
+            'genres' => $genresHeader,
+            'userPfp'=> $userPfp,
+            'user' => $user
         ]);
     }
 

@@ -67,7 +67,7 @@ pre
     align-items: center;
 }
 
-#userPfp{
+#userPfp, #otherUser{
     width: 100px;
     border-radius: 60px;
     aspect-ratio: 1 / 1;
@@ -113,4 +113,8 @@ pre
 
 .btn{
     margin: 0.3em;
+}
+
+.card-text{
+    padding-right: 2em;
 }
