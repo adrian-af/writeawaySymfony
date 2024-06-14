@@ -25,11 +25,11 @@ class StoriesController extends AbstractController
 {
     #[Route(path:'/helloUser', name: 'helloUser')]
     public function hello(EntityManagerInterface $entityManager)
-    {   
+    {
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
+
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
@@ -51,7 +51,7 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
+
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
@@ -84,10 +84,10 @@ class StoriesController extends AbstractController
         //get all the genres so the header shows all of them
         $repositoryGenres = $entityManager->getRepository(Genre::class);
         $genres = $repositoryGenres->findAll();
-         //For the header
+        //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
+
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
@@ -104,7 +104,7 @@ class StoriesController extends AbstractController
                 $comments = $story->getComments();
                 return $this->render('seeStory.html.twig', [
                     'genres' => $genresHeader,
-                    'userPfp' => $userPfp,  
+                    'userPfp' => $userPfp,
                     'story' => $story,
                     'comments' => $comments,
                     'user' => $user
@@ -177,7 +177,7 @@ class StoriesController extends AbstractController
         }
         if($request->request->all())
         {
-            //get the submitted data
+            // Obtener los datos enviados
             $formData = $request->request->all();
             $title = $formData['title'];
             $genreId = (int) $formData['genre'];
@@ -186,20 +186,21 @@ class StoriesController extends AbstractController
             $collaboratorIds = $formData['collaborators'] ?? []; //IDs de los colaboradores
             //create the entity
             $storyEntity = new Story();
-            //assign the values to the entity's attributes
+            // Asignar los valores a los atributos de la entidad
             $storyEntity->setStoryTitle($title);
             foreach($genres as $genre)
             {
                 if($genre->getGenreID() == $genreId)
                 {
                     $genreEntity = $genre;
+                    break;
                 }
             }
             $storyEntity->setGenre($genreEntity);
             $storyEntity->setPublic($public);
             $storyEntity->setStoryText($storyText);
             $storyEntity->setUser($user);
-            //set the current datetime as the datetime attribute
+            // Establecer la fecha y hora actual como el atributo datetime
             $storyEntity->setDatetime(new \DateTime());
             foreach($collaboratorIds as $collaboratorId) {
                 $collaborator = $entityManager->getRepository(User::class)->find($collaboratorId);
@@ -212,16 +213,16 @@ class StoriesController extends AbstractController
             
             try
             {
-                //"save" the entity to the ORM
+                // "Guardar" la entidad en el ORM
                 $entityManager->persist($storyEntity);
-                //commit the changes to the DB
+                // Confirmar los cambios en la base de datos
                 $entityManager->flush();
                 $response = "Story created successfully";
             }
-            catch(\Exception $e) //if the flush fails
+            catch(\Exception $e) // Si la operación flush falla
             {
                 $response = "An error occurred while trying to create your story: " .$e->getMessage();
-            } 
+            }
             finally
             {
                 return $this->redirectToRoute('write', ['response' => $response]);
@@ -240,7 +241,7 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
+
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
@@ -300,7 +301,7 @@ class StoriesController extends AbstractController
                     ]);
                 }
             }
-            
+
         }
         return $this->render('ownProfile.html.twig',[
             //For the header
@@ -369,7 +370,7 @@ class StoriesController extends AbstractController
             catch(\Exception $e) //in case the flush fails
             {
                 $response = "An error occurred while trying to edit your story: " .$e->getMessage();
-            } 
+            }
             finally
             {
                 $story = $entityManager->find(Story::class, $id);
@@ -400,14 +401,14 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
+
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         //get the term that's been searched from POST and handle it
-        if ($request->isMethod('POST')) 
+        if ($request->isMethod('POST'))
         {
             $formData = $request->request->all();
             $term = $formData['usersearched'];
@@ -514,25 +515,27 @@ class StoriesController extends AbstractController
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
+
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
         //take the input from the form
-        if ($request->isMethod('POST')) 
+        if ($request->isMethod('POST'))
         {
             $formData = $request->request->all();
             $text = $formData['text'];
             $storyId = $formData['storyId'];
             $story = $entityManager->find(Story::class,  $storyId);
             $comments = $story->getComments();
-            
+
             //check the content
             if (strlen($text) < 1)
             {
-                return $this->redirectToRoute('seeStory', [ 
+                return $this->redirectToRoute('seeStory', [
+                    'genres' => $genresHeader,
+                    'userPfp' => $userPfp,  
                     'story' => $story,
                     'commentError' => "Comment was empty!",
                     'id' => $storyId
@@ -567,20 +570,20 @@ class StoriesController extends AbstractController
         }
         return $this->redirectToRoute("app_login");
     }
-    
+
     #[Route(path:"/editAbout", name: "editAbout")]
     public function editAbout(EntityManagerInterface $entityManager,  Request $request)
     {
         //For the header
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
+
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
-        
+
         if($request->isMethod("POST"))
         {
             $formData = $request->request->all();
@@ -639,25 +642,25 @@ class StoriesController extends AbstractController
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
-        if ($request->files->get('photo')) 
+        if ($request->files->get('photo'))
         {
             //get the uploaded photo
             $uploadedFile = $request->files->get('photo');
-            
+
             // Open the file in binary mode to obtain a stream resource
             $fileStream = fopen($uploadedFile->getPathname(), 'rb');
-            
+
             try
             {
                 // Set the file stream directly to the $photo property in the entity
                 $user->setPhoto($fileStream);
-                
+
                 $entityManager->flush();
                 $changed = "Photo changed successfully!";
             }
             catch(\Exception $e)
             {
-                $changed = "There was an error changing your photo: " .$e->getMessage(); 
+                $changed = "There was an error changing your photo: " .$e->getMessage();
             }
             finally
             {
@@ -666,7 +669,7 @@ class StoriesController extends AbstractController
                     'userPfp' => $userPfp,
                     'deleted' => $changed,
                     'user' => $user
-                ]);   
+                ]);
 
             }
         }
@@ -818,6 +821,4 @@ class StoriesController extends AbstractController
             'success' => $success,
         ]);
     }
-
-    
 }

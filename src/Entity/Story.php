@@ -2,9 +2,7 @@
 namespace App\Entity;
 
 use DateTime;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @ORM\Entity
@@ -26,7 +24,7 @@ class Story
 
     #[ORM\Column(type: 'string', name: 'title')]
     private $storyTitle;
-    
+
     #[ORM\ManyToOne(targetEntity: Genre::class, inversedBy: "stories")]
     #[ORM\JoinColumn(name:"genreId", referencedColumnName: "ID")]
     private $genre;
@@ -55,12 +53,10 @@ class Story
      */
     public function __construct()
     {
-        $this->user = new ArrayCollection();
-        $this->comments = new ArrayCollection();
     }
     /**
      * Get the value of ID
-     */ 
+     */
     public function getStoryID()
     {
         return $this->storyID;
@@ -136,7 +132,7 @@ class Story
 
     /**
      * Get the value of user
-     */ 
+     */
     public function getUser()
     {
         return $this->user;
@@ -146,7 +142,7 @@ class Story
      * Set the value of user
      *
      * @return  self
-     */ 
+     */
     public function setUser($user)
     {
         $this->user = $user;
@@ -156,7 +152,7 @@ class Story
 
     /**
      * Get the value of comments
-     */ 
+     */
     public function getComments()
     {
         return $this->comments;
@@ -166,7 +162,7 @@ class Story
      * Set the value of comments
      *
      * @return  self
-     */ 
+     */
     public function setComments($comments)
     {
         $this->comments = $comments;
