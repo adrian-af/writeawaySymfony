@@ -93,6 +93,17 @@ class StoriesController extends AbstractController
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
+
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
+        }
         //get the current story
         if($request->isMethod('GET'))
         {
@@ -107,20 +118,11 @@ class StoriesController extends AbstractController
                     'userPfp' => $userPfp,
                     'story' => $story,
                     'comments' => $comments,
-                    'user' => $user
+                    'user' => $user,
+                    'error' => $error,
+                    'success' => $success
                 ]);
             }
-        }
-
-        $error = null;
-        if($request->query->get('error') != null)
-        {
-            $error = $request->query->get('error');
-        }
-        $success = null;
-        if($request->query->get('success') != null)
-        {
-            $success = $request->query->get('success');
         }
 
         return $this->render('seeStory.html.twig', [
@@ -170,6 +172,7 @@ class StoriesController extends AbstractController
             $entityManager->persist($storyEntity);
             $entityManager->flush();
             $comments = $storyEntity->getComments();
+
             return $this->redirectToRoute('seeStory', ['id' => $storyId]);
         }
     }

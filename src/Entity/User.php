@@ -59,10 +59,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         inverseJoinColumns: [new ORM\JoinColumn(name: "story_id", referencedColumnName: "ID")]
     )]
     public $collabStories; //stories in which this user collabs
-<<<<<<< HEAD
-    
-=======
->>>>>>> bdfc277f8dfd75611c52f4ce6bad291a84c8227f
     /**
      * User constructor
      */
@@ -341,10 +337,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this->favStories;
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> bdfc277f8dfd75611c52f4ce6bad291a84c8227f
     public function getCollabStories()
     {
         return $this->collabStories;
