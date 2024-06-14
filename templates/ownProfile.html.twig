@@ -46,9 +46,22 @@
                             </p>
                             <p class='text'><pre>{{ user.about }}</pre></p>
                         </div>
-                        <div class="buttons d-flex justify-content-around">
-                            <a href="{{ path('changePassword') }}" class="btn btn-primary">Change password</a>
-                            <a href="{{ path('deleteAccount') }}" class="btn btn-danger">Delete account</a>
+                        <div class="buttons d-flex justify-content-around align-items-end">
+                            <div>
+                                <a href="{{ path('changePassword') }}" class="btn btn-primary">Change password</a>
+                            </div>
+                            
+                            <form action="{{ path('deleteAccount')}}" method="POST" class="d-flex flex-column">
+                                <div>
+                                    <input type="checkbox" id="storiesToo" name="storiesToo" value="1"/>
+                                    <label for="storiesToo" data-bs-toggle="tooltip" data-bs-placement="top" title="If you do not click this box, your stories will stay in Writeaway without your username">Delete all your stories too</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" id="commentsToo" name="commentsToo" value="1"/>
+                                    <label for="commmentsToo" data-bs-toggle="tooltip" data-bs-placement="top" title="If you do not click this box, your comments will stay in Writeaway without your username">Delete all your comments too</label>
+                                </div>
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your Writeaway account? This action cannot be undone')">Delete account</button>
+                            </form>
                         </div>
                     </div>
                 </div>
