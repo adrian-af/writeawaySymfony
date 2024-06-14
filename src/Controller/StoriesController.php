@@ -648,6 +648,8 @@ class StoriesController extends AbstractController
         {
             $formData = $request->request->all();
             $about = $formData['about'];
+            $error = null;
+            $success = null;
             //only change if necessary
             if($user->getAbout() != $about)
             {
@@ -655,40 +657,50 @@ class StoriesController extends AbstractController
                 try
                 {
                     $entityManager->flush();
-                    $changed = "About changed successfully";
+                    $success = "About changed successfully";
                 }
                 catch(\Exception $e)
                 {
-                    $changed = "An error occurred when trying to update your about: " .$e->getMessage();
+                    $error = "An error occurred when trying to update your about: " .$e->getMessage();
                 }
                 finally
                 {
-                    return $this->render('editAbout.html.twig',[
-                        //For the header
-                        'genres' => $genresHeader,
-                        'userPfp'=> $userPfp,
+                    return $this->redirectToRoute('editAbout',[
                         'changed' => $changed,
-                        'user' => $user
+                        'user' => $user,
+                        'success' => $success,
+                        'error' => $error,
                     ]);
                 }
             }
             else
             {
-                $changed = "No changes made";
+                $error = "No changes made";
             }
-            return $this->render('editAbout.html.twig',[
-                //For the header
-                'genres' => $genresHeader,
-                'userPfp'=> $userPfp,
-                'changed' => $changed,
-                'user' => $user
+            return $this->redirectToRoute('editAbout',[
+                'user' => $user,
+                'error' => $error,
+                'success' => $success,
             ]);
         }
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
+        }
+
         return $this->render('editAbout.html.twig',[
             //For the header
             'genres' => $genresHeader,
             'userPfp'=> $userPfp,
-            'user' => $user
+            'user' => $user,
+            'success' => $success,
+            'error' => $error
         ]);
     }
 
