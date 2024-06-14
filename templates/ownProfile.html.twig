@@ -7,11 +7,13 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
 {% endblock %}
 {% block body %}
-    
-   
-    {% if deleted is defined %}
-        {{ deleted }}
+    {% if error is not null %}
+        <div style="color: red">{{ error }}</div>
     {% endif %}
+    {% if success is not null %}
+        <div style="color: green">{{ success }}</div>
+    {% endif %}
+    
 <div class="card">
     <div class="row">
         <div class="col-4">
@@ -88,8 +90,24 @@
                                 </div>
                                 <hr>
                             {% endfor %}
-                        {% else %}
+                        {% elseif user.stories|length == 0 and user.collabStories|length == 0%}
                             You have not posted any stories yet.
+                        {% endif %}
+                        {% if user.collabStories|length > 0 %}
+                            {% for story in user.collabStories %}
+                                <div id='{{ story.storyID }}' class='container'>
+                                    <div class='title'>
+                                        <a href="{{ path('seeStory', {'id': story.storyID}) }}"> {{ story.storyTitle }} </a>
+                                    </div>
+                                    <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
+                                    <div class='dateTime'>{{ story.datetime|date('d-M-Y H:i:s') }}</div>
+                                    <div style="display: flex;">
+                                        <a href="{{ path('editStory', {'id': story.storyID}) }}" class="btn btn-secondary">Edit</a>
+                                        <div data-bs-toggle="tooltip" data-bs-placement="top" title="You cannot delete stories where you are a collaborator"><button class="btn btn-danger" disabled>Delete</button></div>
+                                    </div>
+                                </div>
+                                <hr>
+                            {% endfor %}
                         {% endif %}
                     </div>
                 </div>

@@ -158,78 +158,77 @@ class SignUpController extends AbstractController
     }
 
     #[Route(path:"deleteAccount", name: "deleteAccount")]
-public function deleteAccount(EntityManagerInterface $entityManager, Request $request, TokenStorageInterface $tokenStorage)
-{
-    $user = $this->getUser();
-   
-    try
+    public function deleteAccount(EntityManagerInterface $entityManager, Request $request, TokenStorageInterface $tokenStorage)
     {
-        //handle current session so it doesn't throw an error
-        $response = $this->forward('App\Controller\LoginController::logout');
-        $tokenStorage->setToken(null);
-        $session->invalidate();
-
-        //user created to host stories from deleted users
-        $del = $entityManager->find(User::class, 161);
-
-        if($user == $del || $user->getUserId() == 161)
-        {
-            $users = $entityManager->getRepository(User::class)->findAll();
-            return $this->render("ownProfile.html.twig", [
-                //For the header
-                'genres' => $genresHeader,
-                'userPfp'=>$userPfp,
-                'deleted' => "Can't delete that user as it is necessary for the app functionality",
-                'user' => $user
-            ]);
-        }
-        $formData = $request->request->all();
-        //if checked, stories are deleted
-        if(isset($formData['storiesToo']))
-        {
-            foreach ($user->getStories() as $story)
-            {
-                $entityManager->remove($story);
-            }
-        }
-        //if not checked, stories change their author to user DELETED
-        else
-        {
-            foreach($user->getStories() as $story)
-            {
-                $story->setUser($del);
-            }
-        }
-        if(isset($formData['commentsToo']))
-        {
-            foreach($user->getComments() as $comment)
-            {
-                $entityManager->remove($comment);
-            }
-        }
-        else
-        {
-            foreach($user->getComments() as $comment)
-            {
-                $comment->setUser($del);
-            }
-        }
-        $entityManager->remove($user);
-        $entityManager->flush();
+        $user = $this->getUser();
+    
         try
         {
-            return $this->redirectToRoute('helloUser');
+            //handle current session so it doesn't throw an error
+            $response = $this->forward('App\Controller\LoginController::logout');
+            $tokenStorage->setToken(null);
+            $session->invalidate();
+
+            //user created to host stories from deleted users
+            $del = $entityManager->find(User::class, 161);
+
+            if($user == $del || $user->getUserId() == 161)
+            {
+                $users = $entityManager->getRepository(User::class)->findAll();
+                return $this->render("ownProfile.html.twig", [
+                    //For the header
+                    'genres' => $genresHeader,
+                    'userPfp'=>$userPfp,
+                    'deleted' => "Can't delete that user as it is necessary for the app functionality",
+                    'user' => $user
+                ]);
+            }
+            $formData = $request->request->all();
+            //if checked, stories are deleted
+            if(isset($formData['storiesToo']))
+            {
+                foreach ($user->getStories() as $story)
+                {
+                    $entityManager->remove($story);
+                }
+            }
+            //if not checked, stories change their author to user DELETED
+            else
+            {
+                foreach($user->getStories() as $story)
+                {
+                    $story->setUser($del);
+                }
+            }
+            if(isset($formData['commentsToo']))
+            {
+                foreach($user->getComments() as $comment)
+                {
+                    $entityManager->remove($comment);
+                }
+            }
+            else
+            {
+                foreach($user->getComments() as $comment)
+                {
+                    $comment->setUser($del);
+                }
+            }
+            $entityManager->remove($user);
+            $entityManager->flush();
+            try
+            {
+                return $this->redirectToRoute('helloUser');
+            }
+            catch(\InvalidArgumentException $e)
+            {
+                return $this->redirectToRoute('app_login');
+            }
         }
-        catch(\InvalidArgumentException $e)
+        catch(\Exception $e)
         {
+            $deleted = "There was an error deleting your account: " .$e->getMessage();
             return $this->redirectToRoute('app_login');
         }
     }
-    catch(\Exception $e)
-    {
-        $deleted = "There was an error deleting your account: " .$e->getMessage();
-        return $this->redirectToRoute('app_login');
-    }
-
-}
 }

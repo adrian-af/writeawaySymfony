@@ -66,8 +66,11 @@
                     <button type='submit' class="btn btn-primary">Comment</button>
                 </form>
             </div>
-            {% if commentError is defined %}
-                {{ commentError }}
+            {% if error is not null %}
+                <div style="color: red">{{ error }}</div>
+            {% endif %}
+            {% if success is not null %}
+                <div style="color: green">{{ success }}</div>
             {% endif %}
             <div id='comments'>
             {% if comments|length > 0 %}
