@@ -59,7 +59,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         inverseJoinColumns: [new ORM\JoinColumn(name: "story_id", referencedColumnName: "ID")]
     )]
     public $collabStories; //stories in which this user collabs
+<<<<<<< HEAD
     
+=======
+>>>>>>> bdfc277f8dfd75611c52f4ce6bad291a84c8227f
     /**
      * User constructor
      */
@@ -147,13 +150,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         if (null === $this->photo) {
             return null;
         }
-    
+
         if (!isset($this->imageBase64)) {
             $data = stream_get_contents($this->photo);
             fclose($this->photo);
             $this->imageBase64 = base64_encode($data);
         }
-    
+
         return $this->imageBase64;
     }
 
@@ -205,7 +208,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     /**
      * Get the value of role
-     */ 
+     */
     public function getRole()
     {
         return $this->role;
@@ -215,7 +218,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
      * Set the value of role
      *
      * @return  self
-     */ 
+     */
     public function setRole($role)
     {
         $this->role = $role;
@@ -233,7 +236,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     public function eraseCredentials(): void
     {
         //$this->password = "";
-    } 
+    }
     public function getRoles(): array
     {
         if($this->role === 0)
@@ -250,7 +253,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     /**
      * Get the value of stories
-     */ 
+     */
     public function getStories()
     {
         return $this->stories;
@@ -260,7 +263,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
      * Set the value of stories
      *
      * @return  self
-     */ 
+     */
     public function setStories($stories)
     {
         $this->stories = $stories;
@@ -278,7 +281,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         $confirmationCode = $this->confCod;
         $emailObject->htmlTemplate($template, ['code' => $confirmationCode]);
         $emailObject->context(['code' => $confirmationCode]);
-        
+
         try
         {
             $mailer->send($emailObject);
@@ -293,7 +296,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     /**
      * Get the value of comments
-     */ 
+     */
     public function getComments()
     {
         return $this->comments;
@@ -303,7 +306,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
      * Set the value of comments
      *
      * @return  self
-     */ 
+     */
     public function setComments($comments)
     {
         $this->comments = $comments;
@@ -324,7 +327,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
      * Set the value of favStories
      *
      * @return  self
-     */ 
+     */
     public function setFavStories($favStories)
     {
         $this->favStories = $favStories;
@@ -338,6 +341,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this->favStories;
     }
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> bdfc277f8dfd75611c52f4ce6bad291a84c8227f
     public function getCollabStories()
     {
         return $this->collabStories;
