@@ -30,8 +30,11 @@
 {% block body %}
     <h1>Start writing</h1>
     <div class="card" id="main">
-        {% if response %}
-            <div>{{ response }}</div>
+        {% if success is not null %}
+            <div style="color:green">{{ success }}</div>
+        {% endif %}
+        {% if error is not null %}
+            <div style="color:red">{{ error }}</div>
         {% endif %}
         <form action="{{ path('write') }}" method='POST' class="writeStory">
             <div class="content">
@@ -68,8 +71,10 @@
                 <p class="sectionTitle">Collaborators:</p>
             <div class="content" id="contentCollaborators">
                 {% for user in users %}
-                    <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}">
-                    <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+                    {% if user.userId != 161 %}
+                        <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}">
+                        <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+                    {% endif %}
                 {% endfor %}
             </div>
             <button class="button btn btn-primary">Submit</button>

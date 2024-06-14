@@ -112,11 +112,24 @@ class StoriesController extends AbstractController
             }
         }
 
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
+        }
+
         return $this->render('seeStory.html.twig', [
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
-            'user' => $user
+            'user' => $user,
+            'success' => $success,
+            'error' => $error
         ]);
     }
 
@@ -209,29 +222,45 @@ class StoriesController extends AbstractController
                     $entityManager->persist($collaborator);
                 }
             }
-            
+            $success = null;
+            $error = null;
             try
             {
                 //"save" the entity to the ORM
                 $entityManager->persist($storyEntity);
                 //commit the changes to the DB
                 $entityManager->flush();
-                $response = "Story created successfully";
+                $success = "Story created successfully";
             }
             catch(\Exception $e) //if the flush fails
             {
-                $response = "An error occurred while trying to create your story: " .$e->getMessage();
+                $error = "An error occurred while trying to create your story: " .$e->getMessage();
             } 
             finally
             {
-                return $this->redirectToRoute('write', ['response' => $response]);
+                return $this->redirectToRoute('write', [
+                    'error' => $error,
+                    'success' => $success
+                ]);
             }
+        }
+
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
         }
         return $this->render('write.html.twig', [
             'genres' => $genres,
             'users' => $users,
             'userPfp' => $userPfp,
-            'response' => $response
+            'error' => $error,
+            'success' => $success
         ]);
     }
     #[Route(path:'/ownProfile', name: 'ownProfile')]
@@ -254,6 +283,8 @@ class StoriesController extends AbstractController
                 $deleteid = $request->query->get('deleteid');
                 //find the story by ID
                 $story = $entityManager->find(Story::class, $deleteid);
+                $success = null;
+                $error = null;
                 try
                 {
                     foreach($story->getComments() as $comment)
@@ -262,20 +293,18 @@ class StoriesController extends AbstractController
                     }
                     $entityManager->remove($story);
                     $entityManager->flush();
-                    $deleted = "Story deleted successfully";
+                    $success = "Story deleted successfully";
                 }
                 catch(\Exception $e)
                 {
-                    $deleted = "There was an error deleting the story: " .$e->getMessage();
+                    $error = "There was an error deleting the story: " .$e->getMessage();
                 }
                 finally
                 {
                     return $this->redirectToRoute('ownProfile',[
-                        //For the header
-                        'genres' => $genresHeader,
-                        'userPfp'=>$userPfp,
                         'user' => $user,
-                        'deleted' => $deleted
+                        'success' => $success,
+                        'error' => $error
                     ]);
                 }
             }
@@ -283,30 +312,47 @@ class StoriesController extends AbstractController
             {
                 $deletecomment = $request->query->get('deletecomment');
                 $comment = $entityManager->find(Comment::class, $deletecomment);
+                $success = null;
+                $error = null;
                 try
                 {
                     $entityManager->remove($comment);
                     $entityManager->flush();
-                    $deleted = "Comment deleted successfully";
+                    $success = "Comment deleted successfully";
                 }
                 catch(\Exception $e)
                 {
-                    $deleted = "There was an error deleting the comment: " .$e->getMessage();
+                    $error = "There was an error deleting the comment: " .$e->getMessage();
                 }
                 finally
                 {
                     return $this->redirectToRoute('ownProfile',[
-                        'user' => $user
+                        'user' => $user,
+                        'success' => $success,
+                        'error' => $error
                     ]);
                 }
-            }
-            
+            }   
         }
+
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
+        }
+        
         return $this->render('ownProfile.html.twig',[
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
             'user' => $user,
+            'error' => $error,
+            'success' => $success
         ]);
     }
 
@@ -325,9 +371,12 @@ class StoriesController extends AbstractController
         }
         //find the story by the passed ID
         $story = $entityManager->find(Story::class, $id);
-        if($story->getUser() != $user)
+        if($story->getUser() != $user) //the user is not the author
         {
-            return $this->redirectToRoute('app_login');
+            if(!$story->getCollabUsers()->contains($user))
+            {
+                return $this->redirectToRoute('app_login');
+            }
         }
         $collaborators = $story->getCollabUsers();
         //handle the edit if it has been submitted
@@ -359,29 +408,37 @@ class StoriesController extends AbstractController
                     $entityManager->persist($collaborator);
                 }
             }
-
+            $success = null;
+            $error = null;
             try
             {
                 //save to DB
                 $entityManager->flush();
-                $response = "Story edited successfully";
+                $success = "Story edited successfully";
             }
             catch(\Exception $e) //in case the flush fails
             {
-                $response = "An error occurred while trying to edit your story: " .$e->getMessage();
+                $error = "An error occurred while trying to edit your story: " .$e->getMessage();
             } 
             finally
             {
                 $story = $entityManager->find(Story::class, $id);
                 return $this->redirectToRoute('editStory', [
-                    'response' => $response,
-                    'user' => $user,
-                    'story' => $story,
-                    'users' => $users,
-                    'collaborators' => $collaborators,
+                    'success' => $success,
+                    'error' => $error,
                     'id' => $id
                 ]);
             }
+        }
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
         }
         
         return $this->render('editStory.html.twig',[
@@ -391,7 +448,9 @@ class StoriesController extends AbstractController
             'user' => $user,
             'story' => $story,
             'collaborators' => $collaborators,
-            'users' => $users
+            'users' => $users,
+            'error' => $error,
+            'success' => $success
         ]);
     }
     #[Route(path:'/search', name: 'search')]
@@ -534,7 +593,7 @@ class StoriesController extends AbstractController
             {
                 return $this->redirectToRoute('seeStory', [ 
                     'story' => $story,
-                    'commentError' => "Comment was empty!",
+                    'error' => "Comment was empty!",
                     'id' => $storyId
                 ]);
             }
@@ -552,15 +611,16 @@ class StoriesController extends AbstractController
                 return $this->redirectToRoute('seeStory', [
                     'story' => $story,
                     'comments' => $comments,
-                    'id' => $storyId
+                    'id' => $storyId,
+                    'success' => "Comment added successfully!",
                 ]);
             }
             catch(\Exception $e)
             {
-                $message = "Error processing your comment. Please try again later:" .$e->getMessage();
+                $error = "Error processing your comment. Please try again later:" .$e->getMessage();
                 return $this->redirectToRoute('seeStory', [
                     'story' => $story,
-                    'commentError' => $message,
+                    'error' => $error,
                     'id' => $storyId
                 ]);
             }
@@ -646,33 +706,44 @@ class StoriesController extends AbstractController
             
             // Open the file in binary mode to obtain a stream resource
             $fileStream = fopen($uploadedFile->getPathname(), 'rb');
-            
+            $success = null;
+            $error = null;
             try
             {
                 // Set the file stream directly to the $photo property in the entity
                 $user->setPhoto($fileStream);
                 
                 $entityManager->flush();
-                $changed = "Photo changed successfully!";
+                $success = "Photo changed successfully!";
             }
             catch(\Exception $e)
             {
-                $changed = "There was an error changing your photo: " .$e->getMessage(); 
+                $error = "There was an error changing your photo: " .$e->getMessage(); 
             }
             finally
             {
                 return $this->redirectToRoute("ownProfile", [
-                    'genres' => $genresHeader,
-                    'userPfp' => $userPfp,
-                    'deleted' => $changed,
-                    'user' => $user
+                    'user' => $user,
+                    'success' => $success,
+                    'error' => $error
                 ]);   
-
             }
+        }
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
         }
         return $this->render("changePhoto.html.twig", [
             'genres' => $genresHeader,
             'userPfp' => $userPfp,
+            'success' => $success,
+            'error' => $error,
         ]);
     }
 
@@ -694,60 +765,60 @@ class StoriesController extends AbstractController
             $formData = $request->request->all();
             $newUsername = $formData['newUsername'];
             //only change if necessary
+            $success = null;
+            $error = null;
             if($user->getUsername() != $newUsername)
             {
                 $usernameTaken = $entityManager->getRepository(User::class)->findOneBy(['username' => $newUsername]);
             
                 if($usernameTaken != null)
                 {
-                    $changed = "Username already taken";
-                    return $this->redirectToRoute('editUsername', ['changed' => $changed]);
+                    $error = "Username already taken";
+                    return $this->redirectToRoute('editUsername', ['error' => $error]);
                 }
                 $user->setUsername($newUsername);
                 try
                 {
                     $entityManager->flush();
-                    $changed = "Username changed successfully";
+                    $success = "Username changed successfully";
                 }
                 catch(\Exception $e)
                 {
-                    $changed = "An error occurred when trying to update your username: " .$e->getMessage();
+                    $error = "An error occurred when trying to update your username: " .$e->getMessage();
                 }
                 finally
                 {
                     return $this->redirectToRoute('editUsername',[
-                        'changed' => $changed,
+                        'success' => $success,
+                        'error' => $error,
                     ]);
                 }
             }
             else
             {
-                $changed = "No changes made";
+                $error = "No changes made";
             }
             return $this->redirectToRoute('editUsername',[
-                'changed' => $changed
+                'error' => $error
             ]);
         }
-        if($request->isMethod('GET'))
+        $error = null;
+        if($request->query->get('error') != null)
         {
-            $formData = $request->request->all();
-            if(isset($formData['change']))
-            {
-                $change = $formData['change'];
-                return $this->render('editUsername.html.twig',[
-                    //For the header
-                    'genres' => $genresHeader,
-                    'userPfp'=> $userPfp,
-                    'user' => $user,
-                    'change' => $change
-                ]);
-            }
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
         }
         return $this->render('editUsername.html.twig',[
             //For the header
             'genres' => $genresHeader,
             'userPfp'=> $userPfp,
-            'user' => $user
+            'user' => $user,
+            'success' => $success,
+            'error' => $error,
         ]);
     }
 

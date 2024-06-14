@@ -27,8 +27,11 @@
 {% block body %}
     <h1>Edit your story</h1>
     <div class="card" id="main">
-        {% if response is defined %}
-            <div>{{ response }}</div>
+        {% if success is not null %}
+            <div style="color:green">{{ success }}</div>
+        {% endif %}
+        {% if error is not null %}
+            <div style="color:red">{{ error }}</div>
         {% endif %}
         <form action="{{ path('editStory', {'id': story.storyID})}}" method='POST'>
             <div class="content">
@@ -81,11 +84,15 @@
             <div class="content" id="contentCollaborators">
                 {% for user in users %}
                     {% if user in collaborators %}
-                        <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}" checked>
-                        <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+                        {% if user.userId != 161 %}
+                            <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}" checked>
+                            <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+                        {% endif %}
                     {% else %}    
-                        <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}">
-                        <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+                        {% if user.userId != 161 %}
+                            <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}">
+                            <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             </div>

@@ -6,9 +6,13 @@
         width: 30em;
     }
 </style>
-    {% if error is defined %}
-        {{ error }}
+    {% if error is not null %}
+        <div style="color:red">{{ error }}</div>
     {% endif %}
+    {% if success is not null %}
+        <div style="color:green"{{ success }}</div>
+    {% endif %}
+
     <div class="container card">
         <h2>Upload your new profile photo</h2>
         <form action="{{ path('changePhoto')}}" method='POST' enctype="multipart/form-data">
