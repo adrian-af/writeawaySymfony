@@ -18,6 +18,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use DateTime;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+
+
 #[IsGranted('ROLE_USER')]
 class StoriesController extends AbstractController
 {
@@ -817,77 +819,5 @@ class StoriesController extends AbstractController
         ]);
     }
 
-    #[Route(path:"deleteAccount", name: "deleteAccount")]
-    public function deleteAccount(EntityManagerInterface $entityManager, Request $request)
-    {
-        
-        //For the header
-        $user = $this->getUser();
-        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
-        $base64Pfp = $user->getImageBase64();
-        $userPfp = null;
-        if ($base64Pfp !== null) {
-            $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
-        }
-        
-        try
-        {
-            //to log out of the current account before deleting it
-            $response = $this->forward('App\Controller\LoginController::logout');
-        
-            //user created to host stories from deleted users
-            $del = $entityManager->find(User::class, 161);
-
-            if($user == $del || $user->getUserId() == 161)
-            {
-                $users = $entityManager->getRepository(User::class)->findAll();
-                return $this->render("ownProfile.html.twig", [
-                    //For the header
-                    'genres' => $genresHeader,
-                    'userPfp'=>$userPfp,
-                    'deleted' => "Can't delete that user as it is necessary for the app functionality",
-                    'user' => $user
-                ]);
-            }
-            $formData = $request->request->all();
-            $storiesToo = $formData['storiesToo'];
-            if($storiesToo == "1")
-            {
-                foreach ($user->getStories() as $story)
-                {
-                    $entityManager->remove($story);
-                }
-            }
-            else
-            {
-                foreach($user->getStories() as $story)
-                {
-                    $story->setUser($del);
-                }
-            }
-            $entityManager->remove($user);
-            $entityManager->flush();
-            try
-            {
-                return $this->redirectToRoute('helloUser');
-            }
-            catch(\InvalidArgumentException $e)
-            {
-                return $this->redirectToRoute('app_login');
-            }
-        }
-        catch(\Exception $e)
-        {
-            $deleted = "There was an error deleting your account: " .$e->getMessage();
-            return $this->render('ownProfile.html.twig',[
-                //For the header
-                'genres' => $genresHeader,
-                'userPfp'=> $userPfp,
-                'user' => $user,
-                'deleted' => $deleted
-            ]);
-        }
-
-    }
+    
 }
