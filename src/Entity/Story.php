@@ -45,7 +45,7 @@ class Story
     private $usersThatFaved; //array of Users that have faved this story
 
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: "collabStories")]
-    private $collabUsers; //array of Users that have faved this story
+    private $collabUsers; //array of Users that are collaborating on this story
 
 
     /**
