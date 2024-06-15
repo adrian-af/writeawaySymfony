@@ -28,8 +28,11 @@
 {% block body %}
     <h1>Start writing</h1>
     <div class="card" id="main">
-        {% if response is defined %}
-            <div>{{ response }}</div>
+        {% if success is not null %}
+            <div style="color:green">{{ success }}</div>
+        {% endif %}
+        {% if error is not null %}
+            <div style="color:red">{{ error }}</div>
         {% endif %}
         <form action="{{ path('write') }}" method='POST' class="writeStory">
             <div class="content">
