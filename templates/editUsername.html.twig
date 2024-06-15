@@ -13,18 +13,17 @@
 </style>
 {% block body %}
     {% if error is not null %}
-        <div style="color: red">{{ error }}</div>
+        <div style="color:red">{{ error }}</div>
     {% endif %}
     {% if success is not null %}
-        <div style="color: green">{{ success }}</div>
+        <div style="color:green">{{ success }}</div>
     {% endif %}
-
     <div class="container card">
-        <h2>Write your new about you section</h2>
-        <form action="{{ path('editAbout') }}" method='POST'>
+        <h2>Choose a new username</h2>
+        <form action="{{ path('editUsername') }}" method='POST'>
             <div class="form-group m-1">
-                <label for="about" class="m-1">About:</label>
-                <textarea id="about" name="about" class="form-control m-2">{{ user.about }}</textarea>
+                <label for="about" class="m-1">Username</label>
+                <input type="text" class="form-control m-2" value="{{ user.username }}" name="newUsername"/>
                 <button class="btn btn-primary">Change</button>
             </div>
         </form>

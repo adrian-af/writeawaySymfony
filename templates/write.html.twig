@@ -16,6 +16,13 @@
         height: 300px;
         margin-bottom: 2em;
     }
+    #contentCollaborators{
+        height: 5em;
+        overflow-y: scroll;
+    }
+    .sectionTitle{
+        font-weight: bold;
+    }
 </style>
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}

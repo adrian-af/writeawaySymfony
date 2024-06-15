@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Genre;
+use App\Entity\Story;
+use App\Entity\Comment;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,6 +16,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class SignUpController extends AbstractController
 {
@@ -138,7 +142,7 @@ class SignUpController extends AbstractController
                 $entityManager->persist($user); //only do persist when the entity is new
                 $entityManager->flush();
 
-                return $this->render('login.html.twig', ['error' => "Your account has been verified! Now login."]);
+                return $this->render('login.html.twig', ['success' => "Your account has been verified! Now login."]);
             }
             else
             {
@@ -151,5 +155,80 @@ class SignUpController extends AbstractController
     public function checkEmailUnverified()
     {
         return $this->render('checkemail.html.twig');
+    }
+
+    #[Route(path:"deleteAccount", name: "deleteAccount")]
+    public function deleteAccount(EntityManagerInterface $entityManager, Request $request, TokenStorageInterface $tokenStorage)
+    {
+        $user = $this->getUser();
+    
+        try
+        {
+            //handle current session so it doesn't throw an error
+            $response = $this->forward('App\Controller\LoginController::logout');
+            $tokenStorage->setToken(null);
+            $session->invalidate();
+
+            //user created to host stories from deleted users
+            $del = $entityManager->find(User::class, 161);
+
+            if($user == $del || $user->getUserId() == 161)
+            {
+                $users = $entityManager->getRepository(User::class)->findAll();
+                return $this->render("ownProfile.html.twig", [
+                    //For the header
+                    'genres' => $genresHeader,
+                    'userPfp'=>$userPfp,
+                    'deleted' => "Can't delete that user as it is necessary for the app functionality",
+                    'user' => $user
+                ]);
+            }
+            $formData = $request->request->all();
+            //if checked, stories are deleted
+            if(isset($formData['storiesToo']))
+            {
+                foreach ($user->getStories() as $story)
+                {
+                    $entityManager->remove($story);
+                }
+            }
+            //if not checked, stories change their author to user DELETED
+            else
+            {
+                foreach($user->getStories() as $story)
+                {
+                    $story->setUser($del);
+                }
+            }
+            if(isset($formData['commentsToo']))
+            {
+                foreach($user->getComments() as $comment)
+                {
+                    $entityManager->remove($comment);
+                }
+            }
+            else
+            {
+                foreach($user->getComments() as $comment)
+                {
+                    $comment->setUser($del);
+                }
+            }
+            $entityManager->remove($user);
+            $entityManager->flush();
+            try
+            {
+                return $this->redirectToRoute('helloUser');
+            }
+            catch(\InvalidArgumentException $e)
+            {
+                return $this->redirectToRoute('app_login');
+            }
+        }
+        catch(\Exception $e)
+        {
+            $deleted = "There was an error deleting your account: " .$e->getMessage();
+            return $this->redirectToRoute('app_login');
+        }
     }
 }

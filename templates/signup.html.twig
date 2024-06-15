@@ -2,14 +2,21 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
 {% endblock %}
 {% extends 'base.html.twig' %}  
 {% block body %}
 
 <body>
-    <div class="container d-flex align-items-center justify-content-center">
+    <div class="container d-flex align-items-center justify-content-around">
+    <div class="text-center">
+        <h1><img class="logo" src="{{ asset('Images/logo2.png') }}" alt="Logo image"></h1>
+        <div class="texto">The best writing platform for your original stories!</div>
+    </div>
     <div class="container-fluid m-2">
-        <div class="text-center"><h1>Sign up</h1></div>
+        <div class="text-center">
+            <h2>Log In</h2>
+            </div>
         
         <form action="{{ path('app_signup') }}" method="post">
             <!-- Email input -->

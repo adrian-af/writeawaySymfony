@@ -1,20 +1,45 @@
 {# templates/storySearch.html.twig #}
 {% include 'header.html.twig'  with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/Stories.css') }}">
+{% endblock %}
 {% block body %}
-    <div class='primero'>
-        {% if stories and stories|length > 0%}
-            {{ stories|length }} found: <br>
+    <div class='primero container card'>
+        <div class="card-title"><h2>Search results</h2></div>
+        {% if stories is defined and stories|length > 0%}
+            <div>
+                Your stories search for <strong>{{ term }}</strong> got {{ stories|length }} results: <br>
+            </div>
             {% for story in stories %}
-                {# {% set pattern = '/' ~ term ~ '/i' %}
-                {% set replacement = '<strong>' ~ term ~ '</strong>' %}
-                {% set highlighted_title = story.storyTitle|replace({(pattern): replacement}, 'regex') %}
-                
-                - {{ highlighted_title|raw }} by {{ story.user.userId}}<br> #}
-
-
-                {% set parts = story.storyTitle|split(term) %}
-                {{ parts|join('<strong>' ~ term ~ '</strong>')|raw }}<br>
+                <div class="card m-3">
+                    <div class="card-header">
+                        <h3><a href="{{ path('seeStory', {'id': story.storyID}) }}"> 
+                            {% set parts = story.storyTitle|split(term) %}
+                            {{ parts|join('<strong>' ~ term ~ '</strong>')|raw }} 
+                        </a></h3>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Author(s): 
+                            {% if story.user.userId == 161 %}
+                                DELETED
+                            {% else %}
+                                <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
+                            {% endif %}
+                            {% if story.collabUsers|length > 0 %}
+                                {% for collaborator in story.collabUsers %}
+                                    , <a href="{{ path('otherProfile', {'id': collaborator.userId}) }}"> {{ collaborator.username }}</a>
+                                {% endfor %}
+                            {% endif %}
+                        </h5>
+                        <p class="card-text">
+                            <div class='content'>{{ story.storyText|slice(0, 100)|raw }}...</div>
+                            <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>
+                        </p>
+                    </div>
+                </div>
             {% endfor %}
+                
         {% else %}
             <h1>No stories found with that term</h1>
         {% endif %}

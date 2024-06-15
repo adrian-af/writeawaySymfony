@@ -1,12 +1,23 @@
 {# templates/changePhoto.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
-    {% if error is defined %}
-        {{ error }}
+<style>
+    #photo{
+        width: 30em;
+    }
+</style>
+    {% if error is not null %}
+        <div style="color:red">{{ error }}</div>
     {% endif %}
-    Upload your new profile photo
-    <form action="{{ path('changePhoto')}}" method='POST' enctype="multipart/form-data">
-        <input type="file" id='photo' name='photo' accept='image/png, image/jpeg, image/gif'><br>
-        <button type="submit">Change</button>
-    </form>
+    {% if success is not null %}
+        <div style="color:green"{{ success }}</div>
+    {% endif %}
+
+    <div class="container card">
+        <h2>Upload your new profile photo</h2>
+        <form action="{{ path('changePhoto')}}" method='POST' enctype="multipart/form-data">
+            <input type="file" id='photo' name='photo' accept='image/png, image/jpeg, image/gif' class="form-control"><br>
+            <button type="submit" class="btn btn-primary">Change</button>
+        </form>
+    </div>
 {% endblock %}

@@ -1,59 +1,102 @@
 {# templates/editStory.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+<style>
+    #main
+    {
+        margin: 2em;
+        padding: 2em;
+    }
+    form
+    {
+        margin: auto;
+    }
+    #story
+    {
+        width: 700px;
+        height: 300px;
+        margin-bottom: 2em;
+    }
+    #contentCollaborators{
+        height: 5em;
+        overflow-y: scroll;
+    }
+    .sectionTitle{
+        font-weight: bold;
+    }
+</style>
 {% block body %}
-    {% if response is defined %}
-        <div>{{ response }}</div>
-    {% endif %}
-
-    {% if story %}
-
-     <form action="{{ path('editStory', {'id': story.storyID})}}" method='POST'>
-        <div class="content">
-            <label for="title">Title: </label>
-            <input type="text" id="title" name="title" class="input" value="{{ story.storyTitle }}"></input>
-        </div>
-        <div class="content">
-            <p><label for="genre">Genre: </label></p>
-            <select id="genre" name="genre">
-            {% if genres %}
-                {% for genre in genres %}
-                    {% if genre.genreID == story.genre.genreID %}
-                        <option value='{{ genre.genreID }}' name='genre' selected>{{ genre.name }}</option>
+    <h1>Edit your story</h1>
+    <div class="card" id="main">
+        {% if success is not null %}
+            <div style="color:green">{{ success }}</div>
+        {% endif %}
+        {% if error is not null %}
+            <div style="color:red">{{ error }}</div>
+        {% endif %}
+        <form action="{{ path('editStory', {'id': story.storyID})}}" method='POST'>
+            <div class="content">
+                <p><label for="title" class="sectionTitle">Title: </label>
+                <input type="text" id="title" name="title" class="input form-control" value="{{ story.storyTitle }}"></input>
+            </div>
+            <div class="content col">
+                <p><label for="genre" class="sectionTitle">Genre: </label>
+                <select id="genre" name="genre" class="form-select">
+                    {% if genres %}
+                        {% for genre in genres %}
+                            {% if genre.genreID == story.genre.genreID %}
+                                <option value='{{ genre.genreID }}' name='genre' selected>{{ genre.name|capitalize }}</option>
+                            {% else %}
+                                <option value='{{ genre.genreID }}' name='genre'>{{ genre.name|capitalize }}</option>
+                            {% endif %}
+                        {% endfor %}
                     {% else %}
-                        <option value='{{ genre.genreID }}' name='genre'>{{ genre.name }}</option>
+                        no genres found
+                    {% endif %}
+                </select>
+            </div>
+            <div class="content">
+                <label for="public" class="sectionTitle">Visibility: </label>
+                {% if story.public == 1 %}
+                    <div>
+                        <input type="radio" id="public" name="public" value="0">
+                        <label for="public">Private</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="public" name="public" value="1" checked>
+                        <label for="public">Public</label>
+                    </div>
+                {% else %}
+                    <div>
+                        <input type="radio" id="public" name="public" value="0" checked>
+                        <label for="public">Private</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="public" name="public" value="1">
+                        <label for="public">Public</label>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="content">
+                <p><label for="story" class="sectionTitle">Story:</label></p>
+                <textarea id="story" name="story" class="form-control"> {{ story.storyText }}</textarea>
+            </div>
+                <p class="sectionTitle">Collaborators:</p>
+            <div class="content" id="contentCollaborators">
+                {% for user in users %}
+                    {% if user in collaborators %}
+                        {% if user.userId != 161 %}
+                            <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}" checked>
+                            <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+                        {% endif %}
+                    {% else %}    
+                        {% if user.userId != 161 %}
+                            <input type="checkbox" id="collaborator_{{ user.userId }}" name="collaborators[]" value="{{ user.userId }}">
+                            <label for="collaborator_{{ user.userId }}">{{ user.username }}</label><br>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
-            {% else %}
-                no genres found
-            {% endif %}
-            </select>
-        </div>
-        <div class="content">
-            {% if story.public == 1 %}
-                <div>
-                    <input type="radio" id="public" name="public" value="0">
-                    <label for="public">Private</label>
-                </div>
-                <div>
-                    <input type="radio" id="public" name="public" value="1" checked>
-                    <label for="public">Public</label>
-                </div>
-            {% else %}
-                <div>
-                    <input type="radio" id="public" name="public" value="0" checked>
-                    <label for="public">Private</label>
-                </div>
-                <div>
-                    <input type="radio" id="public" name="public" value="1">
-                    <label for="public">Public</label>
-                </div>
-            {% endif %}
-        </div>
-        <div class="content">
-            <p><label for="story">Story:</label></p>
-            <textarea id="story" name="story">{{ story.storyText }}</textarea>
-        </div>
-        <button class="button">Submit</button>
-    </form>
-    {% endif %}
+            </div>
+            <button class="button btn btn-primary">Submit</button>
+        </form>
+    </div>
 {% endblock %}
