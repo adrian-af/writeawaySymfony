@@ -15,6 +15,8 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
@@ -91,6 +93,11 @@ class ResetPasswordController extends AbstractController
 
         try {
             $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
+
+            // Check if the user implements PasswordAuthenticatedUserInterface
+            if (!$user instanceof PasswordAuthenticatedUserInterface) {
+                throw new UnsupportedUserException('User must implement PasswordAuthenticatedUserInterface.');
+            }
         } catch (ResetPasswordExceptionInterface $e) {
             $this->addFlash('reset_password_error', sprintf(
                 '%s - %s',
@@ -111,10 +118,9 @@ class ResetPasswordController extends AbstractController
 
             // Encode(hash) the plain password, and set it.
             $encodedPassword = $passwordHasher->hashPassword(
-                $form->get('plainPassword')->getData(),
-                $user
+                $user,
+                $form->get('plainPassword')->getData()
             );
-
             $user->setPassword($encodedPassword);
             $this->entityManager->flush();
 

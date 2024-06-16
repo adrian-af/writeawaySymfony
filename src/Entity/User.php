@@ -1,7 +1,6 @@
 <?php
 namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -44,8 +43,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     private string $imageBase64;
 
-    #[ORM\Column(type:'string', name: 'forgor')]
-    private $forgor;
 
     #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: "usersThatFaved")]
     #[ORM\JoinTable(
@@ -361,19 +358,4 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this->collabStories;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getForgor()
-    {
-        return $this->forgor;
-    }
-
-    /**
-     * @param mixed $forgor
-     */
-    public function setForgor($forgor): void
-    {
-        $this->forgor = $forgor;
-    }
 }
