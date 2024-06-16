@@ -1,11 +1,33 @@
+{# templates/reset_password/check_email.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Password Reset Email Sent{% endblock %}
-
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+{% endblock %}
 {% block body %}
-    <p>
-        If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
-        This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-    </p>
-    <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+    {% for flash_error in app.flashes('reset_password_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+<body>
+    <div class="container d-flex align-items-center justify-content-around">
+        <div class="text-center">
+            <h1><img class="logo" src="{{ asset('Images/logo2.png') }}" alt="Logo image"></h1>
+            <div class="texto">The best writing platform for your original stories!</div>
+        </div>
+        <div class="container-fluid m-2">
+            <div class="text-center">
+                <h2>Reset your password</h2>
+            </div>
+        
+            <div>
+                <p>
+                    If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
+                    This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
+                </p>
+                <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+            </div>
+        </div>
+    </div>
+</body>
 {% endblock %}

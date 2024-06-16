@@ -151,6 +151,7 @@ img{
     font-family: 'Lexend', Arial, sans-serif;
 }
 
-#btn-email{
+.btn{
     background-color: #FFCC99 !important;
+    color: black;
 }

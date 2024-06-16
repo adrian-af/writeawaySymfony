@@ -669,7 +669,6 @@ class StoriesController extends AbstractController
                 finally
                 {
                     return $this->redirectToRoute('editAbout',[
-                        'changed' => $changed,
                         'user' => $user,
                         'success' => $success,
                         'error' => $error,
