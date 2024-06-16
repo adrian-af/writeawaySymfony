@@ -13,7 +13,7 @@
     {% if success is not null %}
         <div style="color: green">{{ success }}</div>
     {% endif %}
-    
+
 <div class="card">
     <div class="row">
         <div class="col-4">
@@ -52,7 +52,7 @@
                             <div>
                                 <a href="{{ path('changePassword') }}" class="btn btn-primary">Change password</a>
                             </div>
-                            
+
                             <form action="{{ path('deleteAccount')}}" method="POST" class="d-flex flex-column">
                                 <div>
                                     <input type="checkbox" id="storiesToo" name="storiesToo" value="1"/>
@@ -104,6 +104,10 @@
                                     <div style="display: flex;">
                                         <a href="{{ path('editStory', {'id': story.storyID}) }}" class="btn btn-secondary">Edit</a>
                                         <div data-bs-toggle="tooltip" data-bs-placement="top" title="You cannot delete stories where you are a collaborator"><button class="btn btn-danger" disabled>Delete</button></div>
+                                        <form action="{{ path('ownProfile', {'leaveCollaboration': story.storyID}) }}" method="POST" style="margin-left: 10px;">
+                                            <input type="hidden" name="leaveCollaboration" value="{{ story.storyID }}"/>
+                                            <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to leave this collaboration? This action cannot be undone')">Leave Collaboration</button>
+                                        </form>
                                     </div>
                                 </div>
                                 <hr>
@@ -173,38 +177,63 @@
                         {% endif %}
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
+                <div class="modal fade" id="leaveCollabModal" tabindex="-1" aria-labelledby="leaveCollabModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <form id="leaveCollabForm" method="POST" action="{{ path('ownProfile') }}">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="leaveCollabModalLabel">Confirmación</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    ¿Estás seguro que quieres dejar de ser colaborador de esta historia?
+                                    <input type="hidden" name="leaveCollaboration" id="leaveCollabInput">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-danger">Dejar de ser colaborador</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
 {% endblock %}
 {% block javascript %}
     <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    < <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script>
-        function confirmDelete(id)
-        {
-            let confirmation = "Are you sure you want to delete the story?";
-            if(confirm(confirmation))
-            {
-                var url = "{{ path('ownProfile', {'deleteid': 'PLACEHOLDER'}) }}";
-                url = url.replace('PLACEHOLDER', id);
-                window.location.replace(url);
-            }
+    function confirmDelete(id) {
+        let confirmation = "Are you sure you want to delete the story?";
+        if (confirm(confirmation)) {
+            var url = "{{ path('ownProfile', {'deleteid': 'PLACEHOLDER'}) }}";
+            url = url.replace('PLACEHOLDER', id);
+            window.location.replace(url);
         }
-        $(document).ready(function(){
-            $('.list-group-item').on('click', function(e) {
-                e.preventDefault();
-                
-                $('.list-group-item').removeClass('active');
-                $(this).addClass('active');
-                
-                var target = $(this).attr('href');
-                
-                $('.tab-pane').removeClass('show active');
-                $(target).addClass('show active');
-            });
+    }
+
+    $(document).ready(function(){
+        $('.list-group-item').on('click', function(e) {
+            e.preventDefault();
+
+            $('.list-group-item').removeClass('active');
+            $(this).addClass('active');
+
+            var target = $(this).attr('href');
+
+            $('.tab-pane').removeClass('show active');
+            $(target).addClass('show active');
         });
-</script>
+
+        $('#leaveCollabModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var storyId = button.data('story-id');
+
+            var modal = $(this);
+            modal.find('#leaveCollabInput').val(storyId);
+        });
+    });
+    </script>
 {% endblock %}

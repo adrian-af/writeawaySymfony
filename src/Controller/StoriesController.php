@@ -182,7 +182,9 @@ class StoriesController extends AbstractController
         $user = $this->getUser();
         $genres = $entityManager->getRepository(Genre::class)->findAll();
         $users = $entityManager->getRepository(User::class)->findAll(); //Obtener todos los usuarios para los colaboradores
-        
+        $filteredUsers = array_filter($users, function ($u) use ($user) {
+            return $u->getUsername() !== 'DELETED' && $u->getUserId() !== $user->getUserId();
+        });
         $base64Pfp = $user->getImageBase64();
         $userPfp = null;
         if ($base64Pfp !== null) {
@@ -258,16 +260,16 @@ class StoriesController extends AbstractController
         }
         return $this->render('write.html.twig', [
             'genres' => $genres,
-            'users' => $users,
+            'users' => $filteredUsers,
             'userPfp' => $userPfp,
             'error' => $error,
             'success' => $success
         ]);
     }
-    #[Route(path:'/ownProfile', name: 'ownProfile')]
+    #[Route(path: '/ownProfile', name: 'ownProfile')]
     public function ownProfile(EntityManagerInterface $entityManager, Request $request)
     {
-        //For the header
+        // Para el encabezado
         $user = $this->getUser();
         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
 
@@ -276,86 +278,73 @@ class StoriesController extends AbstractController
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
-        //deletion of stories and comments is done from within the user profile page
-        if ($request->isMethod('POST'))
-        {
-            if($request->query->get('deleteid') != null)
-            {
-                $deleteid = $request->query->get('deleteid');
-                //find the story by ID
+
+        $success = null;
+        $error = null;
+
+        if ($request->isMethod('POST')) {
+            if ($request->request->get('deleteid') != null) {
+                $deleteid = $request->request->get('deleteid');
                 $story = $entityManager->find(Story::class, $deleteid);
-                $success = null;
-                $error = null;
-                try
-                {
-                    foreach($story->getComments() as $comment)
-                    {
+                try {
+                    foreach ($story->getComments() as $comment) {
                         $entityManager->remove($comment);
                     }
                     $entityManager->remove($story);
                     $entityManager->flush();
                     $success = "Story deleted successfully";
+                } catch (\Exception $e) {
+                    $error = "There was an error deleting the story: " . $e->getMessage();
                 }
-                catch(\Exception $e)
-                {
-                    $error = "There was an error deleting the story: " .$e->getMessage();
-                }
-                finally
-                {
-                    return $this->redirectToRoute('ownProfile',[
-                        'user' => $user,
-                        'success' => $success,
-                        'error' => $error
-                    ]);
-                }
-            }
-            else if($request->query->get('deletecomment') != null)
-            {
-                $deletecomment = $request->query->get('deletecomment');
+            } else if ($request->request->get('deletecomment') != null) {
+                $deletecomment = $request->request->get('deletecomment');
                 $comment = $entityManager->find(Comment::class, $deletecomment);
-                $success = null;
-                $error = null;
-                try
-                {
+                try {
                     $entityManager->remove($comment);
                     $entityManager->flush();
                     $success = "Comment deleted successfully";
+                } catch (\Exception $e) {
+                    $error = "There was an error deleting the comment: " . $e->getMessage();
                 }
-                catch(\Exception $e)
-                {
-                    $error = "There was an error deleting the comment: " .$e->getMessage();
+            } else if ($request->request->get('leaveCollaboration') != null) {
+                $leaveCollaborationId = $request->request->get('leaveCollaboration');
+                $story = $entityManager->find(Story::class, $leaveCollaborationId);
+                if ($story) {
+                    try {
+                        $story->removeCollaborator($user);
+                        $entityManager->flush();
+                        $success = "You have left the collaboration successfully";
+                    } catch (\Exception $e) {
+                        $error = "There was an error leaving the collaboration: " . $e->getMessage();
+                    }
+                } else {
+                    $error = "Story not found";
                 }
-                finally
-                {
-                    return $this->redirectToRoute('ownProfile',[
-                        'user' => $user,
-                        'success' => $success,
-                        'error' => $error
-                    ]);
-                }
-            }   
+            }
+
+            return $this->redirectToRoute('ownProfile', [
+                'user' => $user,
+                'success' => $success,
+                'error' => $error
+            ]);
         }
 
-        $error = null;
-        if($request->query->get('error') != null)
-        {
+        if ($request->query->get('error') != null) {
             $error = $request->query->get('error');
         }
-        $success = null;
-        if($request->query->get('success') != null)
-        {
+        if ($request->query->get('success') != null) {
             $success = $request->query->get('success');
         }
-        
-        return $this->render('ownProfile.html.twig',[
-            //For the header
+
+        return $this->render('ownProfile.html.twig', [
             'genres' => $genresHeader,
-            'userPfp'=>$userPfp,
+            'userPfp' => $userPfp,
             'user' => $user,
             'error' => $error,
             'success' => $success
         ]);
     }
+
 
     #[Route(path:'/editStory/{id}', name: 'editStory')]
     public function editStory(EntityManagerInterface $entityManager, $id, Request $request)

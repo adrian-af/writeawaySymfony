@@ -357,5 +357,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->collabStories[] = $story;
         return $this->collabStories;
     }
+    public function removeCollaboratedStory(Story $story)
+    {
+        if ($this->collabStories->contains($story)) {
+            $this->collabStories->removeElement($story);
+        }
+    }
 
 }

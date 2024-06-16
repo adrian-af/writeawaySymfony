@@ -212,4 +212,11 @@ class Story
         $this->collabUsers[] = $user;
         return $this->collabUsers;
     }
+    public function removeCollaborator(User $user)
+    {
+        if ($this->collabUsers->contains($user)) {
+            $this->collabUsers->removeElement($user);
+            $user->removeCollaboratedStory($this);
+        }
+    }
 }
