@@ -133,10 +133,14 @@ img{
 }
 .container
 {
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(102, 153, 153, 1);
+    width: 80vw;
+    height: 80vh;
+    position: absolute;
+    left: 10vw;
+    top: 10vh;
+    background-color: #99CCCC;
     overflow-y: hidden;
+    border-radius: 10px;
 }
 
 .logo{
@@ -145,4 +149,8 @@ img{
 
 .texto{
     font-family: 'Lexend', Arial, sans-serif;
+}
+
+#btn-email{
+    background-color: #FFCC99 !important;
 }
