@@ -4,7 +4,6 @@ body{
     justify-content: center; /* Center horizontally */
     align-items: center;
    
-    background-color: #99CCCC;
 }
 .rectangle-1 {
     display: grid;
@@ -128,7 +127,6 @@ img{
 }
 .container-fluid
 {
-    background-color: #FFCC99 ;
     border-radius: 1em;
     width: 50%;
     margin: auto;
