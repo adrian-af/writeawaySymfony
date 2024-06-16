@@ -44,6 +44,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     private string $imageBase64;
 
+    #[ORM\Column(type:'string', name: 'forgor')]
+    private $forgor;
+
     #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: "usersThatFaved")]
     #[ORM\JoinTable(
         name: "users_fav_stories",
@@ -59,10 +62,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         inverseJoinColumns: [new ORM\JoinColumn(name: "story_id", referencedColumnName: "ID")]
     )]
     public $collabStories; //stories in which this user collabs
-<<<<<<< HEAD
-    
-=======
->>>>>>> bdfc277f8dfd75611c52f4ce6bad291a84c8227f
     /**
      * User constructor
      */
@@ -341,10 +340,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         return $this->favStories;
     }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> bdfc277f8dfd75611c52f4ce6bad291a84c8227f
     public function getCollabStories()
     {
         return $this->collabStories;
@@ -364,5 +359,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     {
         $this->collabStories[] = $story;
         return $this->collabStories;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getForgor()
+    {
+        return $this->forgor;
+    }
+
+    /**
+     * @param mixed $forgor
+     */
+    public function setForgor($forgor): void
+    {
+        $this->forgor = $forgor;
     }
 }

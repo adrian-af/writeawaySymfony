@@ -77,6 +77,7 @@ class SignUpController extends AbstractController
                 $confirmationCode = rand(10, 10000000); 
                 $user->setConfCod($confirmationCode);
                 $user->setRole(0);
+                $user->setForgor(0);
 
                 // Save the user 
                 $entityManager->persist($user);
