@@ -1,7 +1,6 @@
 <?php
 namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
@@ -43,6 +42,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     private $comments;
 
     private string $imageBase64;
+
 
     #[ORM\ManyToMany(targetEntity: Story::class, inversedBy: "usersThatFaved")]
     #[ORM\JoinTable(
@@ -357,4 +357,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
         $this->collabStories[] = $story;
         return $this->collabStories;
     }
+
 }

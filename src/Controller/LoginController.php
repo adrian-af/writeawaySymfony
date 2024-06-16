@@ -7,6 +7,7 @@ use App\Entity\Genre;
 use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -99,107 +100,101 @@ class LoginController extends AbstractController
     }
 
     //Password recovery
-    
-    #[Route('/checkmail', name: 'forgot_password_mail')]
-    public function forgot(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer,){
-        //Initialize error message
-        $error = $request->query->get('error');
 
-        //Process of submission
-        if($request->isMethod('POST')){
-            $formData = $request->request->all();
-            $mail = $formData['mail'];
+    #[Route('/forgot-password', name: 'forgot_password')]
+    public function forgotPassword(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailer)
+    {
+        $error = null;
+        if ($request->isMethod('POST')) {
+            $email = $request->request->get('email');
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
 
-            $existingUser = $entityManager-> getRepository(User::class);
-            $existingMail = $existingUser->findOneBy(['email'=>$mail]);
-            if($existingMail == null){
-                $error .= "Email not registered";
+            if ($user) {
+                $code = rand(100000, 999999); // Generate a random 6-digit code
+                $user->setForgor($code);
+
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                // Send email with the code
+                $emailMessage = (new Email())
+                    ->from('noreply@writeaway.com')
+                    ->to($email)
+                    ->subject('Password Reset Code')
+                    ->text('Your password reset code is: ' . $code);
+
+                $mailer->send($emailMessage);
+
+                return $this->redirectToRoute('verify_code', ['email' => $email]);
+            } else {
+                $error = 'No user found with this email.';
             }
-
-            if(!$error){
-                return $this->redirectToRoute('change_password',['mail'=>$mail]);
-            }
-
-            return $this->redirectToRoute('forgot_password_mail', ['error'=>$error]);
         }
 
-        //For the header
-        
-        $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-        
-        $base64Pfp = null;
-
-        return $this->render('askEmail.html.twig', [
-            'error'=>$error,
-            //For the header
-            'genres' => $genresHeader,
-            'userPfp'=>$base64Pfp
-        ]);
+        return $this->render('forgot_password.html.twig', ['error' => $error]);
     }
-    
-    #[Route('/passwordChange/{mail}', name:'change_password')]
-    public function changePassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, $mail){
-        //Initialize error message
-        $error = $request->query->get('error');
 
-        if($request->isMethod("POST")){
+    #[Route('/verify-code', name: 'verify_code')]
+    public function verifyCode(Request $request, EntityManagerInterface $entityManager)
+    {
+        $error = null;
+        $email = $request->query->get('email');
+
+        if ($request->isMethod('POST')) {
+            $code = $request->request->get('code');
+            $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
+
+            if ($user && $user->getForgor() == $code) {
+                return $this->redirectToRoute('change_password', ['mail' => $email]);
+            } else {
+                $error = 'Invalid code.';
+            }
+        }
+
+        return $this->render('verify_code.html.twig', ['error' => $error, 'email' => $email]);
+    }
+
+    #[Route('/passwordChange/{mail}', name:'change_password')]
+    public function changePassword(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $userPasswordHasher, $mail)
+    {
+        $error = null;
+        $success = $request->query->get('success');
+
+        if ($request->isMethod('POST')) {
             $formData = $request->request->all();
-            $passLen = 3;
             $plainPassword = $formData['password'];
             $password2 = $formData['password2'];
 
-            //validation
-            if(strlen($plainPassword) < $passLen){
-                $error = "Password must be at least".$passLen ." characters long<br>";
-            }
-            if($plainPassword != $password2){
-                $error  .= "Passwords do not match!";
-            }
+            if ($plainPassword !== $password2) {
+                $error = "Passwords do not match!";
+            } else {
+                $user = $entityManager->getRepository(User::class)->findOneBy(['email' => $mail]);
 
-            if(!$error){
-                $user = $entityManager->getRepository(User::class)->findOneBy([
-                    'email'=>$mail
-                ]);
-                $encodedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-                $user->setPassword($encodedPassword);
+                if (!$user) {
+                    $error = 'User not found.';
+                } else {
+                    try {
+                        // Hash the plain password using the password hasher
+                        $hashedPassword = $userPasswordHasher->hashPassword($user, $plainPassword);
+                        $user->setPassword($hashedPassword);
 
-                $entityManager->persist( $user );
-                try{
-                    $entityManager->flush();
-                }catch(\Exception $e){
-                    $error = "El error es". $e->getMessage();
+                        $entityManager->persist($user);
+                        $entityManager->flush();
+
+                        return $this->redirectToRoute('app_login', ['success' => true]);
+                    } catch (\Exception $e) {
+                        error_log('Error changing password: ' . $e->getMessage()); // Log the error for debugging
+                        $error = 'Failed to change password: ' . $e->getMessage();
+                    }
                 }
-
-                return $this->redirectToRoute('app_login', ['error'=>$error]);
             }
-
-            //For the header
-        
-            $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-            
-            $base64Pfp = null;
-
-            return $this->redirectToRoute('change_password',[
-                'error'=>$error,
-                'mail'=>$mail,
-                //For the header
-                'genres' => $genresHeader,
-                'userPfp'=>$base64Pfp
-            ]);
         }
-         //For the header
-        
-         $genresHeader = $entityManager->getRepository(Genre::class)->findAll();
-            
-         $base64Pfp = null;
 
-        return $this->render('changePassword.html.twig',[
-            'error'=>$error,
-            'mail'=>$mail,
-            //For the header
-            'genres' => $genresHeader,
-            'userPfp'=>$base64Pfp
+        return $this->render('changePassword.html.twig', [
+            'error' => $error,
+            'mail' => $mail,
+            'success' => $success,
         ]);
     }
-    
+
 }

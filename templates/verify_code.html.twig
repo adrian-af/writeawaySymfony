@@ -1,0 +1,32 @@
+{# templates/verify_code.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <body>
+    <div class="container d-flex align-items-center justify-content-center">
+        <div class="container-fluid m-2">
+            <div class="text-center"><h1>Verify Code</h1></div>
+
+            <form action="{{ path('verify_code', {'email': email}) }}" method="post">
+                <!-- Code input -->
+                <div data-mdb-input-init class="form-outline mb-4">
+                    <label class="form-label" for="code">Code</label>
+                    <input type="text" id="code" class="form-control" name="code" required />
+                </div>
+
+                <!-- Error message -->
+                <div class="row mb-4">
+                    <div class="col d-flex justify-content-center">
+                        {% if error %}
+                            <div style="color: red" id="wrong">{{ error }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-4">Verify</button>
+            </form>
+        </div>
+    </div>
+    </body>
+{% endblock %}

@@ -6,7 +6,8 @@
         {% block stylesheets %}
             <link rel="icon" href="{{ asset('css/FormStyles.css') }}">
             <link rel="icon" href="{{ asset('css/CommonStyles.css') }}">
-            
+            <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+
         {% endblock %}
 
         {% block javascripts %}
@@ -23,8 +24,8 @@
             {% endblock %}
         {% endblock %}    
         
-        <script src="{{ asset('js/popper.js') }}"></script>
-        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-        
+        <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
+
+
     </body>
 </html>
