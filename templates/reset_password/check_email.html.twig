@@ -2,6 +2,7 @@
 {% extends 'base.html.twig' %}
 
 {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
 {% endblock %}
@@ -21,11 +22,11 @@
             </div>
         
             <div>
-                <p>
                     If an account matching your email exists, then an email was just sent that contains a link that you can use to reset your password.
                     This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.
-                </p>
-                <p>If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.</p>
+            </div>
+            <div>
+                If you don't receive an email please check your spam folder or <a href="{{ path('app_forgot_password_request') }}">try again</a>.
             </div>
         </div>
     </div>
