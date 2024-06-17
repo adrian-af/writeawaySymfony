@@ -34,7 +34,13 @@
                                 DELETED
                             {% else %}
                                 <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
-                            {% endif %}</h5>
+                            {% endif %}
+                            {% if story.collabUsers|length > 0 %}
+                                {% for collaborator in story.collabUsers %}
+                                    , <a href="{{ path('otherProfile', {'id': collaborator.userId}) }}"> {{ collaborator.username }}</a>
+                                {% endfor %}
+                            {% endif %}
+                            </h5>
                             <p class="card-text">
                                 <div class='content'>{{ story.storyText|slice(0, 100)|raw }}...</div>
                                 <div class='dateTime'> {{ story.datetime|date('Y-m-d H:i:s') }} </div>

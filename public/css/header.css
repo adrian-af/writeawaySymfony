@@ -26,12 +26,11 @@
     margin: 0 .2em;
 }
 
-.btn-search
+.icon-search
 {
-    height: 2.2em;
-    width: 2.2em;
+    height: 1.3em;
+    width: 1.3em;
     padding: 0;
-    margin: 0.2em;
 }
 
 .icon
@@ -47,6 +46,10 @@
 .form-search
 {
     margin: 0;
+}
+.btn-search{
+    margin-left: 0.3em;
+    padding: 3.7px 10px;
 }
 
 /*foto del usuario*/

@@ -1,5 +1,8 @@
 {# templates/editStory.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/stories.css') }}">
+{% endblock %}
 <style>
     #main
     {
