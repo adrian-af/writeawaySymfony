@@ -1,34 +1,48 @@
 {# templates/moderateComments.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
 {% if deleted is defined %}
     {{ deleted }}
 {% endif %}
-    <div id="breadcrumbs"><a href="{{ path('adminIndex') }}">Admin zone</a> > <a href="{{ path('adminAction', {'response': 2})}}"> Manage stories </a> > Moderate comments
+    <ol id="breadcrumbs" class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ path('adminIndex') }}">Admin zone</a> 
+        </li>
+        <li class="breadcrumb-item"> 
+            <a href="{{ path('adminAction', {'response': 2})}}">Manage stories</a>
+        </li>
+        <li class="breadcrumb-item">Moderate comments</li>
+    </ol>
 {% if story is defined %}
-    {% if story.comments|length > 0 %}
-        <table>
-            <tr><th>Comments for "{{ story.storyTitle }}"</th></tr>
-            <tr>
-                <th>Username</th>
-                <th>Content</th>
-                <th>Delete</th>
-            </tr>
-        {% for comment in story.comments %}
-            <tr>
-                <td>{{ comment.user.username }}</td>
-                <td>{{ comment.commentText }}</td>
-                <td>
-                    <form action="{{ path('moderateComments', {'idStory': story.storyID })}}" method="POST">
-                        <input type="hidden" name="commentId" value="{{ comment.commentID }}"/>
-                        <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?')">Delete comment</button>
-                    </form>
-                </td>
-            </tr>   
-        {% endfor %}
-        </table>
-    {% else %}
+    <div class="card card-main m-3">
+        {% if story.comments|length > 0 %}
+            <h2>Moderate comments</h2>
+            <div class="ms-4 mb-1">Comments for "{{ story.storyTitle }}"</div>
+            <table class="table">
+                <tr>
+                    <th>Username</th>
+                    <th>Content</th>
+                    <th>Delete</th>
+                </tr>
+            {% for comment in story.comments %}
+                <tr>
+                    <td>{{ comment.user.username }}</td>
+                    <td>{{ comment.commentText }}</td>
+                    <td>
+                        <form action="{{ path('moderateComments', {'idStory': story.storyID })}}" method="POST">
+                            <input type="hidden" name="commentId" value="{{ comment.commentID }}"/>
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this comment?')" class="btn btn-danger">Delete comment</button>
+                        </form>
+                    </td>
+                </tr>   
+            {% endfor %}
+            </table>
+        {% else %}
         This story has no comments
     {% endif %}
+    </div>
 {% else %}
     story not defined
 {% endif %}

@@ -1,0 +1,31 @@
+body{
+    background-color: #99CCCC !important;
+}
+
+.table{
+    width: 80vw;
+    margin: auto;
+}
+
+h2{
+    text-align: center;
+}
+
+.card-main{
+    width: 90vw;
+    margin: auto;
+}
+
+.change-form{
+    width: 40em;
+    margin: auto;
+}
+
+.form-outline{
+    margin: auto;
+    text-align: left;
+}
+
+#about{
+    width: 30em;
+}

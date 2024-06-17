@@ -1,9 +1,12 @@
 {# templates/adminIndex.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
 {% block body %}
     <div class="container card d-flex flex-row justify-content-around align-items-center">
         <div>
-            <h2 id="breadcrumbs">Admin zone</h2>
+            <h2>Admin zone</h2>
             <div class="mb-2">
                 <form action="{{ path('adminAction') }}" method="POST">
                     <button value="1" name="action" class="btn btn-primary">Manage users</button>
