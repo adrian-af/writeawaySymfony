@@ -354,7 +354,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
 
     public function addCollabStories($story)
     {
-        $this->collabStories[] = $story;
+        $current = $this->collabStories;
+        $new = true;
+        foreach($current as $collabStory)
+        {
+            if($story == $collabStory)
+            {
+                $new = false;
+            }
+        }
+        if($new)
+        {
+            $this->collabStories[] = $story;
+        }
         return $this->collabStories;
     }
 

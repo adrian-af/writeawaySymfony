@@ -404,14 +404,39 @@ class StoriesController extends AbstractController
             $story->setGenre($genreEntity);
             $story->setPublic($public);
             $story->setStoryText($storyText);
+            
+            $newCollaborators = [];
             foreach($collaboratorIds as $collaboratorId) {
                 $collaborator = $entityManager->getRepository(User::class)->find($collaboratorId);
                 if($collaborator){
-                    $story->addCollabUsers($collaborator);
-                    $collaborator->addCollabStories($story);
-                    $entityManager->persist($collaborator);
+                    $newCollaborators[] = $collaborator;
                 }
             }
+            
+            //remove the stoy from the old collaborators
+            foreach($story->getCollabUsers() as $currentCollaborator)
+            {
+                $stories = $currentCollaborator->getCollabStories();
+                foreach($stories as $collaboratorStory)
+                {
+                    if($collaboratorStory == $story)
+                    {
+                        $stories->removeElement($collaboratorStory);
+                    }
+                }
+            }
+
+            //add the new collaborators
+            $story->setCollabUsers($newCollaborators);
+
+            //add the story to the entity of each collaborator
+            foreach($newCollaborators as $newCollaborator)
+            {
+                $newCollaborator->addCollabStories($story);
+                $entityManager->persist($newCollaborator);
+            }
+            $entityManager->persist($story);
+            
             $success = null;
             $error = null;
             try
