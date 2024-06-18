@@ -93,6 +93,17 @@ class StoriesController extends AbstractController
         if ($base64Pfp !== null) {
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
+
+        $error = null;
+        if($request->query->get('error') != null)
+        {
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
+        }
         //get the current story
         if($request->isMethod('GET'))
         {
@@ -107,20 +118,11 @@ class StoriesController extends AbstractController
                     'userPfp' => $userPfp,
                     'story' => $story,
                     'comments' => $comments,
-                    'user' => $user
+                    'user' => $user,
+                    'error' => $error,
+                    'success' => $success
                 ]);
             }
-        }
-
-        $error = null;
-        if($request->query->get('error') != null)
-        {
-            $error = $request->query->get('error');
-        }
-        $success = null;
-        if($request->query->get('success') != null)
-        {
-            $success = $request->query->get('success');
         }
 
         return $this->render('seeStory.html.twig', [
@@ -170,6 +172,7 @@ class StoriesController extends AbstractController
             $entityManager->persist($storyEntity);
             $entityManager->flush();
             $comments = $storyEntity->getComments();
+
             return $this->redirectToRoute('seeStory', ['id' => $storyId]);
         }
     }
@@ -390,14 +393,39 @@ class StoriesController extends AbstractController
             $story->setGenre($genreEntity);
             $story->setPublic($public);
             $story->setStoryText($storyText);
+            
+            $newCollaborators = [];
             foreach($collaboratorIds as $collaboratorId) {
                 $collaborator = $entityManager->getRepository(User::class)->find($collaboratorId);
                 if($collaborator){
-                    $story->addCollabUsers($collaborator);
-                    $collaborator->addCollabStories($story);
-                    $entityManager->persist($collaborator);
+                    $newCollaborators[] = $collaborator;
                 }
             }
+            
+            //remove the stoy from the old collaborators
+            foreach($story->getCollabUsers() as $currentCollaborator)
+            {
+                $stories = $currentCollaborator->getCollabStories();
+                foreach($stories as $collaboratorStory)
+                {
+                    if($collaboratorStory == $story)
+                    {
+                        $stories->removeElement($collaboratorStory);
+                    }
+                }
+            }
+
+            //add the new collaborators
+            $story->setCollabUsers($newCollaborators);
+
+            //add the story to the entity of each collaborator
+            foreach($newCollaborators as $newCollaborator)
+            {
+                $newCollaborator->addCollabStories($story);
+                $entityManager->persist($newCollaborator);
+            }
+            $entityManager->persist($story);
+            
             $success = null;
             $error = null;
             try
@@ -655,7 +683,6 @@ class StoriesController extends AbstractController
                 finally
                 {
                     return $this->redirectToRoute('editAbout',[
-                        'changed' => $changed,
                         'user' => $user,
                         'success' => $success,
                         'error' => $error,

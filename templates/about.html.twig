@@ -1,8 +1,8 @@
 {# templates/about.html.twig #}
-{% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
-{% endblock %}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/Stories.css') }}">
+{% endblock %}
 <style>
     #booksdiv
     {
@@ -17,19 +17,35 @@
         color: #669999;
         font-weight: bold;
     }
+
+    #image-container
+    {
+        width: 300px;
+        height: 500px;
+        vertical-align: middle;
+    }
+    #logo-img
+    {
+        width: 300px;
+        height: auto;
+    }
 </style>
 {% block body %}
 <div class="primero card container">
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
             <h1>Welcome!
-            <div height="200px">
-                <img class="logotipos" src="{{ asset('Images/logo3.png') }}" alt="Logotype">
-            </div>
             </h1>
+            <table>
+                <tr>
+                    <td id="image-container">
+                        <img src="{{ asset('Images/logo3.png') }}" id="logo-img" alt="Writeaway logo" class="img-fluid"/>
+                    </td>
+                </tr>
+            </table>
            
         </div>
-        <div class="col-md-8 d-flex align-items-center">
+        <div class="col-md-9 d-flex align-items-center">
             <div class="p-4">
                 <h3 class="subtitle">What is this web?</h3>
                 <p>
@@ -48,6 +64,6 @@
             </div>
         </div>
     </div>
-     <div id="booksdiv" width="100%" ></div>
+     <div id="booksdiv" ></div>
 </div>  
 {% endblock %}

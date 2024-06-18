@@ -1,7 +1,6 @@
 {# templates/ownProfile.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block stylesheets %}
-    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ asset('css/Stories.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
@@ -32,25 +31,25 @@
                         <h2>Your profile</h2>
                         <div id='pfp'>
                             <div class="username">
-                                Username: {{ user.username }}
                                 <a href="{{ path('editUsername') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" class="editButton"></a>
+                                <span class="bold">Username:</span> {{ user.username }}
                             </div>
+                            <a href="{{ path('changePhoto') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" class="editButton"></a> <span class="bold">Profile photo:</span>
                             {% if userPfp is not null %}
                                 <img src="{{ userPfp }}" alt="User Picture" id="userPfp">
                             {% else %}
                                 <img src="{{ asset('Images/user.png') }}" alt="User Picture" id="userPfp">
                             {% endif %}
-                            <a href="{{ path('changePhoto') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" class="editButton"></a>
                         </div>
                         <div id='about'>
-                            <p id='buser'>About you:
-                                <a href="{{ path('editAbout') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" class="editButton"></a>
-                            </p>
+                            <p id='buser'>
+                            <a href="{{ path('editAbout') }}"><img src="{{ asset('Images/edit.png') }}" alt="edit button" class="editButton"></a>
+                            <span class="bold">About you:</span>
                             <p class='text'><pre>{{ user.about }}</pre></p>
                         </div>
                         <div class="buttons d-flex justify-content-around align-items-end">
                             <div>
-                                <a href="{{ path('changePassword') }}" class="btn btn-primary">Change password</a>
+                                <a href="{{ path('changePassword') }}" class="btn btn-primary btn-profile">Change password</a>
                             </div>
 
                             <form action="{{ path('deleteAccount')}}" method="POST" class="d-flex flex-column">
@@ -62,7 +61,7 @@
                                     <input type="checkbox" id="commentsToo" name="commentsToo" value="1"/>
                                     <label for="commmentsToo" data-bs-toggle="tooltip" data-bs-placement="top" title="If you do not click this box, your comments will stay in Writeaway without your username">Delete all your comments too</label>
                                 </div>
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete your Writeaway account? This action cannot be undone')">Delete account</button>
+                                <button type="submit" class="btn btn-danger btn-profile" onclick="return confirm('Are you sure you want to delete your Writeaway account? This action cannot be undone')">Delete account</button>
                             </form>
                         </div>
                     </div>
@@ -81,10 +80,10 @@
                                     <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
                                     <div class='dateTime'>{{ story.datetime|date('d-M-Y H:i:s') }}</div>
                                     <div style="display: flex;">
-                                        <a href="{{ path('editStory', {'id': story.storyID}) }}" class="btn btn-secondary">Edit</a>
+                                        <a href="{{ path('editStory', {'id': story.storyID}) }}" class="btn btn-secondary  btn-profile">Edit</a>
                                         <form action="{{ path('ownProfile', {'deleteid': story.storyID}) }}" method="POST">
                                             <input type="hidden" name="deleteid" value="{{ story.storyID }}"/>
-                                            <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this story? This action will delete all the comments related to the story')">Delete</button>
+                                            <button class="btn btn-danger btn-profile" type="submit" onclick="return confirm('Are you sure you want to delete this story? This action will delete all the comments related to the story')">Delete</button>
                                         </form>
                                     </div>
                                 </div>
@@ -102,12 +101,8 @@
                                     <div class='content'>{{ story.storyText|slice(0, 50)|raw }}...</div>
                                     <div class='dateTime'>{{ story.datetime|date('d-M-Y H:i:s') }}</div>
                                     <div style="display: flex;">
-                                        <a href="{{ path('editStory', {'id': story.storyID}) }}" class="btn btn-secondary">Edit</a>
-                                        <div data-bs-toggle="tooltip" data-bs-placement="top" title="You cannot delete stories where you are a collaborator"><button class="btn btn-danger" disabled>Delete</button></div>
-                                        <form action="{{ path('ownProfile', {'leaveCollaboration': story.storyID}) }}" method="POST" style="margin-left: 10px;">
-                                            <input type="hidden" name="leaveCollaboration" value="{{ story.storyID }}"/>
-                                            <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to leave this collaboration? This action cannot be undone')">Leave Collaboration</button>
-                                        </form>
+                                        <a href="{{ path('editStory', {'id': story.storyID}) }}" class="btn btn-secondary btn-profile">Edit</a>
+                                        <div data-bs-toggle="tooltip" data-bs-placement="top" title="You cannot delete stories where you are a collaborator"><button class="btn btn-danger btn-profile" disabled>Delete</button></div>
                                     </div>
                                 </div>
                                 <hr>
@@ -134,7 +129,7 @@
                                     <div class="dateTime">{{ comment.datetime|date('d-M-Y H:i:s') }}</div>
                                     <form action="{{ path('ownProfile', {'deletecomment': comment.commentID}) }}" method="POST">
                                         <input type="hidden" name="deleteid" value="{{ comment.commentID }}"/>
-                                        <button class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</button>
+                                        <button class="btn btn-danger btn-profile" type="submit" onclick="return confirm('Are you sure you want to delete this comment?')">Delete</button>
                                     </form>
                                 </div>
                                 <hr>
@@ -161,6 +156,11 @@
                                                 DELETED
                                             {% else %}
                                                 <a href="{{ path('otherProfile', {'id': story.user.userId}) }}"> {{ story.user.username }}</a>
+                                            {% endif %}
+                                            {% if story.collabUsers|length > 0 %}
+                                                {% for collaborator in story.collabUsers %}
+                                                    , <a href="{{ path('otherProfile', {'id': collaborator.userId}) }}"> {{ collaborator.username }}</a>
+                                                {% endfor %}
                                             {% endif %}
                                         </h5>
                                         <p class="card-text">

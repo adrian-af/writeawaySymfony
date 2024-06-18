@@ -4,7 +4,6 @@ body{
     justify-content: center; /* Center horizontally */
     align-items: center;
    
-    background-color: #99CCCC;
 }
 .rectangle-1 {
     display: grid;
@@ -128,17 +127,20 @@ img{
 }
 .container-fluid
 {
-    background-color: #FFCC99 ;
     border-radius: 1em;
     width: 50%;
     margin: auto;
 }
 .container
 {
-    width: 100vw;
-    height: 100vh;
-    background-color: rgba(102, 153, 153, 1);
+    width: 80vw;
+    height: 80vh;
+    position: absolute;
+    left: 10vw;
+    top: 10vh;
+    background-color: #99CCCC;
     overflow-y: hidden;
+    border-radius: 10px;
 }
 
 .logo{
@@ -147,4 +149,9 @@ img{
 
 .texto{
     font-family: 'Lexend', Arial, sans-serif;
+}
+
+.btn{
+    background-color: black !important;
+    color: white;
 }

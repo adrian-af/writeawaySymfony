@@ -32,10 +32,23 @@ class AdminController extends AbstractController
             $userPfp = 'data:image/jpg;charset=utf8;base64,' . $base64Pfp;
         }
 
+        $users = $entityManager->getRepository(Genre::class)->findAll();
+        $numUsers = count($users);
+
+        $stories = $entityManager->getRepository(Story::class)->findAll();
+        $numStories = count($stories);
+
+        $comments = $entityManager->getRepository(Comment::class)->findAll();
+        $numComments = count($comments);
+
+
         return $this->render('adminIndex.html.twig',[
             //For the header
             'genres' => $genresHeader,
             'userPfp'=>$userPfp,
+            'numUsers' => $numUsers,
+            'numStories' => $numStories,
+            'numComments' => $numComments,
         ]);
     }
     #[Route(path: '/adminAction', name: 'adminAction')]
@@ -61,11 +74,7 @@ class AdminController extends AbstractController
         }
         else
         {
-            return $this->render("adminIndex.html.twig", [
-                //For the header
-                'genres' => $genresHeader,
-                'userPfp'=>$userPfp,
-            ]);
+            return $this->redirectToRoute("adminIndex");
         }
         if($action == 1) //users
         {

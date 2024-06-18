@@ -1,19 +1,39 @@
 {# templates/changeUser.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
 {% block body %}
-    <div id="breadcrumbs"><a href="{{ path('adminIndex') }}">Admin zone</a> > <a href="{{ path('adminAction', {'response': 1})}}"> Manage users </a> > Change user
+    <ol id="breadcrumbs" class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ path('adminIndex') }}">Admin zone</a> 
+        </li>
+        <li class="breadcrumb-item"> 
+            <a href="{{ path('adminAction', {'response': 1})}}">Manage users</a>
+        </li>
+        <li class="breadcrumb-item"> Change user</li>
+    </ol>
+    
     {% if changed is defined %}
         {{ changed }}
     {% endif %}
     {% if userChanged %}
-    <div>
-        <form action="{{ path('changeUser', {'id': userChanged.userId}) }}" method="POST">
-            <label for="username">Username</label>
-            <input type="text" name="username" value="{{ userChanged.username }}"></input><br>
-            <label for="email">Email</label>
-            <input type="email" name="email" value="{{ userChanged.email }}"></input><br>
-            <label for="verified">Verified</label>
-                <select name="verified">
+    <h2>Change user</h2>
+    <div class="container card card-main d-flex justify-content-center">
+        <form action="{{ path('changeUser', {'id': userChanged.userId}) }}" method="POST" class="change-form">
+            <div class="form-outline mb-2">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" name="username" value="{{ userChanged.username }}" class="form-control"></input>
+            </div>
+
+            <div class="form-outline mb-2">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" value="{{ userChanged.email }}" class="form-control"></input>
+            </div>
+
+            <div class="form-outline mb-2">
+                <label for="verified" class="form-label">Verified</label>
+                <select name="verified" class="form-select">
                     {% if userChanged.confCod == 0 %}
                         <option name="verified" value="0" selected>Keep verified</option>
                         <option name="verified" value="1">Un-verify</option>
@@ -21,20 +41,27 @@
                         <option name="verified" value="1" selected>Keep unverified</option>
                         <option name="verified" value="0">Verify</option>
                     {% endif %}
-                </select><br>
-            <label for="about">About</label>
-            <input type="text" name="about" value="{{ userChanged.about }}"></input><br>
-            <label for="role">Role</label>
-            <select name="role">
+                </select>
+            </div>
+            <div class="form-outline mb-2">
+                <label for="about" class="form-label">About</label>
+                <textarea id="about" name="about" class="form-control m-2">{{ userChanged.about }}</textarea>
+            </div>
+            <div class="form-outline mb-2">
+                <label for="role" class="form-label">Role</label>
+                <select name="role" class="form-select">
                     {% if userChanged.role == 0 %}
-                        <option name="role" value="0" selected>User</option>
-                        <option name="role" value="1">Admin</option>
+                        <option value="0" selected>User</option>
+                        <option value="1">Admin</option>
                     {% else %}
-                        <option name="role" value="1" selected>Admin</option>
-                        <option name="role" value="0">User</option>
+                        <option value="1" selected>Admin</option>
+                        <option value="0">User</option>
                     {% endif %}
-                </select><br>
-            <button type="submit">Change</button>
+                </select>
+            </div>
+            <div class="form-outline mb-2">
+                <button type="submit" class="btn btn-primary">Change</button>
+            </div>
         </form>
     </div>
     {% endif %}

@@ -1,3 +1,6 @@
+body{
+    background-color: #99CCCC !important;
+}
 .card
 {
     margin: 1em 2em;
@@ -84,11 +87,6 @@ pre
     height: 20px;
 }
 
-.username
-{
-    margin: 16px;
-}
-
 .row
 {
     height: 70vh;
@@ -112,10 +110,14 @@ pre
     font-weight: lighter;
 }
 
-.btn{
+.btn-profile{
     margin: 0.3em;
 }
 
 .card-text{
     padding-right: 2em;
+}
+
+.bold{
+    font-weight: bold;
 }

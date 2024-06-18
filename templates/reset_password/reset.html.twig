@@ -1,12 +1,37 @@
+{# templates/reset_password/reset.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Reset your password{% endblock %}
-
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/FormStyles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap">
+{% endblock %}
 {% block body %}
-    <h1>Reset your password</h1>
+<body>
+    <div class="container d-flex align-items-center justify-content-around">
+        <div class="text-center">
+            <h1><img class="logo" src="{{ asset('Images/logo2.png') }}" alt="Logo image"></h1>
+            <div class="texto">The best writing platform for your original stories!</div>
+        </div>
+        <div class="container-fluid m-2">
+            <div class="text-center">
+                <h2>Reset your password</h2>
+            </div>
+        
+            <div>
+                {{ form_start(resetForm) }}
+                    <div>Now enter your new password</div>
+                        <div data-mdb-input-init class="form-outline mb-2 mt-2">
+                            {{ form_row(resetForm.plainPassword) }}
+                        </div>
+                    <div class="mb-2">
+                        <a href="{{ path('app_login') }}">Return to login</a>
+                    </div>
 
-    {{ form_start(resetForm) }}
-        {{ form_row(resetForm.plainPassword) }}
-        <button class="btn btn-primary">Reset password</button>
-    {{ form_end(resetForm) }}
+                    <button class="btn btn-primary" id='btn-email'>Reset password</button>
+                {{ form_end(resetForm) }}
+            </div>
+        </div>
+    </div>
+</body>
 {% endblock %}

@@ -1,5 +1,7 @@
 {# templates/write.html.twig #}
+{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/Stories.css') }}">
     <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" rel="stylesheet">
@@ -25,12 +27,14 @@
         font-weight: bold;
     }
 </style>
-{% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
 {% block body %}
     <h1>Start writing</h1>
     <div class="card" id="main">
-        {% if response is defined %}
-            <div>{{ response }}</div>
+        {% if success is not null %}
+            <div style="color:green">{{ success }}</div>
+        {% endif %}
+        {% if error is not null %}
+            <div style="color:red">{{ error }}</div>
         {% endif %}
         <form action="{{ path('write') }}" method='POST' class="writeStory">
             <div class="content">

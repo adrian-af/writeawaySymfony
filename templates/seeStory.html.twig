@@ -40,6 +40,11 @@
                         {% else %}
                             <a href="{{ path('otherProfile', {'id': story.user.userId})}}"> {{ story.user.username }}</a>
                         {% endif %}
+                        {% if story.collabUsers|length > 0 %}
+                            {% for collaborator in story.collabUsers %}
+                                , <a href="{{ path('otherProfile', {'id': collaborator.userId}) }}"> {{ collaborator.username }}</a>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
             

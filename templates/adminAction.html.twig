@@ -1,5 +1,8 @@
 {# templates/adminAction.html.twig #}
 {% include 'header.html.twig' with {'genres':genres, 'userPfp': userPfp} %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+{% endblock %}
 {% block body %}
     <div>
     {% if error is defined %}
@@ -8,96 +11,115 @@
     {% if deleted is defined %}
         {{ deleted }} <br>
     {% endif %}
-    <div id="breadcrumbs"><a href="{{ path('adminIndex') }}">Admin zone</a> > 
-        {% if response == 1 %} 
-            Manage users
-        {% elseif response == 2 %}
-            Manage stories
-        {% elseif response == 3 %}
-            Manage genres
-        {% endif %}
-    </div>
+    <ol id="breadcrumbs" class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="{{ path('adminIndex') }}">Admin zone</a> 
+        </li>
+        <li class="breadcrumb-item"> 
+            {% if response == 1 %} 
+                Manage users
+            {% elseif response == 2 %}
+                Manage stories
+            {% elseif response == 3 %}
+                Manage genres
+            {% endif %}
+        </li>
+    </ol>
 
         {% if response == 1 %}
         {# users #}
             {% if users|length > 0 %}
-                <table>
-                    <tr>
-                        <th>Username</th><th>Email</th><th>Verified</th><th>About</th><th>Role</th><th>Change</th><th>Delete</th>
-                    </tr>
-                {% for user in users %}
-                    <tr>
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>
-                            {% if user.confCod == 0 %}
-                                Verified
-                            {% else %}
-                                Not verified
-                            {% endif %}
-                        </td>
-                        <td>{{ user.about }}</td>
-                        <td>
-                            {% if user.role == 0 %}
-                                User
-                            {% else %}
-                                Admin
-                            {% endif %}
-                        </td>
-                        <td><a href="{{ path('changeUser', {'id': user.userId}) }}">Change</a></td>
-                        <td><form action="{{ path('deleteUser', {'id': user.userId })}}" method="POST">
-                                <button type="submit" onclick="return confirm('Are you sure you want to delete this user? (Their stories will not be deleted)')">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </table>
+                <h2>Manage users</h2>
+                <div class="card card-main mt-3">
+                    <table class="table">
+                        <tr>
+                            <th>Username</th><th>Email</th><th>Verified</th><th>About</th><th>Role</th><th>Change</th><th>Delete</th>
+                        </tr>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.confCod == 0 %}
+                                    Verified
+                                {% else %}
+                                    Not verified
+                                {% endif %}
+                            </td>
+                            <td>{{ user.about }}</td>
+                            <td>
+                                {% if user.role == 0 %}
+                                    User
+                                {% else %}
+                                    Admin
+                                {% endif %}
+                            </td>
+                            <td><a href="{{ path('changeUser', {'id': user.userId}) }}" class="btn btn-secondary">Change</a></td>
+                            <td><form action="{{ path('deleteUser', {'id': user.userId })}}" method="POST">
+                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this user? (Their stories will not be deleted)')" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
             {% endif %}
         {% elseif response == 2 %}
             {# stories #}
             {% if stories|length > 0 %}
-                <table>
-                    <tr>
-                        <th>Title</th><th>Author</th><th>Moderate comments</th><th>Delete story</th>
-                    </tr>
-                {% for story in stories %}
-                    <tr>
-                        <td>{{ story.storyTitle }}</td>
-                        <td>{{ story.user.username }}</td>
-                        <td><a href="{{ path('moderateComments', {'idStory': story.storyID } ) }}">Moderate comments</a></td>
-                        <td>
-                            <form action="{{ path('deleteStory', {'id': story.storyID })}}" method="POST">
-                                <button type="submit" onclick="return confirm('Are you sure you want to delete this story? (This action will delete all the related comments)')">Delete story</button>
-                            </form>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </table>
+                <h2>Manage stories</h2>
+                <div class="card card-main mt-3">
+                    <table class="table">
+                        <tr>
+                            <th>Title</th><th>Author</th><th>Moderate comments</th><th>Delete story</th>
+                        </tr>
+                    {% for story in stories %}
+                        <tr>
+                            <td>{{ story.storyTitle }}</td>
+                            <td>{{ story.user.username }}</td>
+                            <td><a href="{{ path('moderateComments', {'idStory': story.storyID } ) }}" class="btn btn-secondary">Moderate comments</a></td>
+                            <td>
+                                <form action="{{ path('deleteStory', {'id': story.storyID })}}" method="POST">
+                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this story? (This action will delete all the related comments)')" class="btn btn-danger">Delete story</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
             {% endif %}
         {% elseif response == 3 %}
             {# genres #}
             {% if genres|length > 0 %}
-            Genres:
-                <table>
-                    <tr>
-                        <th>Name</th><th>Delete</th>
-                    </tr>
-                    {% for genre in genres %}
-                    <tr>
-                        <td>{{ genre.name }}</td>
+                <h2>Manage genres</h2>
+                <div class="card card-main mt-3">
+                    <table class="table mb-4">
+                        <tr>
                         <td>
-                            <form action="{{ path('deleteGenre', {'id': genre.genreID})}}" method="POST">
-                                <button type="submit" onclick="return confirm('Are you sure you want to delete this genre? (All stories with this genre will change to &quot;other&quot;)')">Delete genre</button>
+                            <form action="{{ path('createGenre')}}" method="POST" class="d-flex">
+                                <label for="newGenre">Add a new genre:</label>
+                                <input type="text" name="genreName" class="form-control"/>
+                                <button type="submit" class="btn btn-primary">Create genre</button>
                             </form>
                         </td>
-                    </tr>
-                    {% endfor %}
-                </table>
-                <form action="{{ path('createGenre')}}" method="POST">
-                    <label for="newGenre">Add a new genre:</label>
-                    <input type="text" name="genreName"/>
-                    <button type="submit">Create genre</button>
-                </form>
+                        </tr>
+                    </table>
+                    <table class="table">
+                        <tr>
+                            <th>Name</th><th>Delete</th>
+                        </tr>
+                        {% for genre in genres %}
+                        <tr>
+                            <td>{{ genre.name }}</td>
+                            <td>
+                                <form action="{{ path('deleteGenre', {'id': genre.genreID})}}" method="POST">
+                                    <button type="submit" onclick="return confirm('Are you sure you want to delete this genre? (All stories with this genre will change to &quot;other&quot;)')" class="btn btn-danger">Delete genre</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
             {% endif %}
         {% endif %}
     </div>
