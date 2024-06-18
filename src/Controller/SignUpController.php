@@ -158,16 +158,15 @@ class SignUpController extends AbstractController
     }
 
     #[Route(path:"deleteAccount", name: "deleteAccount")]
-    public function deleteAccount(EntityManagerInterface $entityManager, Request $request, TokenStorageInterface $tokenStorage)
+    public function deleteAccount(EntityManagerInterface $entityManager, Request $request, TokenStorageInterface $tokenStorage,  SessionInterface $session)
     {
         $user = $this->getUser();
     
         try
         {
             //handle current session so it doesn't throw an error
-            $response = $this->forward('App\Controller\LoginController::logout');
-            $tokenStorage->setToken(null);
-            $session->invalidate();
+            //$response = $this->forward('App\Controller\LoginController::logout');
+            
 
             //user created to host stories from deleted users
             $del = $entityManager->find(User::class, 161);
@@ -214,21 +213,18 @@ class SignUpController extends AbstractController
                     $comment->setUser($del);
                 }
             }
+
+            $tokenStorage->setToken(null);
+            $session->invalidate();
             $entityManager->remove($user);
             $entityManager->flush();
-            try
-            {
-                return $this->redirectToRoute('helloUser');
-            }
-            catch(\InvalidArgumentException $e)
-            {
-                return $this->redirectToRoute('app_login');
-            }
+            return $this->redirectToRoute('app_login', ['success' => "Account deleted"]);
+            
         }
         catch(\Exception $e)
         {
             $deleted = "There was an error deleting your account: " .$e->getMessage();
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_login', [ 'error' => $deleted]);
         }
     }
 }

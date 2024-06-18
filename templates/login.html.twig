@@ -19,6 +19,9 @@
         {% if success is defined %}
             <div style="color: green" id="right">{{ success }}</div>
         {% endif %}
+        {% if error is defined %}
+            <div style="color: red" id="wrong">{{ error }}</div>
+        {% endif %}
         <form action="{{ path('app_login') }}" method="post">
             <!-- Username input -->
             <div data-mdb-input-init class="form-outline mb-4">

@@ -20,7 +20,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class LoginController extends AbstractController
 {
     #[Route('/login', name: 'app_login')]
-    public function index(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager, MailerInterface $mailer): Response
+    public function index(AuthenticationUtils $authenticationUtils, EntityManagerInterface $entityManager, MailerInterface $mailer, Request $request): Response
     {
       // get the login error if there is one
         if ($this->getUser()) //user is logged in
@@ -60,11 +60,24 @@ class LoginController extends AbstractController
                 ]);
             }
         }
-        
-        $error = $authenticationUtils->getLastAuthenticationError();
-        if($error)
+
+        $error = null;
+        if($request->query->get('error') != null)
         {
-            $error = $error->getMessage();
+            $error = $request->query->get('error');
+        }
+        $success = null;
+        if($request->query->get('success') != null)
+        {
+            $success = $request->query->get('success');
+        }
+        
+        if($error == null){
+            $error = $authenticationUtils->getLastAuthenticationError();
+            if($error)
+            {
+                $error = $error->getMessage();
+            }
         }
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
@@ -72,6 +85,7 @@ class LoginController extends AbstractController
         return $this->render('login.html.twig', [
             'last_username' => $lastUsername,
             'error'         => $error,
+            'success' => $success,
         ]);
         
     }

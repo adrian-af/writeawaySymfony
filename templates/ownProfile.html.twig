@@ -202,17 +202,8 @@
 {% block javascript %}
     <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
     <script src="{{ asset('js/bootstrap.min.js') }}"></script>
-    < <script src="{{ asset('js/jquery-3.7.1.js') }}"></script>
-    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
     <script>
-    function confirmDelete(id) {
-        let confirmation = "Are you sure you want to delete the story?";
-        if (confirm(confirmation)) {
-            var url = "{{ path('ownProfile', {'deleteid': 'PLACEHOLDER'}) }}";
-            url = url.replace('PLACEHOLDER', id);
-            window.location.replace(url);
-        }
-    }
+    
 
     $(document).ready(function(){
         $('.list-group-item').on('click', function(e) {

@@ -26,6 +26,16 @@
                             {% endif %}
                             <div class="userInfo">
                                 <h6><a href="{{ path('otherProfile', {'id': user.userId })}}">{{ user.username }}</a></h6>
+                                {% set storiesNumber = 0 %}
+                                {% if user.stories|length > 0 %}
+                                    {% for userStory in user.stories %}
+                                        {% if userStory.public == 1 %}
+                                            {% set storiesNumber = storiesNumber + 1 %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                                    Has {{ storiesNumber }} public stories
+                                <div></div>
                             </div>
                         </div>
                     <div class="m-3 pb-2"><pre>About: {{ user.about }}</pre></div> 
