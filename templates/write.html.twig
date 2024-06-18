@@ -1,7 +1,8 @@
 {# templates/write.html.twig #}
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('css/ComonStyles.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" rel="stylesheet">
 {% endblock %}
 <style>
     #main {
@@ -16,11 +17,11 @@
         height: 300px;
         margin-bottom: 2em;
     }
-    #contentCollaborators{
+    #contentCollaborators {
         height: 5em;
         overflow-y: scroll;
     }
-    .sectionTitle{
+    .sectionTitle {
         font-weight: bold;
     }
 </style>
@@ -65,23 +66,28 @@
             </div>
             <div class="content">
                 <p><label for="collaborators">Collaborators: </label></p>
-                <select id="collaborators" name="collaborators[]" class="form-select" multiple>
+                <select id="collaborators" name="collaborators[]" class="selectpicker" multiple data-live-search="true">
                     {% for user in users %}
                         <option value="{{ user.userId }}">{{ user.username }}</option>
                     {% endfor %}
                 </select>
+                <button type="button" id="clear-collaborators" class="btn btn-secondary mt-2">Clear All</button>
             </div>
             <button class="button btn btn-primary">Submit</button>
         </form>
     </div>
 {% endblock %}
 {% block javascripts %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#collaborators').select2({
-                allowClear: true
+            $('#collaborators').selectpicker();
+
+            $('#clear-collaborators').on('click', function() {
+                $('#collaborators').selectpicker('deselectAll');
             });
         });
     </script>
